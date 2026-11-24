@@ -12,7 +12,10 @@ import { fileURLToPath } from 'node:url';
 
 const SAMPLE_RATE = 44_100;
 const MAX_BYTES = 80 * 1024;
-const OUT_DIR = join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'sounds');
+/** `SOUNDS_OUT_DIR` redirects the output (the determinism test writes to a temporary folder). */
+const OUT_DIR =
+  process.env.SOUNDS_OUT_DIR ??
+  join(dirname(fileURLToPath(import.meta.url)), '..', 'assets', 'sounds');
 const TAU = Math.PI * 2;
 
 /** mulberry32: deterministic noise in [-1, 1). */

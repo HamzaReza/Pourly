@@ -31,4 +31,24 @@ describe('useBoardState', () => {
     expect(rejected).toBe(false);
     expect(result.current.board).toBe(afterPour);
   });
+
+  it('returns the pour outcome from commitPour, or null without touching the board', async () => {
+    const { result } = await renderHook(() => useBoardState(initial));
+    let outcome: ReturnType<typeof result.current.commitPour> = null;
+    await act(() => {
+      outcome = result.current.commitPour(0, 2);
+    });
+    expect(outcome).not.toBeNull();
+    expect(outcome!.result).toEqual({ count: 1, revealed: [] });
+    expect(result.current.board).toBe(outcome!.board);
+    expect(result.current.board.tubes[2]).toEqual(tube(0));
+
+    const before = result.current.board;
+    let rejected: ReturnType<typeof result.current.commitPour> = null;
+    await act(() => {
+      rejected = result.current.commitPour(0, 3);
+    });
+    expect(rejected).toBeNull();
+    expect(result.current.board).toBe(before);
+  });
 });
