@@ -55,4 +55,24 @@ export const colors = {
   textMuted: '#A9B8CF',
   accent: '#2EC4FF',
   onAccent: '#06121F',
+  /** Coin glyph fill and rim. */
+  coin: '#FFD60A',
+  coinRim: '#C99A00',
+  /** Dimmed backdrop behind overlays. */
+  backdrop: 'rgba(4, 10, 20, 0.62)',
+  /** Earned and missing stars. */
+  star: '#FFD60A',
+  starEmpty: 'rgba(255, 255, 255, 0.22)',
+  /** Count badge on action buttons. */
+  badge: '#C81E3A',
+  onBadge: '#FFFFFF',
+} as const;
+
+/** Fills the parent with logical (RTL-safe) edges. */
+export const fill = {
+  position: 'absolute',
+  top: 0,
+  bottom: 0,
+  start: 0,
+  end: 0,
 } as const;

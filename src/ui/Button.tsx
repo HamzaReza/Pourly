@@ -1,6 +1,10 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
 import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 
+import type { ThemeUi } from '@/render/themes';
+
+import type { IconName } from './IconButton';
 import { colors, fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from './tokens';
 
 export type ButtonVariant = 'primary' | 'secondary';
@@ -13,8 +17,21 @@ export interface ButtonProps {
   accessibilityHint?: string;
   variant?: ButtonVariant;
   disabled?: boolean;
+  /** Theme colors; the neutral chrome palette is used when omitted. */
+  ui?: ThemeUi;
+  /** Icon drawn after the label (for example `play` for "watch an ad"). */
+  icon?: IconName;
   style?: StyleProp<ViewStyle>;
+  testID?: string;
 }
+
+const NEUTRAL_UI: ThemeUi = {
+  text: colors.text,
+  textMuted: colors.textMuted,
+  accent: colors.accent,
+  onAccent: colors.onAccent,
+  surface: colors.surface,
+};
 
 const ButtonComponent = ({
   label,
@@ -23,9 +40,14 @@ const ButtonComponent = ({
   accessibilityHint,
   variant = 'secondary',
   disabled = false,
+  ui = NEUTRAL_UI,
+  icon,
   style,
+  testID,
 }: ButtonProps) => {
   const primary = variant === 'primary';
+  const background = primary ? ui.accent : ui.surface;
+  const foreground = primary ? ui.onAccent : ui.text;
   return (
     <Pressable
       accessibilityRole="button"
@@ -34,17 +56,21 @@ const ButtonComponent = ({
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onPress}
+      testID={testID}
       style={({ pressed }) => [
         styles.base,
-        primary ? styles.primary : styles.secondary,
-        pressed && (primary ? styles.primaryPressed : styles.secondaryPressed),
+        { backgroundColor: background },
+        !primary && { borderColor: ui.textMuted },
+        !primary && styles.outlined,
+        pressed && styles.pressed,
         disabled && styles.disabled,
         style,
       ]}
     >
-      <Text style={[styles.label, primary ? styles.primaryLabel : styles.secondaryLabel]}>
+      <Text style={[styles.label, primary && styles.primaryLabel, { color: foreground }]}>
         {label}
       </Text>
+      {icon !== undefined ? <Ionicons name={icon} size={18} color={foreground} /> : null}
     </Pressable>
   );
 };
@@ -58,20 +84,16 @@ const styles = StyleSheet.create({
     paddingHorizontal: spacing.xl,
     paddingVertical: spacing.md,
     borderRadius: radii.pill,
+    flexDirection: 'row',
+    gap: spacing.sm,
     alignItems: 'center',
     justifyContent: 'center',
   },
-  primary: {
-    backgroundColor: colors.accent,
+  outlined: {
+    borderWidth: StyleSheet.hairlineWidth,
   },
-  primaryPressed: {
-    opacity: 0.85,
-  },
-  secondary: {
-    backgroundColor: colors.surface,
-  },
-  secondaryPressed: {
-    backgroundColor: colors.surfacePressed,
+  pressed: {
+    opacity: 0.8,
   },
   disabled: {
     opacity: 0.5,
@@ -81,10 +103,6 @@ const styles = StyleSheet.create({
     fontWeight: fontWeights.bold,
   },
   primaryLabel: {
-    color: colors.onAccent,
     fontSize: fontSizes.title,
-  },
-  secondaryLabel: {
-    color: colors.text,
   },
 });

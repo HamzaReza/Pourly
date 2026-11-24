@@ -6,18 +6,111 @@
     "ok": "OK",
     "cancel": "Cancel",
     "close": "Close",
-    "back": "Back"
+    "back": "Back",
+    "continue": "Continue"
   },
   "home": {
     "play": "Level {{n}}",
     "playA11y": "Play level {{n}}",
+    "resume": "Resume level {{n}}",
+    "resumeA11y": "Resume level {{n}} where you left off",
     "daily": "Daily",
     "shop": "Shop",
     "themes": "Themes",
     "settings": "Settings"
   },
   "game": {
-    "title": "Level {{n}}"
+    "title": "Level {{n}}",
+    "hardTitleA11y": "Level {{n}}, hard level",
+    "pause": "Pause",
+    "undo": "Undo",
+    "hint": "Hint",
+    "restart": "Restart",
+    "addTube": "+Tube",
+    "skip": "Skip",
+    "skipA11y": "Skip this level by watching an ad",
+    "actionA11y": "{{action}}, {{detail}}",
+    "noHint": "No hint found for this board",
+    "hintSearching": "Looking for a hint",
+    "costFree": "{{count}} free left",
+    "costOwned": "{{count}} left",
+    "costCoins": "{{count}} coins",
+    "costAd": "watch an ad",
+    "costUsed": "already used"
+  },
+  "coins": {
+    "badgeA11y": "{{count}} coins. Open the shop"
+  },
+  "items": {
+    "undo": "An undo",
+    "hint": "A hint",
+    "extraTube": "An extra tube"
+  },
+  "pause": {
+    "title": "Paused",
+    "resume": "Resume",
+    "restart": "Restart",
+    "home": "Home",
+    "sound": "Sound",
+    "haptics": "Haptics"
+  },
+  "win": {
+    "title": "Level complete!",
+    "starsA11y": "{{count}} of 3 stars",
+    "coinsA11y": "{{count}} coins earned",
+    "next": "Next",
+    "nextA11y": "Play the next level",
+    "double": "Double coins",
+    "doubleA11y": "Double your coins by watching an ad",
+    "home": "Home"
+  },
+  "stuck": {
+    "title": "No moves left",
+    "message": "Undo a move, add a tube, restart, or skip this level.",
+    "undo": "Undo",
+    "addTube": "+Tube",
+    "restart": "Restart",
+    "skip": "Skip level",
+    "skipA11y": "Skip this level by watching an ad",
+    "keepLooking": "Keep looking"
+  },
+  "notEnough": {
+    "title": "Not enough coins",
+    "message": "{{item}} costs {{cost}} coins. You have {{coins}}.",
+    "watchAd": "Watch ad",
+    "watchAdA11y": "Watch an ad to get {{item}}",
+    "shop": "Shop"
+  },
+  "restartConfirm": {
+    "title": "Restart level?",
+    "message": "You used a paid item on this attempt. Restarting gives it up.",
+    "confirm": "Restart anyway",
+    "cancel": "Keep playing"
+  },
+  "reward": {
+    "title": "Reward",
+    "skippedTitle": "Level skipped",
+    "skippedMessage": "Level {{n}} counts as done with 1 star.",
+    "coins": "+{{count}} coins",
+    "hints": "+{{count}} hints",
+    "undos": "+{{count}} undos",
+    "extraTubes": "+{{count}} tubes"
+  },
+  "tutorial": {
+    "level1": "Tap a tube, then tap where to pour",
+    "level2": "Pour only onto the same color or an empty tube",
+    "level3": "Sort every color into its own tube"
+  },
+  "ads": {
+    "notReady": "Ad not ready, try again soon",
+    "mockTitle": "TEST AD (mock)",
+    "mockRewarded": "Rewarded ad: {{placement}}",
+    "mockInterstitial": "Interstitial ad",
+    "mockCountdown": "Reward in {{count}} s",
+    "mockEarned": "Reward earned",
+    "mockWait": "Ad closes in {{count}} s",
+    "mockClose": "Close ad",
+    "mockCloseEarly": "Close ad without the reward"
   },
   "daily": {
     "title": "Daily Challenge"
