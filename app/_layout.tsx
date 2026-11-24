@@ -7,19 +7,34 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { initI18n } from '@/i18n';
+import { ads } from '@/services/ads';
+import { track } from '@/services/analytics';
 import { initAudio, shutdownAudio } from '@/services/audio';
+import { initGameLifecycle } from '@/state/gameFlow';
+import { useGameStore } from '@/state/gameStore';
 import { waitForStoresHydrated } from '@/state/hydration';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
+import { decideAutoStart } from '@/state/startup';
+import { MockAdHost } from '@/ui/MockAdHost';
+import { revealApp } from '@/ui/splash';
+import { ToastHost } from '@/ui/Toast';
 import { colors } from '@/ui/tokens';
 import { logger } from '@/utils/logger';
 
 void SplashScreen.preventAutoHideAsync();
 
+/** The first screen hides the splash once its content is laid out; this is only a safety net. */
+const SPLASH_SAFETY_MS = 1500;
+
 const bootstrap = async (): Promise<void> => {
   await waitForStoresHydrated();
   await initI18n(useSettingsStore.getState().language);
-  useProgressStore.getState().touchOpen(Date.now());
+  const progress = useProgressStore.getState();
+  progress.touchOpen(Date.now());
+  useGameStore.getState().discardStale(progress.level);
+  decideAutoStart();
+  track('app_open', { session: useProgressStore.getState().sessionCount });
 };
 
 export default function RootLayout() {
@@ -39,8 +54,16 @@ export default function RootLayout() {
   }, []);
 
   useEffect(() => {
-    if (ready) SplashScreen.hide();
+    if (!ready) return;
+    const timer = setTimeout(revealApp, SPLASH_SAFETY_MS);
+    const idle = requestIdleCallback(() => ads.preload(), { timeout: 2000 });
+    return () => {
+      clearTimeout(timer);
+      cancelIdleCallback(idle);
+    };
   }, [ready]);
+
+  useEffect(initGameLifecycle, []);
 
   useEffect(() => {
     initAudio().catch((error: unknown) => logger.error('Audio setup failed', error));
@@ -64,6 +87,8 @@ export default function RootLayout() {
             contentStyle: styles.content,
           }}
         />
+        <ToastHost />
+        <MockAdHost />
       </SafeAreaProvider>
     </GestureHandlerRootView>
   );
