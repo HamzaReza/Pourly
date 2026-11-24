@@ -55,6 +55,12 @@ export const HEADSPACE_SEGMENTS = 0.5;
 export const MIN_TUBE_ASPECT = 2.4;
 export const MAX_TUBE_ASPECT = 4.6;
 
+/** The glass lip: how far it sticks out past each wall and how far it rises above the tube top. */
+export const tubeLip = (wall: number): { overhang: number; rise: number; height: number } => {
+  const height = Math.max(3, wall * 1.6);
+  return { overhang: wall * 0.6, rise: height * 0.45, height };
+};
+
 const clamp = (value: number, min: number, max: number): number =>
   Math.min(max, Math.max(min, value));
 

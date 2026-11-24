@@ -7,7 +7,7 @@
  * locale's direction. The source tube rotates rigidly (liquid included) about its lip corner,
  * which is placed above the destination's mouth; the stream falls straight down from there.
  */
-import type { Rect } from '../layout';
+import { tubeLip, type Rect } from '../layout';
 import {
   CAP_DROP_MS,
   CAP_SETTLE_MS,
@@ -34,8 +34,8 @@ export const MAX_TILT_DEG = 75;
 export const STREAM_WIDTH = 6;
 /** Minimum arc height above the straight line from slot to pour position. */
 export const MIN_ARC = 24;
-/** Margin kept between the tilted body and the canvas edge when choosing the tilt side. */
-const EDGE_MARGIN = 4;
+/** Margin kept between the tilted tube (lip included) and the canvas edges. */
+export const EDGE_MARGIN = 4;
 
 export interface PourPlanInput {
   readonly from: number;
@@ -59,6 +59,19 @@ export interface PourPlanInput {
   readonly canvasWidth: number;
   /** 1, or `REDUCED_MOTION_SCALE` with reduced motion. */
   readonly durationScale: number;
+}
+
+/**
+ * The tube's outline box in tube-local coordinates, lip included: x in [-overhang, width +
+ * overhang], y in [-rise, height]. The rotated body reaches `diagonal × sin(tilt + phase)` past
+ * the pivot on its swing side (pivot on the opposite outer wall).
+ */
+export interface TubeExtent {
+  readonly overhang: number;
+  readonly rise: number;
+  readonly diagonal: number;
+  /** Radians. */
+  readonly phase: number;
 }
 
 export interface PourTimes {
@@ -112,6 +125,12 @@ export interface PourPlan {
   readonly arc: number;
   readonly targetX: number;
   readonly targetY: number;
+  /** Horizontal limits for the rotated tube (canvas edges minus `EDGE_MARGIN`). */
+  readonly minX: number;
+  readonly maxX: number;
+  /** Top limit for the rotated tube (the arc is flattened to stay below it). */
+  readonly minY: number;
+  readonly extent: TubeExtent;
   readonly times: PourTimes;
 }
 
@@ -153,31 +172,79 @@ export const tiltForLevel = (level: number, capacity: number): number => {
   return MIN_TILT_DEG + (MAX_TILT_DEG - MIN_TILT_DEG) * empty;
 };
 
-/** Horizontal reach of the tilted body beyond the pivot at `tiltDeg`. */
-export const tiltedReach = (width: number, height: number, tiltDeg: number): number => {
-  const angle = degToRad(tiltDeg);
-  return height * Math.sin(angle) + width * Math.cos(angle);
+export const tubeExtent = (width: number, height: number, wall: number): TubeExtent => {
+  const { overhang, rise } = tubeLip(wall);
+  const far = width + overhang;
+  return {
+    overhang,
+    rise,
+    diagonal: Math.hypot(far, height),
+    phase: Math.atan2(far, height),
+  };
+};
+
+/** How far the tilted tube reaches past the pivot on its swing side at `tiltDeg`. */
+export const tiltedReach = (extent: TubeExtent, tiltDeg: number): number => {
+  'worklet';
+  return extent.diagonal * Math.sin(degToRad(tiltDeg) + extent.phase);
 };
 
 /**
- * Which way the source swings: its body stays on the side it comes from (towards the canvas
- * centre when it is straight above or below), unless that would leave the canvas.
+ * Largest tilt (degrees, at most `MAX_TILT_DEG`) at which the swing side stays within `room` dp
+ * of the pivot. The reach grows with the tilt up to 90° − phase (beyond `MAX_TILT_DEG` for every
+ * tube aspect the layout allows), so the inverse is a single `asin`.
+ */
+export const maxTiltForRoom = (extent: TubeExtent, room: number): number => {
+  'worklet';
+  if (room >= tiltedReach(extent, MAX_TILT_DEG)) return MAX_TILT_DEG;
+  const upright = extent.diagonal * Math.sin(extent.phase);
+  if (room <= upright) return 0;
+  const radians = Math.asin(Math.min(1, room / extent.diagonal)) - extent.phase;
+  return Math.max(0, Math.min(MAX_TILT_DEG, (radians * 180) / Math.PI));
+};
+
+/** How far the tilted tube (lip included) rises above the pivot at `tiltDeg`. */
+export const tiltedRise = (extent: TubeExtent, tiltDeg: number): number => {
+  'worklet';
+  const radians = degToRad(tiltDeg);
+  const far = extent.diagonal * Math.sin(extent.phase);
+  return far * Math.sin(radians) + extent.rise * Math.cos(radians);
+};
+
+/** Room between the pivot and the canvas limit on the swing side. */
+const swingRoom = (side: 1 | -1, pivotX: number, minX: number, maxX: number): number => {
+  'worklet';
+  return side > 0 ? maxX - pivotX : pivotX - minX;
+};
+
+/**
+ * Which way the source swings (decision P4.19): its body stays on the side it comes from
+ * (towards the canvas centre when it is straight above or below). If the tube at `finalTilt`
+ * would cross that canvas edge, the other side is used when it fits; when neither fits, the side
+ * with more room wins and `pourFrame` caps the tilt to the room left.
  */
 export const chooseSide = (
   source: Rect,
   target: Rect,
   canvasWidth: number,
-  reach: number,
+  extent: TubeExtent,
+  finalTilt: number,
 ): 1 | -1 => {
   const sourceCenter = source.x + source.width / 2;
-  const targetCenter = target.x + target.width / 2;
-  let side: 1 | -1;
-  if (Math.abs(sourceCenter - targetCenter) > 0.5) side = sourceCenter > targetCenter ? 1 : -1;
-  else side = targetCenter > canvasWidth / 2 ? -1 : 1;
-  const fits = (s: 1 | -1): boolean =>
-    s > 0 ? targetCenter + reach <= canvasWidth - EDGE_MARGIN : targetCenter - reach >= EDGE_MARGIN;
-  if (!fits(side) && fits(side > 0 ? -1 : 1)) side = side > 0 ? -1 : 1;
-  return side;
+  const pivotX = target.x + target.width / 2;
+  const minX = EDGE_MARGIN;
+  const maxX = canvasWidth - EDGE_MARGIN;
+  let preferred: 1 | -1;
+  if (Math.abs(sourceCenter - pivotX) > 0.5) preferred = sourceCenter > pivotX ? 1 : -1;
+  else preferred = pivotX > canvasWidth / 2 ? -1 : 1;
+  const other: 1 | -1 = preferred > 0 ? -1 : 1;
+  const reach = tiltedReach(extent, finalTilt);
+  const fits = (side: 1 | -1): boolean => swingRoom(side, pivotX, minX, maxX) >= reach;
+  if (fits(preferred)) return preferred;
+  if (fits(other)) return other;
+  return swingRoom(preferred, pivotX, minX, maxX) >= swingRoom(other, pivotX, minX, maxX)
+    ? preferred
+    : other;
 };
 
 export const pourTimes = (
@@ -223,14 +290,19 @@ export const planPour = (input: PourPlanInput): PourPlan => {
   const height = source.height;
   const sourceAfter = input.sourceBefore - input.count;
   const targetAfter = input.targetBefore + input.count;
-  const reach = tiltedReach(width, height, tiltForLevel(sourceAfter, input.capacity));
-  const side = chooseSide(source, target, input.canvasWidth, reach);
+  const extent = tubeExtent(width, height, wall);
+  const finalTilt = tiltForLevel(sourceAfter, input.capacity);
+  const side = chooseSide(source, target, input.canvasWidth, extent, finalTilt);
   const lipX = side > 0 ? 0 : width;
   const restX = source.x + lipX;
   const restY = source.y;
   const pourX = target.x + target.width / 2;
   const clearance = Math.max(segmentHeight * 0.9, width * 0.95) + 4;
-  const pourY = target.y - clearance;
+  const pourTilt = Math.min(
+    finalTilt,
+    maxTiltForRoom(extent, swingRoom(side, pourX, EDGE_MARGIN, input.canvasWidth - EDGE_MARGIN)),
+  );
+  const pourY = Math.max(target.y - clearance, EDGE_MARGIN + tiltedRise(extent, pourTilt));
   const arc = Math.max(MIN_ARC, Math.abs(pourX - restX) * 0.3);
   return {
     from: input.from,
@@ -258,6 +330,10 @@ export const planPour = (input: PourPlanInput): PourPlan => {
     arc,
     targetX: target.x,
     targetY: target.y,
+    minX: EDGE_MARGIN,
+    maxX: input.canvasWidth - EDGE_MARGIN,
+    minY: EDGE_MARGIN,
+    extent,
     times: pourTimes(input.count, input.revealed, input.completes, input.durationScale),
   };
 };
@@ -311,6 +387,12 @@ export const pourFrame = (plan: PourPlan, ms: number): PourFrame => {
     const untilt = easeInOutCubic(Math.min(1, back * 1.4));
     tiltDeg = tiltForLevel(plan.sourceAfter, plan.capacity) * (1 - untilt);
   }
+  // Never swing past the canvas edge: cap the tilt to the room on the swing side (P4.19).
+  tiltDeg = Math.min(
+    tiltDeg,
+    maxTiltForRoom(plan.extent, swingRoom(plan.side, pivotX, plan.minX, plan.maxX)),
+  );
+  pivotY = Math.max(pivotY, plan.minY + tiltedRise(plan.extent, tiltDeg));
 
   const fill = progress(ms, t.streamStart + headMs, t.streamEnd);
   const targetLevel = lerp(plan.targetBefore, plan.targetAfter, fill);
@@ -367,4 +449,26 @@ export const pourFrame = (plan: PourPlan, ms: number): PourFrame => {
     capScaleY,
     sparkle,
   };
+};
+
+export interface Point {
+  readonly x: number;
+  readonly y: number;
+}
+
+/** Canvas positions of the four corners of the rotated tube's outline box (lip included). */
+export const tubeCorners = (plan: PourPlan, frame: PourFrame): readonly Point[] => {
+  const { overhang, rise } = plan.extent;
+  const cos = Math.cos(frame.angle);
+  const sin = Math.sin(frame.angle);
+  const local: readonly Point[] = [
+    { x: -overhang, y: -rise },
+    { x: plan.tubeWidth + overhang, y: -rise },
+    { x: plan.tubeWidth + overhang, y: plan.tubeHeight },
+    { x: -overhang, y: plan.tubeHeight },
+  ];
+  return local.map(({ x, y }) => {
+    const dx = x - plan.lipX;
+    return { x: frame.pivotX + dx * cos - y * sin, y: frame.pivotY + dx * sin + y * cos };
+  });
 };

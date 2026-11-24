@@ -12,7 +12,7 @@ import type { SkCanvas, SkPaint, SkPath, SkPicture, SkRect } from '@shopify/reac
 import { isComplete } from '@/game/rules';
 import type { Tube } from '@/game/types';
 
-import type { BoardLayout } from './layout';
+import { tubeLip, type BoardLayout } from './layout';
 import { HIDDEN_COLORS, LIQUID_COLORS, liquidColor } from './palette';
 import type { SkiaApi } from './skiaApi';
 import { getQuestionMarkPath, getSymbolPath, SYMBOL_OPACITY } from './symbols';
@@ -136,15 +136,8 @@ export const buildTubePaths = (skia: SkiaApi, geometry: TubeGeometry): TubePaths
   const outline = tubeShape(skia, 0, 0, width, height);
   const interior = tubeShape(skia, wall, 0, innerWidth, height - wall);
   const glass = skia.Path.MakeFromOp(outline, interior, PathOp.Difference) ?? outline;
-  const lipHeight = Math.max(3, wall * 1.6);
-  const lip = roundedRect(
-    skia,
-    -wall * 0.6,
-    -lipHeight * 0.45,
-    width + wall * 1.2,
-    lipHeight,
-    lipHeight / 2,
-  );
+  const { overhang, rise, height: lipHeight } = tubeLip(wall);
+  const lip = roundedRect(skia, -overhang, -rise, width + overhang * 2, lipHeight, lipHeight / 2);
   const highlightWidth = Math.max(2, innerWidth * 0.12);
   const highlight = roundedRect(
     skia,
