@@ -58,6 +58,7 @@ All configuration comes from environment variables (see `.env.example`). Never c
 | `yarn typecheck`             | `tsc --noEmit` (strict).                                                             |
 | `yarn test` / `yarn test:ci` | Jest with the `jest-expo` preset.                                                    |
 | `yarn format`                | Prettier.                                                                            |
+| `yarn gen:levels`            | Generate and validate levels 1–300 into `src/game/levels.generated.ts` (~15 s).      |
 | `yarn doctor`                | `expo-doctor`.                                                                       |
 | `yarn export:android`        | Export the Android JS bundle (`dist/`, gitignored).                                  |
 | `yarn prebuild:android`      | Regenerate the native `android/` project (gitignored; Continuous Native Generation). |

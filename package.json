@@ -61,6 +61,7 @@
     "test": "jest",
     "test:ci": "jest --ci",
     "format": "prettier --write .",
+    "gen:levels": "tsx scripts/generate-levels.ts",
     "doctor": "npx expo-doctor",
     "export:android": "expo export --platform android",
     "prebuild:android": "expo prebuild --no-install --platform android --clean"
