@@ -74,7 +74,8 @@ export interface CanvasSize {
 export const GLOW_STROKE = 5;
 export const GLOW_BLUR = 6;
 const SEGMENT_STROKE_ALPHA = 0.6;
-const SURFACE_ALPHA = 0.28;
+/** Opacity of the white surface highlight on the top segment. */
+export const SURFACE_ALPHA = 0.28;
 
 export const geometryOf = (layout: BoardLayout, capacity: number): TubeGeometry => ({
   width: layout.tubeWidth,
@@ -268,9 +269,20 @@ const paintAt = (paints: readonly SkPaint[], index: number): SkPaint => {
   return paint;
 };
 
+export interface LiquidOptions {
+  /** Draw the cap when the tube is complete (default true). */
+  readonly cap?: boolean;
+  /** Draw the elliptical highlight on the top surface (default true). */
+  readonly surface?: boolean;
+  /** Segment range to draw, `[from, to)`; defaults to the whole tube. */
+  readonly from?: number;
+  readonly to?: number;
+}
+
 /**
  * Liquid, mystery tiles, symbols and the cap of one tube, recorded once per tube content.
- * Boards share untouched tubes, so a pour re-records only the two tubes it changed.
+ * Boards share untouched tubes, so a pour re-records only the two tubes it changed. The pour
+ * layer records partial variants (no cap, no surface, a single segment) once per pour.
  */
 export const recordLiquid = (
   skia: SkiaApi,
@@ -278,15 +290,20 @@ export const recordLiquid = (
   paths: TubePaths,
   paints: LiquidPaints,
   colorBlind: boolean,
+  options: LiquidOptions = {},
 ): SkPicture =>
   record(skia, paths.bounds, (canvas) => {
     const { width, height, segmentHeight, wall, capacity } = paths.geometry;
+    const from = Math.max(0, options.from ?? 0);
+    const to = Math.min(tube.length, options.to ?? tube.length);
     const innerWidth = width - 2 * wall;
     const centerX = width / 2;
     const markRadius = Math.min(innerWidth, segmentHeight) * 0.28;
     canvas.save();
     canvas.clipPath(paths.interior, ClipOp.Intersect, true);
-    tube.forEach((segment, index) => {
+    for (let index = from; index < to; index += 1) {
+      const segment = tube[index];
+      if (segment === undefined) continue;
       const shape = index === 0 ? paths.bottomSegment : paths.segment;
       const color = liquidColor(segment.color);
       canvas.save();
@@ -309,8 +326,8 @@ export const recordLiquid = (
         );
       }
       canvas.restore();
-    });
-    if (tube.length > 0) {
+    }
+    if ((options.surface ?? true) && to > 0 && to === tube.length) {
       canvas.save();
       canvas.translate(0, height - wall - tube.length * segmentHeight);
       canvas.drawOval(paths.surface, paints.surface);
@@ -318,11 +335,23 @@ export const recordLiquid = (
     }
     canvas.restore();
     const top = tube[tube.length - 1];
-    if (top !== undefined && isComplete(tube, capacity)) {
-      canvas.drawPath(paths.cap, paintAt(paints.caps, liquidColor(top.color).id));
-      canvas.drawPath(paths.capShine, paints.shine);
+    if ((options.cap ?? true) && top !== undefined && isComplete(tube, capacity)) {
+      drawCap(canvas, paths, paints, top.color);
     }
   });
+
+const drawCap = (canvas: SkCanvas, paths: TubePaths, paints: LiquidPaints, color: number) => {
+  canvas.drawPath(paths.cap, paintAt(paints.caps, liquidColor(color).id));
+  canvas.drawPath(paths.capShine, paints.shine);
+};
+
+/** The cap of a completed tube in `color`, alone (tube-local coordinates). */
+export const recordCap = (
+  skia: SkiaApi,
+  paths: TubePaths,
+  paints: LiquidPaints,
+  color: number,
+): SkPicture => record(skia, paths.bounds, (canvas) => drawCap(canvas, paths, paints, color));
 
 /** Background gradient plus the soft shadow under every resting tube. */
 export const recordBackground = (

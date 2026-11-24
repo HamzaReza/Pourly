@@ -24,7 +24,12 @@ export type TapOutcome =
   | { readonly kind: 'none' }
   | { readonly kind: 'select'; readonly index: number }
   | { readonly kind: 'deselect' }
-  | { readonly kind: 'pour'; readonly from: number; readonly to: number };
+  | { readonly kind: 'pour'; readonly from: number; readonly to: number }
+  /**
+   * The selected tube `from` cannot pour into `to`: `from` shakes, then `next` becomes the
+   * selection (`to` when it is selectable) or the selection drops (`next` = -1).
+   */
+  | { readonly kind: 'invalid'; readonly from: number; readonly to: number; readonly next: number };
 
 export const mirrorBoard = (board: Board): BoardMirror => ({
   capacity: board.capacity,
@@ -57,17 +62,21 @@ export const canPourMirror = (mirror: BoardMirror, from: number, to: number): bo
 
 /**
  * What a tap on tube `tapped` (-1 for empty space) does while `selected` (-1 for none) is lifted:
- * - same tube: deselect;
+ * - same tube or empty space: deselect;
  * - valid destination: pour;
- * - otherwise: select the tapped tube if it is selectable, else deselect (or nothing when no tube
- *   was selected).
+ * - any other tube: an invalid move (the selection shakes, then moves to the tapped tube if it is
+ *   selectable, otherwise drops);
+ * - nothing selected: select the tapped tube if it is selectable, otherwise nothing.
  */
 export const resolveTap = (mirror: BoardMirror, selected: number, tapped: number): TapOutcome => {
   'worklet';
-  if (selected >= 0 && tapped === selected) return { kind: 'deselect' };
-  if (selected >= 0 && tapped >= 0 && canPourMirror(mirror, selected, tapped)) {
-    return { kind: 'pour', from: selected, to: tapped };
+  if (selected >= 0) {
+    if (tapped < 0 || tapped === selected) return { kind: 'deselect' };
+    if (canPourMirror(mirror, selected, tapped))
+      return { kind: 'pour', from: selected, to: tapped };
+    const next = isSelectable(mirror, tapped) ? tapped : -1;
+    return { kind: 'invalid', from: selected, to: tapped, next };
   }
   if (tapped >= 0 && isSelectable(mirror, tapped)) return { kind: 'select', index: tapped };
-  return selected >= 0 ? { kind: 'deselect' } : { kind: 'none' };
+  return { kind: 'none' };
 };

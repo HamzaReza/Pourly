@@ -31,10 +31,10 @@ describe('resolveTap', () => {
     expect(resolveTap(mirror, 0, 3)).toEqual({ kind: 'pour', from: 0, to: 3 });
   });
 
-  it('moves the selection on an invalid but selectable tube, otherwise deselects', () => {
-    expect(resolveTap(mirror, 0, 5)).toEqual({ kind: 'select', index: 5 });
-    expect(resolveTap(mirror, 0, 4)).toEqual({ kind: 'select', index: 4 });
-    expect(resolveTap(mirror, 0, 1)).toEqual({ kind: 'deselect' });
+  it('turns a tap on a tube the selection cannot pour into into an invalid move', () => {
+    expect(resolveTap(mirror, 0, 5)).toEqual({ kind: 'invalid', from: 0, to: 5, next: 5 });
+    expect(resolveTap(mirror, 0, 4)).toEqual({ kind: 'invalid', from: 0, to: 4, next: 4 });
+    expect(resolveTap(mirror, 0, 1)).toEqual({ kind: 'invalid', from: 0, to: 1, next: -1 });
   });
 });
 
