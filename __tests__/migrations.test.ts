@@ -75,12 +75,16 @@ describe('migrateProgress', () => {
   });
 
   it('always owns the classic theme and falls back when the active theme is not owned', () => {
-    const result = migrateProgress({ ownedThemes: ['mint', 'mint'], activeTheme: 'neon' }, 1, NOW);
-    expect(result.ownedThemes).toEqual(['classic', 'mint']);
-    expect(result.activeTheme).toBe('classic');
-    expect(migrateProgress({ ownedThemes: ['mint'], activeTheme: 'mint' }, 1, NOW).activeTheme).toBe(
-      'mint',
+    const result = migrateProgress(
+      { ownedThemes: ['forest', 'forest'], activeTheme: 'neon' },
+      1,
+      NOW,
     );
+    expect(result.ownedThemes).toEqual(['classic', 'forest']);
+    expect(result.activeTheme).toBe('classic');
+    expect(
+      migrateProgress({ ownedThemes: ['forest'], activeTheme: 'forest' }, 1, NOW).activeTheme,
+    ).toBe('forest');
   });
 
   it('sanitizes last synced balances', () => {

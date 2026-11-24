@@ -29,7 +29,7 @@ export const ECONOMY = {
   freeCoinsAdCooldownSec: 300,
   freeCoinsAdDailyMax: 5,
   doubleCoinsOnWin: true,
-  themePrices: { midnight: 300, sunset: 400, mint: 500, candy: 700, neon: 1000 },
+  themePrices: { ember: 300, sunset: 400, forest: 500, candy: 700, neon: 1000 },
 } as const;
 
 export type Economy = typeof ECONOMY;
