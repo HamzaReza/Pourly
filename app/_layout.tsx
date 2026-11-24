@@ -7,6 +7,7 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import { initI18n } from '@/i18n';
+import { initAudio, shutdownAudio } from '@/services/audio';
 import { waitForStoresHydrated } from '@/state/hydration';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
@@ -40,6 +41,11 @@ export default function RootLayout() {
   useEffect(() => {
     if (ready) SplashScreen.hide();
   }, [ready]);
+
+  useEffect(() => {
+    initAudio().catch((error: unknown) => logger.error('Audio setup failed', error));
+    return shutdownAudio;
+  }, []);
 
   useEffect(() => {
     if (!ready) return;
