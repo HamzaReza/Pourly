@@ -16,22 +16,28 @@ import {
   type CostDecision,
   type PowerUp,
 } from '@/game/economy';
+import { dailyDateOf, dailyLevelId } from '@/game/daily';
 import { computeStars } from '@/game/stars';
 import { TUTORIAL_LAST_LEVEL } from '@/game/tutorial';
 import type { Board, Level, Move, PourOutcome } from '@/game/types';
 import { ads } from '@/services/ads';
 import { track, type PaymentSource } from '@/services/analytics';
+import { localDateString } from '@/utils/date';
 
+import { prepareDaily, readyDaily } from './dailyLoader';
 import {
   elapsedOf,
   flushGameSnapshot,
   isActive,
+  isDailyResumable,
   isResumable,
   useGameStore,
+  type DailyWinInfo,
   type GameMode,
   type GameSession,
 } from './gameStore';
 import { levelNow, prepareLevel, readyLevel } from './levelLoader';
+import type { StarCount } from './progressModel';
 import { useProgressStore } from './progressStore';
 
 export const PLACEMENT_FOR: Readonly<Record<PowerUp, RewardedPlacement>> = {
@@ -70,6 +76,7 @@ export const startLevel = (level: Level, mode: GameMode, now: number = Date.now(
  */
 export const ensureLevelSession = (now: number = Date.now()): Promise<void> | null => {
   const target = progress().level;
+  game().switchTo('level', now);
   if (isResumable(game().session, target)) {
     game().resume(now);
     track('level_start', { level: target, mode: 'level', resumed: true });
@@ -87,19 +94,85 @@ export const ensureLevelSession = (now: number = Date.now()): Promise<void> | nu
   });
 };
 
+/** The player's local calendar date now (`YYYY-MM-DD`). */
+export const localToday = (now: number = Date.now()): string => localDateString(new Date(now));
+
+/** Starts the daily board fresh and reports `level_start` and `daily_started`. */
+const startDaily = (level: Level, date: string, now: number): void => {
+  startLevel(level, 'daily', now);
+  track('daily_started', { date });
+};
+
+/**
+ * Makes sure a session for the daily of `today` exists: resumes today's unfinished one (from
+ * either slot) or starts the board, which is generated in idle slices when it is not ready yet.
+ * A level in progress is parked, never discarded. `isWanted` lets the caller drop a late result
+ * (the player left before the board was ready).
+ */
+export const ensureDailySession = (
+  today: string,
+  now: number = Date.now(),
+  isWanted: () => boolean = () => true,
+): Promise<void> | null => {
+  const id = dailyLevelId(today);
+  game().switchTo('daily', now);
+  if (isDailyResumable(game().session, id)) {
+    game().resume(now);
+    track('level_start', { level: 0, mode: 'daily', resumed: true });
+    return null;
+  }
+  const ready = readyDaily(today);
+  if (ready !== null) {
+    startDaily(ready, today, now);
+    return null;
+  }
+  return prepareDaily(today).then((level) => {
+    if (isWanted() && !isDailyResumable(game().session, id)) startDaily(level, today, Date.now());
+  });
+};
+
+/** Daily reward, history and streak for a solved daily board (granted once per day). */
+const finishDaily = (
+  session: GameSession,
+  stars: StarCount,
+  now: number,
+): { coins: number; daily: DailyWinInfo } => {
+  const date = dailyDateOf(session.levelId);
+  if (date === null) return { coins: 0, daily: { streak: progress().streak, rewarded: false } };
+  const result = progress().completeDaily({
+    date,
+    today: localToday(now),
+    now,
+    stars,
+    moves: session.moves,
+  });
+  track('daily_completed', { date, stars, moves: session.moves });
+  if (result.outcome === 'consecutive' || result.outcome === 'freeze') {
+    track('streak_extended', { streak: result.streak });
+  }
+  return { coins: result.coins, daily: { streak: result.streak, rewarded: result.coins > 0 } };
+};
+
 const finishWin = (session: GameSession, now: number): void => {
   const stars = computeStars(session.moves, session.par);
   const owner = progress();
-  const coins =
-    session.mode === 'level'
-      ? winReward({ stars, hard: session.hard, isVip: owner.entitlements.vip, doubled: false })
-      : 0;
+  let coins = 0;
+  let daily: DailyWinInfo | undefined;
   if (session.mode === 'level') {
+    coins = winReward({ stars, hard: session.hard, isVip: owner.entitlements.vip, doubled: false });
     owner.completeLevel({ level: session.levelNumber, stars, coins }, now);
     if (session.levelNumber >= TUTORIAL_LAST_LEVEL) owner.markTutorialDone(now);
     void prepareLevel(session.levelNumber + 1);
+  } else {
+    ({ coins, daily } = finishDaily(session, stars, now));
   }
-  game().markWon({ stars, coins, skipped: false, doubled: false });
+  game().markWon({
+    stars,
+    coins,
+    skipped: false,
+    doubled: false,
+    ...(daily === undefined ? {} : { daily }),
+  });
   track('level_complete', {
     level: session.levelNumber,
     mode: session.mode,
@@ -279,6 +352,7 @@ export const restartLevel = (now: number = Date.now()): boolean => {
 /** SKIP_LEVEL is offered when stuck, after 3 restarts, or after 2 minutes on the level. */
 export const isSkipOffered = (session: GameSession | null, now: number): boolean =>
   session !== null &&
+  session.mode === 'level' &&
   session.status !== 'won' &&
   canSkip({
     stuck: session.status === 'stuck' || session.pausedFrom === 'stuck',
@@ -286,10 +360,13 @@ export const isSkipOffered = (session: GameSession | null, now: number): boolean
     elapsedMs: elapsedOf(session, now),
   });
 
-/** Watches the SKIP_LEVEL ad; on `earned` the level counts as done with 1★ and no coins. */
+/**
+ * Watches the SKIP_LEVEL ad; on `earned` the level counts as done with 1★ and no coins. Daily
+ * boards cannot be skipped (a skip would buy the day's streak and reward).
+ */
 export const skipWithAd = async (): Promise<boolean> => {
   const before = game().session;
-  if (before === null || before.status === 'won') return false;
+  if (before === null || before.status === 'won' || before.mode === 'daily') return false;
   const result = await ads.showRewarded(REWARDED_PLACEMENTS.SKIP_LEVEL);
   if (result !== 'earned') return false;
   const now = Date.now();
@@ -330,7 +407,8 @@ export const doubleWinCoins = async (): Promise<boolean> => {
 /**
  * Next on the win (or skip) screen: loads the player's next level, which was prepared during the
  * win animation. Phase 7 extends this function with the interstitial check (`adScheduler`) before
- * the level loads; it is the only place an interstitial may appear (spec §9, §13).
+ * the level loads; it is the only place an interstitial may appear (spec §9, §13). Level mode
+ * only: the daily win overlay has no Next, so interstitials never follow a daily board.
  */
 export const onNextPressed = (now: number = Date.now()): void => {
   startLevel(levelNow(progress().level), 'level', now);

@@ -9,7 +9,8 @@ let autoStart = false;
 
 /** Decides whether Home should hand over to the game immediately. Call after hydration. */
 export const decideAutoStart = (): void => {
-  autoStart = useProgressStore.getState().level === 1 && useGameStore.getState().session === null;
+  const { session, parked } = useGameStore.getState();
+  autoStart = useProgressStore.getState().level === 1 && session === null && parked === null;
 };
 
 /** True until consumed: Home redirects to the game once per app start. */

@@ -13,8 +13,10 @@ import type { Level, Move, PourOutcome } from '@/game/types';
 
 import { createDebouncedStorage } from './debouncedStorage';
 import {
+  activateSession,
   createSession,
-  encodeSession,
+  encodeSlots,
+  isDailyResumable,
   isResumable,
   migrateGamePersisted,
   reduceAddTube,
@@ -26,8 +28,9 @@ import {
   reduceResume,
   reduceSkip,
   reduceUndo,
-  restoreSession,
+  restoreSlots,
   SNAPSHOT_VERSION,
+  switchSessionMode,
   type GameMode,
   type GameSession,
   type LevelResult,
@@ -40,14 +43,25 @@ export * from './gameModel';
 export const SNAPSHOT_DEBOUNCE_MS = 600;
 
 export interface GameState {
+  /** The session the game screen plays. */
   session: GameSession | null;
+  /**
+   * An unfinished session of the other mode, kept (clock stopped) while the player is in this one,
+   * so a daily game never discards a level in progress and vice versa.
+   */
+  parked: GameSession | null;
   /** Suggested move shown on the board; cleared by the next pour, undo or restart. */
   hint: Move | null;
 }
 
 export interface GameActions {
-  /** Starts `level` fresh (replacing any session). */
+  /**
+   * Starts `level` fresh. An unfinished session of the other mode is parked; one of the same mode
+   * is replaced.
+   */
   loadLevel: (level: Level, mode: GameMode, now?: number) => void;
+  /** Makes the parked session of `mode` active (parking the current one); false when none. */
+  switchTo: (mode: GameMode, now?: number) => boolean;
   /** Commits a pour; returns the outcome, or null when it is not legal on the live board. */
   commitPour: (from: number, to: number, now?: number) => PourOutcome | null;
   /** Takes back the last pour; `paid` when it cost inventory, coins or an ad. */
@@ -65,8 +79,13 @@ export interface GameActions {
   pause: (now?: number) => void;
   /** Leaves the pause, or starts the clock of a restored session. */
   resume: (now?: number) => void;
-  /** Drops a level-mode session that does not belong to `progressLevel`. */
-  discardStale: (progressLevel: number) => void;
+  /**
+   * Drops a level-mode session that does not belong to `progressLevel` and, when `dailyId` is
+   * given, a daily session for another day.
+   */
+  discardStale: (progressLevel: number, dailyId?: string) => void;
+  /** Forgets both slots (reset progress). */
+  clearAll: () => void;
 }
 
 export type GameStore = GameState & GameActions;
@@ -93,9 +112,18 @@ export const useGameStore = create<GameStore>()(
       };
       return {
         session: null,
+        parked: null,
         hint: null,
         loadLevel: (level, mode, now = Date.now()) =>
-          set({ session: createSession(level, mode, now), hint: null }),
+          set({ ...activateSession(get(), createSession(level, mode, now), now), hint: null }),
+        switchTo: (mode, now = Date.now()) => {
+          const state = get();
+          if (state.session?.mode === mode) return true;
+          const next = switchSessionMode(state, mode, now);
+          if (next.session === state.session) return false;
+          set({ ...next, hint: null });
+          return true;
+        },
         commitPour: (from, to, now = Date.now()) => {
           const { session } = get();
           if (session === null) return null;
@@ -132,20 +160,32 @@ export const useGameStore = create<GameStore>()(
               : next;
           });
         },
-        discardStale: (progressLevel) => {
-          const { session } = get();
-          if (session === null || session.mode !== 'level') return;
-          if (!isResumable(session, progressLevel)) set({ session: null, hint: null });
+        discardStale: (progressLevel, dailyId) => {
+          const stale = (slot: GameSession | null): boolean => {
+            if (slot === null) return false;
+            if (slot.mode === 'level') return !isResumable(slot, progressLevel);
+            return dailyId !== undefined && !isDailyResumable(slot, dailyId);
+          };
+          const { session, parked } = get();
+          const dropSession = stale(session);
+          const dropParked = stale(parked);
+          if (!dropSession && !dropParked) return;
+          set({
+            session: dropSession ? null : session,
+            parked: dropParked ? null : parked,
+            ...(dropSession ? { hint: null } : {}),
+          });
         },
+        clearAll: () => set({ session: null, parked: null, hint: null }),
       };
     },
     {
       name: STORAGE_KEYS.game,
       version: SNAPSHOT_VERSION,
       storage: createJSONStorage<PersistedGame>(() => snapshotStorage),
-      partialize: (state) => ({ snapshot: encodeSession(state.session, Date.now()) }),
+      partialize: (state) => encodeSlots(state, Date.now()),
       migrate: (persisted, version) => migrateGamePersisted(persisted, version),
-      merge: (persisted, current) => ({ ...current, session: restoreSession(persisted) }),
+      merge: (persisted, current) => ({ ...current, ...restoreSlots(persisted) }),
     },
   ),
 );
@@ -155,3 +195,15 @@ export const selectBoard = (state: GameStore) => state.session?.history.current 
 export const selectStatus = (state: GameStore) => state.session?.status ?? null;
 export const selectCanUndo = (state: GameStore) =>
   state.session !== null && state.session.history.past.length > 0;
+
+/** The level-mode session, active or parked. */
+export const selectLevelSlot = (state: GameState): GameSession | null => {
+  if (state.session?.mode === 'level') return state.session;
+  return state.parked?.mode === 'level' ? state.parked : null;
+};
+
+/** The daily session, active or parked. */
+export const selectDailySlot = (state: GameState): GameSession | null => {
+  if (state.session?.mode === 'daily') return state.session;
+  return state.parked?.mode === 'daily' ? state.parked : null;
+};

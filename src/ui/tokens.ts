@@ -63,6 +63,8 @@ export const colors = {
   /** Earned and missing stars. */
   star: '#FFD60A',
   starEmpty: 'rgba(255, 255, 255, 0.22)',
+  /** Streak flame (icon only, never text). */
+  flame: '#FF7A1A',
   /** Count badge on action buttons. */
   badge: '#C81E3A',
   onBadge: '#FFFFFF',

@@ -3,12 +3,15 @@ import { memo, useEffect, useState } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
+import { dailyDateOf } from '@/game/daily';
 import { canSkip, msUntilTimedSkip } from '@/game/economy';
+import { formatDate } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import { useGameStore } from '@/state/gameStore';
 import { CoinBadge } from '@/ui/CoinBadge';
 import { IconButton } from '@/ui/IconButton';
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import { parseLocalDate } from '@/utils/date';
 
 import { Crown } from './Crown';
 
@@ -22,7 +25,10 @@ export interface GameHudProps {
   skipDisabled: boolean;
 }
 
-/** Top bar: pause, "Level N" (crown on hard levels), the skip chip when offered, coins. */
+/**
+ * Top bar: pause, "Level N" (crown on hard levels) or "Daily · date", the skip chip when offered
+ * (level mode only), coins.
+ */
 const GameHudComponent = ({
   ui,
   onPause,
@@ -33,7 +39,19 @@ const GameHudComponent = ({
   const { t } = useTranslation();
   const levelNumber = useGameStore((state) => state.session?.levelNumber ?? 0);
   const hard = useGameStore((state) => state.session?.hard ?? false);
-  const title = t('game.title', { n: levelNumber });
+  const dailyDate = useGameStore((state) =>
+    state.session?.mode === 'daily' ? dailyDateOf(state.session.levelId) : null,
+  );
+  const day = dailyDate === null ? null : parseLocalDate(dailyDate);
+  const dayLabel = day === null ? '' : formatDate(day, { month: 'short', day: 'numeric' });
+  const title =
+    day === null ? t('game.title', { n: levelNumber }) : t('game.dailyTitle', { date: dayLabel });
+  const titleA11y =
+    day !== null
+      ? t('game.dailyTitleA11y', { date: formatDate(day, { month: 'long', day: 'numeric' }) })
+      : hard
+        ? t('game.hardTitleA11y', { n: levelNumber })
+        : title;
 
   return (
     <View style={styles.bar} pointerEvents="box-none">
@@ -45,14 +63,14 @@ const GameHudComponent = ({
       />
       <Pressable
         accessibilityRole="header"
-        accessibilityLabel={hard ? t('game.hardTitleA11y', { n: levelNumber }) : title}
+        accessibilityLabel={titleA11y}
         onLongPress={onTitleLongPress}
         style={styles.title}
       >
-        {hard ? <Crown /> : null}
+        {hard && day === null ? <Crown /> : null}
         <Text style={[styles.titleText, { color: ui.text }]}>{title}</Text>
       </Pressable>
-      <SkipChip ui={ui} onSkip={onSkip} disabled={skipDisabled} />
+      {day === null ? <SkipChip ui={ui} onSkip={onSkip} disabled={skipDisabled} /> : null}
       <CoinBadge source="game" />
     </View>
   );

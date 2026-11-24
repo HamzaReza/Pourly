@@ -34,6 +34,14 @@ export interface LevelResult {
   readonly skipped: boolean;
   /** The DOUBLE_COINS ad was watched. */
   readonly doubled: boolean;
+  /** Daily mode only: the streak after this win and whether the day's reward was granted. */
+  readonly daily?: DailyWinInfo;
+}
+
+export interface DailyWinInfo {
+  readonly streak: number;
+  /** False on a same-day replay (or a stale board / clock rollback): nothing was granted. */
+  readonly rewarded: boolean;
 }
 
 export interface GameSession {
@@ -216,6 +224,16 @@ export const reduceSkip = (session: GameSession, now: number): GameSession | nul
     result: { stars: 1, coins: 0, skipped: true, doubled: false },
   };
 };
+
+/** True when the session is an unfinished daily game for the board of `localDate`. */
+export const isDailyResumable = (
+  session: GameSession | null,
+  dailyId: string,
+): session is GameSession =>
+  session !== null &&
+  session.mode === 'daily' &&
+  session.status !== 'won' &&
+  session.levelId === dailyId;
 
 /** True when the session is an unfinished level-mode game for `progressLevel`. */
 export const isResumable = (
@@ -421,10 +439,63 @@ export const decodeSession = (value: unknown): GameSession | null => {
   };
 };
 
-/** What the game store persists under its own key. */
+/**
+ * What the game store persists under its own key: the active session and, when the player left an
+ * unfinished game of the other mode (level vs daily), that one too. `parked` is optional so
+ * version-1 data without it still loads.
+ */
 export interface PersistedGame {
   readonly snapshot: WireSession | null;
+  readonly parked?: WireSession | null;
 }
+
+/** The slot pair the store keeps: one unfinished session per mode at most. */
+export interface SessionSlots {
+  readonly session: GameSession | null;
+  readonly parked: GameSession | null;
+}
+
+/** Unfinished sessions are worth keeping when another mode takes over. */
+const keepable = (session: GameSession | null): GameSession | null =>
+  session !== null && session.status !== 'won' ? session : null;
+
+/** Parks a session with its clock stopped (it resumes into the pause overlay). */
+const park = (session: GameSession | null, now: number): GameSession | null => {
+  const kept = keepable(session);
+  return kept === null ? null : reducePause(kept, now);
+};
+
+/**
+ * Makes `next` the active session. The previous active session is parked when it is an unfinished
+ * game of the other mode; a parked session of the same mode as `next` is replaced.
+ */
+export const activateSession = (
+  slots: SessionSlots,
+  next: GameSession,
+  now: number,
+): SessionSlots => {
+  const current = slots.session;
+  if (current !== null && current.mode !== next.mode) {
+    return { session: next, parked: park(current, now) };
+  }
+  const parked = slots.parked !== null && slots.parked.mode !== next.mode ? slots.parked : null;
+  return { session: next, parked };
+};
+
+/**
+ * Brings the parked session of `mode` back to the active slot, parking the current one if it is
+ * unfinished. Returns the slots unchanged when the active session already has that mode or no
+ * session of that mode is parked.
+ */
+export const switchSessionMode = (
+  slots: SessionSlots,
+  mode: GameMode,
+  now: number,
+): SessionSlots => {
+  if (slots.session?.mode === mode) return slots;
+  if (slots.parked === null || slots.parked.mode !== mode) return slots;
+  return { session: slots.parked, parked: park(slots.session, now) };
+};
 
 type SnapshotStep = (state: UnknownRecord) => UnknownRecord;
 
@@ -446,10 +517,27 @@ export const migrateGamePersisted = (persisted: unknown, fromVersion: number): P
     if (step === undefined) return { snapshot: null };
     state = step(state);
   }
-  const session = decodeSession(state.snapshot);
-  return { snapshot: session === null ? null : encodeSession(session, 0) };
+  const slots = restoreSlots(state);
+  return encodeSlots(slots, 0);
 };
 
 /** Restores the session from persisted data, validating every field. */
 export const restoreSession = (persisted: unknown): GameSession | null =>
   isRecord(persisted) ? decodeSession(persisted.snapshot) : null;
+
+/** Restores both slots; a parked session must be of the other mode than the active one. */
+export const restoreSlots = (persisted: unknown): SessionSlots => {
+  const session = restoreSession(persisted);
+  const parked = isRecord(persisted) ? decodeSession(persisted.parked) : null;
+  return {
+    session,
+    parked: parked !== null && parked.mode !== session?.mode ? parked : null,
+  };
+};
+
+/** The persisted form of both slots (`parked` only when there is one). */
+export const encodeSlots = (slots: SessionSlots, now: number): PersistedGame => {
+  const snapshot = encodeSession(slots.session, now);
+  const parked = encodeSession(slots.parked, now);
+  return parked === null ? { snapshot } : { snapshot, parked };
+};

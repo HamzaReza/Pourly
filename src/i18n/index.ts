@@ -1,5 +1,6 @@
 import { getLocales } from 'expo-localization';
 import { createInstance, type i18n as I18n } from 'i18next';
+import { I18nManager } from 'react-native';
 import { initReactI18next } from 'react-i18next';
 
 import {
@@ -62,6 +63,20 @@ const readDeviceLocales = (): DeviceLocale[] => {
 
 export const isRtlLanguage = (language: string): boolean =>
   RTL_LANGUAGES.includes(language.toLowerCase().split('-')[0] ?? '');
+
+/**
+ * Makes the native layout direction match `language` (RTL for Arabic). React Native only applies
+ * `forceRTL` after the app restarts, so this returns true when a restart is needed; until then the
+ * UI stays correct because every style uses logical start/end edges. LTR languages also turn
+ * `allowRTL` off, so an RTL device locale cannot mirror an English UI.
+ */
+export const syncLayoutDirection = (language: string): boolean => {
+  const rtl = isRtlLanguage(language);
+  if (I18nManager.isRTL === rtl) return false;
+  I18nManager.allowRTL(rtl);
+  I18nManager.forceRTL(rtl);
+  return true;
+};
 
 /**
  * Initializes i18next once, or switches language on later calls. Safe to call on every

@@ -1,10 +1,11 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
 import { ECONOMY } from '@/config/economy';
+import { formatNumber } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import type { LevelResult } from '@/state/gameStore';
 import { AnimatedCount } from '@/ui/AnimatedCount';
@@ -29,7 +30,8 @@ export interface WinOverlayProps {
 
 /**
  * Win card: stars pop in one after another, the coin reward counts up (UI thread), then Next
- * (primary), Double coins ▶ (DOUBLE_COINS rewarded ad) and Home.
+ * (primary), Double coins ▶ (DOUBLE_COINS rewarded ad) and Home. A daily win shows "Daily
+ * complete", the streak flame and Home as the primary action (no Next, so no interstitial).
  */
 const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverlayProps) => {
   const { t } = useTranslation();
@@ -37,6 +39,7 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
   const [busy, setBusy] = useState(false);
   const coins = result.doubled ? result.coins * 2 : result.coins;
   const canDouble = ECONOMY.doubleCoinsOnWin && !result.doubled && result.coins > 0;
+  const daily = result.daily;
 
   const double = (): void => {
     setBusy(true);
@@ -44,7 +47,7 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
   };
 
   return (
-    <Overlay title={t('win.title')} testID="win-overlay">
+    <Overlay title={t(daily === undefined ? 'win.title' : 'win.dailyTitle')} testID="win-overlay">
       <View
         accessible
         accessibilityRole="image"
@@ -71,29 +74,52 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
           );
         })}
       </View>
-      <View
-        accessible
-        accessibilityLabel={t('win.coinsA11y', { count: coins })}
-        style={styles.coins}
-      >
-        <CoinGlyph size={24} />
-        <AnimatedCount
-          value={coins}
-          from={0}
-          prefix="+"
-          duration={COIN_COUNT_MS}
-          reducedMotion={reducedMotion}
-          style={[styles.coinText, { color: ui.text }]}
+      {daily !== undefined ? (
+        <View accessible style={styles.coins}>
+          <Ionicons name="flame" size={28} color={colors.flame} />
+          <Text style={[styles.streakText, { color: ui.text }]}>
+            {t('win.streak', { count: daily.streak, value: formatNumber(daily.streak) })}
+          </Text>
+        </View>
+      ) : null}
+      {coins > 0 ? (
+        <View
+          accessible
+          accessibilityLabel={t('win.coinsA11y', { count: coins })}
+          style={styles.coins}
+        >
+          <CoinGlyph size={24} />
+          <AnimatedCount
+            value={coins}
+            from={0}
+            prefix="+"
+            duration={COIN_COUNT_MS}
+            reducedMotion={reducedMotion}
+            style={[styles.coinText, { color: ui.text }]}
+          />
+        </View>
+      ) : null}
+      {daily !== undefined && !daily.rewarded ? (
+        <Text style={[styles.note, { color: ui.textMuted }]}>{t('win.dailyReplay')}</Text>
+      ) : null}
+      {daily === undefined ? (
+        <Button
+          variant="primary"
+          label={t('win.next')}
+          accessibilityLabel={t('win.nextA11y')}
+          onPress={onNext}
+          ui={ui}
+          testID="win-next"
         />
-      </View>
-      <Button
-        variant="primary"
-        label={t('win.next')}
-        accessibilityLabel={t('win.nextA11y')}
-        onPress={onNext}
-        ui={ui}
-        testID="win-next"
-      />
+      ) : (
+        <Button
+          variant="primary"
+          label={t('win.home')}
+          onPress={onHome}
+          ui={ui}
+          testID="win-home"
+        />
+      )}
       {canDouble ? (
         <Button
           label={t('win.double')}
@@ -104,7 +130,7 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
           ui={ui}
         />
       ) : null}
-      <Button label={t('win.home')} onPress={onHome} ui={ui} />
+      {daily === undefined ? <Button label={t('win.home')} onPress={onHome} ui={ui} /> : null}
     </Overlay>
   );
 };
@@ -128,5 +154,13 @@ const styles = StyleSheet.create({
     minWidth: 56,
     fontSize: fontSizes.heading,
     fontWeight: fontWeights.heavy,
+  },
+  streakText: {
+    fontSize: fontSizes.title,
+    fontWeight: fontWeights.bold,
+  },
+  note: {
+    fontSize: fontSizes.body,
+    textAlign: 'center',
   },
 });

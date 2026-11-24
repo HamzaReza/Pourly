@@ -1,4 +1,4 @@
-import { router, useFocusEffect } from 'expo-router';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import {
   memo,
@@ -15,6 +15,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import type { RewardBundle } from '@/config/economy';
+import { dailyLevelId } from '@/game/daily';
 import type { PowerUp } from '@/game/economy';
 import { isTutorialLevel } from '@/game/tutorial';
 import type { Board, Move } from '@/game/types';
@@ -31,7 +32,9 @@ import {
   buyPowerUpWithAd,
   commitPlayerPour,
   doubleWinCoins,
+  ensureDailySession,
   ensureLevelSession,
+  localToday,
   onNextPressed,
   restartLevel,
   restartNeedsConfirm,
@@ -40,11 +43,13 @@ import {
 } from '@/state/gameFlow';
 import {
   isActive,
+  isDailyResumable,
   isResumable,
   selectBoard,
   selectCanUndo,
   selectStatus,
   useGameStore,
+  type GameMode,
 } from '@/state/gameStore';
 import { useProgressStore } from '@/state/progressStore';
 import { ActionBar } from '@/ui/game/ActionBar';
@@ -220,8 +225,16 @@ const BoardLayerComponent = ({
 
 const BoardLayer = memo(BoardLayerComponent);
 
+/** `/game?mode=daily` plays today's daily challenge; anything else plays the player's level. */
+const routeModeOf = (mode: string | string[] | undefined): GameMode =>
+  mode === 'daily' ? 'daily' : 'level';
+
 export default function GameScreen() {
   const { t } = useTranslation();
+  const params = useLocalSearchParams<{ mode?: string }>();
+  const [routeMode] = useState(() => routeModeOf(params.mode));
+  const [today] = useState(() => localToday());
+  const mounted = useRef(true);
   const theme = useActiveTheme();
   const ui = theme.ui;
   const insets = useSafeAreaInsets();
@@ -235,8 +248,11 @@ export default function GameScreen() {
 
   /** The session found at mount; shown only if it is still resumable (else a new one replaces it). */
   const [mountSession] = useState(() => game().session);
-  const [mountLevel] = useState(() => useProgressStore.getState().level);
-  const mountUsable = isResumable(mountSession, mountLevel);
+  const [mountUsable] = useState(() =>
+    routeMode === 'daily'
+      ? isDailyResumable(mountSession, dailyLevelId(today))
+      : isResumable(mountSession, useProgressStore.getState().level),
+  );
 
   const [modal, setModal] = useState<ModalState>(null);
   const [busy, setBusy] = useState(false);
@@ -246,7 +262,10 @@ export default function GameScreen() {
   );
 
   const ready = useGameStore(
-    (state) => state.session !== null && (state.session !== mountSession || mountUsable),
+    (state) =>
+      state.session !== null &&
+      state.session.mode === routeMode &&
+      (state.session !== mountSession || mountUsable),
   );
   const levelId = useGameStore((state) => state.session?.levelId ?? null);
   const levelNumber = useGameStore((state) => state.session?.levelNumber ?? 0);
@@ -259,8 +278,13 @@ export default function GameScreen() {
   const tutorialDone = useProgressStore((state) => state.tutorialDone);
 
   useLayoutEffect(() => {
-    ensureLevelSession();
-  }, []);
+    mounted.current = true;
+    if (routeMode === 'daily') ensureDailySession(today, Date.now(), () => mounted.current);
+    else ensureLevelSession();
+    return () => {
+      mounted.current = false;
+    };
+  }, [routeMode, today]);
 
   useEffect(
     () =>
@@ -513,7 +537,7 @@ export default function GameScreen() {
           onUndo={onUndo}
           onAddTube={onAddTube}
           onRestart={onRestart}
-          onSkip={onSkip}
+          onSkip={mode === 'level' ? onSkip : undefined}
           onClose={dismissStuck}
         />
       ) : null}

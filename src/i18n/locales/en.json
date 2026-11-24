@@ -1,4 +1,7 @@
 {
+  "meta": {
+    "nativeName": "English"
+  },
   "app": {
     "name": "Pourly"
   },
@@ -7,17 +10,58 @@
     "cancel": "Cancel",
     "close": "Close",
     "back": "Back",
-    "continue": "Continue"
+    "continue": "Continue",
+    "on": "On",
+    "off": "Off",
+    "notNow": "Not now"
   },
   "home": {
     "play": "Level {{n}}",
     "playA11y": "Play level {{n}}",
     "resume": "Resume level {{n}}",
     "resumeA11y": "Resume level {{n}} where you left off",
-    "daily": "Daily",
     "shop": "Shop",
     "themes": "Themes",
-    "settings": "Settings"
+    "settings": "Settings",
+    "playHardA11y": "Play level {{n}}, hard level"
+  },
+  "dailyCard": {
+    "title": "Daily Challenge",
+    "streak_one": "{{value}} day streak",
+    "streak_other": "{{value}} day streak",
+    "noStreak": "Start a streak today",
+    "openA11y": "Daily challenge. {{streak}}. Open the calendar",
+    "play": "Play",
+    "playA11y": "Play today's daily challenge",
+    "done": "Done ✓",
+    "doneA11y": "Today's daily challenge is done. Open the calendar"
+  },
+  "gift": {
+    "button": "Gift",
+    "readyA11y": "Claim your daily gift",
+    "waitA11y": "Daily gift claimed. The next one is ready tomorrow",
+    "title": "Daily gift",
+    "day": "Day {{day}} of 7",
+    "chest": "Day 7 chest!",
+    "double": "Double it",
+    "doubleA11y": "Double this gift by watching an ad",
+    "doubled": "Gift doubled!",
+    "comeBack": "Your next gift is ready tomorrow"
+  },
+  "vipBonus": {
+    "button": "VIP bonus",
+    "a11y": "Claim your VIP daily bonus",
+    "title": "VIP daily bonus",
+    "message": "Thanks for being a VIP!"
+  },
+  "starterPack": {
+    "title": "Starter Pack",
+    "subtitle": "Coins, hints, undos and the Aurora theme",
+    "endsIn": "Ends in {{time}}",
+    "endsInA11y": "Starter Pack offer. Ends in {{hours}} h {{minutes}} min",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "View",
+    "viewA11y": "View the Starter Pack in the shop"
   },
   "game": {
     "title": "Level {{n}}",
@@ -36,7 +80,9 @@
     "costOwned": "{{count}} left",
     "costCoins": "{{count}} coins",
     "costAd": "watch an ad",
-    "costUsed": "already used"
+    "costUsed": "already used",
+    "dailyTitle": "Daily · {{date}}",
+    "dailyTitleA11y": "Daily challenge, {{date}}"
   },
   "coins": {
     "badgeA11y": "{{count}} coins. Open the shop"
@@ -62,11 +108,16 @@
     "nextA11y": "Play the next level",
     "double": "Double coins",
     "doubleA11y": "Double your coins by watching an ad",
-    "home": "Home"
+    "home": "Home",
+    "dailyTitle": "Daily complete!",
+    "streak_one": "{{value}} day streak",
+    "streak_other": "{{value}} day streak",
+    "dailyReplay": "Already done today. Replays are just for fun."
   },
   "stuck": {
     "title": "No moves left",
     "message": "Undo a move, add a tube, restart, or skip this level.",
+    "messageNoSkip": "Undo a move, add a tube or restart.",
     "undo": "Undo",
     "addTube": "+Tube",
     "restart": "Restart",
@@ -112,15 +163,102 @@
     "mockCloseEarly": "Close ad without the reward"
   },
   "daily": {
-    "title": "Daily Challenge"
+    "title": "Daily Challenge",
+    "prevMonth": "Previous month",
+    "nextMonth": "Next month",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}, completed",
+    "todayA11y": "{{date}}, today",
+    "todayDoneA11y": "{{date}}, today, completed",
+    "currentStreak": "Current streak",
+    "bestStreak": "Longest streak",
+    "days_one": "{{value}} day",
+    "days_other": "{{value}} days",
+    "streakA11y_one": "{{label}}: {{value}} day",
+    "streakA11y_other": "{{label}}: {{value}} days",
+    "play": "Play today's challenge",
+    "done": "Done ✓",
+    "doneMessage": "Today's challenge is complete. Come back tomorrow!",
+    "playAgain": "Play again",
+    "playAgainA11y": "Replay today's challenge for fun (no reward)",
+    "chestTitle": "Day-7 chest",
+    "chestProgress": "{{day}} of 7 gifts claimed",
+    "chestA11y": "Daily gift progress: {{day}} of 7 claimed. Day 7 is the chest"
   },
   "shop": {
     "title": "Shop"
   },
   "themes": {
-    "title": "Themes"
+    "title": "Themes",
+    "names": {
+      "classic": "Classic",
+      "ember": "Ember",
+      "sunset": "Sunset",
+      "forest": "Forest",
+      "candy": "Candy",
+      "neon": "Neon",
+      "aurora": "Aurora",
+      "gold": "Gold"
+    },
+    "inUse": "In use",
+    "inUseA11y": "{{name}} theme, in use",
+    "apply": "Apply",
+    "applyA11y": "Apply the {{name}} theme",
+    "unlockA11y": "Unlock the {{name}} theme for {{price}} coins",
+    "starterPack": "Starter Pack",
+    "starterPackA11y": "{{name}} comes with the Starter Pack. Open the shop",
+    "vip": "VIP",
+    "vipA11y": "{{name}} is included with VIP. Open the shop",
+    "previewA11y": "{{name}} theme preview",
+    "confirmTitle": "Unlock {{name}}?",
+    "confirmMessage": "Spend {{price}} coins on the {{name}} theme. You have {{coins}}.",
+    "confirm": "Unlock theme",
+    "item": "The {{name}} theme",
+    "unlocked": "{{name}} unlocked"
   },
   "settings": {
-    "title": "Settings"
+    "title": "Settings",
+    "sections": {
+      "sound": "Sound and feel",
+      "display": "Display",
+      "language": "Language",
+      "about": "About",
+      "progress": "Progress"
+    },
+    "sound": "Sound",
+    "haptics": "Haptics",
+    "colorBlind": "Color-blind symbols",
+    "colorBlindHint": "Adds a shape to every color",
+    "reducedMotion": "Reduced motion",
+    "motion": {
+      "system": "System",
+      "on": "On",
+      "off": "Off"
+    },
+    "quality": "Performance mode",
+    "qualityOptions": {
+      "auto": "Auto",
+      "high": "High",
+      "low": "Low"
+    },
+    "qualityLowered": "Auto lowered the effects to keep play smooth on this device",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "Language",
+    "languageSystem": "System default",
+    "languageA11y": "Language: {{name}}. Change",
+    "rtlRestart": "Restart the app to switch the layout direction",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service",
+    "support": "Contact support",
+    "linkFailed": "Could not open the link",
+    "reset": "Reset progress",
+    "resetHint": "Start again from level 1",
+    "resetTitle": "Reset progress?",
+    "resetMessage": "Levels, stars, coins, items, streaks and coin themes will be cleared. Purchases are kept.",
+    "resetContinue": "Continue",
+    "resetConfirmTitle": "Are you sure?",
+    "resetConfirmMessage": "This cannot be undone.",
+    "resetConfirm": "Reset everything",
+    "version": "Version {{version}} (build {{build}})"
   }
 }

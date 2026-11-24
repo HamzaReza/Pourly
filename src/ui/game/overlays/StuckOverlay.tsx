@@ -16,11 +16,12 @@ export interface StuckOverlayProps {
   onUndo: () => void;
   onAddTube: () => void;
   onRestart: () => void;
-  onSkip: () => void;
+  /** SKIP_LEVEL ad; omitted where skipping is not allowed (daily boards). */
+  onSkip?: () => void;
   onClose: () => void;
 }
 
-/** "No moves" card: Undo, +Tube (if unused), Restart, Skip ▶ (SKIP_LEVEL ad). */
+/** "No moves" card: Undo, +Tube (if unused), Restart, Skip ▶ (SKIP_LEVEL ad, level mode). */
 const StuckOverlayComponent = ({
   ui,
   canUndo,
@@ -34,7 +35,11 @@ const StuckOverlayComponent = ({
 }: StuckOverlayProps) => {
   const { t } = useTranslation();
   return (
-    <Overlay title={t('stuck.title')} message={t('stuck.message')} testID="stuck-overlay">
+    <Overlay
+      title={t('stuck.title')}
+      message={t(onSkip === undefined ? 'stuck.messageNoSkip' : 'stuck.message')}
+      testID="stuck-overlay"
+    >
       <View style={styles.row}>
         {canUndo ? (
           <Button label={t('stuck.undo')} onPress={onUndo} ui={ui} style={styles.rowItem} />
@@ -44,14 +49,16 @@ const StuckOverlayComponent = ({
         ) : null}
       </View>
       <Button variant="primary" label={t('stuck.restart')} onPress={onRestart} ui={ui} />
-      <Button
-        label={t('stuck.skip')}
-        accessibilityLabel={t('stuck.skipA11y')}
-        onPress={onSkip}
-        disabled={busy}
-        icon="play"
-        ui={ui}
-      />
+      {onSkip !== undefined ? (
+        <Button
+          label={t('stuck.skip')}
+          accessibilityLabel={t('stuck.skipA11y')}
+          onPress={onSkip}
+          disabled={busy}
+          icon="play"
+          ui={ui}
+        />
+      ) : null}
       <Button label={t('stuck.keepLooking')} onPress={onClose} ui={ui} />
     </Overlay>
   );

@@ -40,6 +40,7 @@ export const routerModule = () => {
       canGoBack: () => false,
     },
     useFocusEffect: (effect: () => void | (() => void)) => React.useEffect(effect, [effect]),
+    useLocalSearchParams: () => ({}),
     Redirect: () => <Text>redirect</Text>,
   };
 };
