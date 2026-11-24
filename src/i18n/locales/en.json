@@ -31,7 +31,7 @@
     "skipA11y": "Skip this level by watching an ad",
     "actionA11y": "{{action}}, {{detail}}",
     "noHint": "No hint found for this board",
-    "hintSearching": "Looking for a hint",
+    "rewardSaved": "The board changed, so your reward was saved for later",
     "costFree": "{{count}} free left",
     "costOwned": "{{count}} left",
     "costCoins": "{{count}} coins",
@@ -108,7 +108,6 @@
     "mockInterstitial": "Interstitial ad",
     "mockCountdown": "Reward in {{count}} s",
     "mockEarned": "Reward earned",
-    "mockWait": "Ad closes in {{count}} s",
     "mockClose": "Close ad",
     "mockCloseEarly": "Close ad without the reward"
   },

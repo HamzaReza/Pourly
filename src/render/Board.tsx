@@ -103,12 +103,20 @@ export interface BoardProps {
   onWinStart?: () => void;
   /** The win sequence finished; the win overlay can show. */
   onWinSequenceEnd?: () => void;
+  /** Every pour animation has finished and none is waiting (the board is at rest). */
+  onSettled?: () => void;
   ref?: Ref<BoardHandle>;
 }
 
 type BoardEvents = Pick<
   BoardProps,
-  'onSelect' | 'onPourLand' | 'onTubeComplete' | 'onInvalidMove' | 'onWinStart' | 'onWinSequenceEnd'
+  | 'onSelect'
+  | 'onPourLand'
+  | 'onTubeComplete'
+  | 'onInvalidMove'
+  | 'onWinStart'
+  | 'onWinSequenceEnd'
+  | 'onSettled'
 >;
 
 const LIFT_SPRING = { damping: 15, stiffness: 320, mass: 0.7 } as const;
@@ -121,6 +129,7 @@ const EVENT_COMPLETE = 2;
 const EVENT_INVALID = 3;
 const EVENT_WIN_START = 4;
 const EVENT_WIN_END = 5;
+const EVENT_SETTLED = 6;
 
 /** Pour milestones (bit flags; several can fall on the same millisecond). */
 const MARK_STREAM = 1;
@@ -176,6 +185,7 @@ const BoardComponent = ({
   onInvalidMove,
   onWinStart,
   onWinSequenceEnd,
+  onSettled,
   ref,
 }: BoardProps) => {
   const { capacity } = board;
@@ -258,8 +268,17 @@ const BoardComponent = ({
       onInvalidMove,
       onWinStart,
       onWinSequenceEnd,
+      onSettled,
     };
-  }, [onSelect, onPourLand, onTubeComplete, onInvalidMove, onWinStart, onWinSequenceEnd]);
+  }, [
+    onSelect,
+    onPourLand,
+    onTubeComplete,
+    onInvalidMove,
+    onWinStart,
+    onWinSequenceEnd,
+    onSettled,
+  ]);
 
   useEffect(() => {
     jsContext.current = {
@@ -295,6 +314,9 @@ const BoardComponent = ({
         return;
       case EVENT_WIN_END:
         handlers.onWinSequenceEnd?.();
+        return;
+      case EVENT_SETTLED:
+        handlers.onSettled?.();
         return;
     }
   }, []);
@@ -456,6 +478,13 @@ const BoardComponent = ({
           return;
       }
     };
+    /** Reports a board at rest once no pour is animating or waiting for its commit. */
+    const maybeSettled = (): void => {
+      'worklet';
+      if (pendingSlot.get() >= 0) return;
+      if (slotA.plan.get() !== null || slotB.plan.get() !== null) return;
+      scheduleOnRN(emit, EVENT_SETTLED, 0, 0);
+    };
     const maybeStartWin = (): void => {
       'worklet';
       if (!winPending.get() || pendingSlot.get() >= 0) return;
@@ -487,6 +516,7 @@ const BoardComponent = ({
         slot.plan.set(null);
         slot.pictures.set(null);
         slot.clock.set(0);
+        maybeSettled();
         maybeStartWin();
       }
       wake();
@@ -543,6 +573,7 @@ const BoardComponent = ({
       dropSelection(upIndex.get());
       mirror.set(nextMirror);
       if (won) winPending.set(true);
+      maybeSettled();
       maybeStartWin();
       wake();
     };

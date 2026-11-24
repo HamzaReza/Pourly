@@ -19,8 +19,9 @@ export interface BoardState {
 }
 
 /**
- * Minimal board holder for the board screen. Phase 5 replaces it with the game store; the
- * contract (board + pour + selection mirror) stays the same.
+ * Standalone board holder for screens that drive a board outside the game session (the dev
+ * stress screen). The game screen uses the game store (`src/state/gameStore.ts`) instead, with
+ * the same `commitPour` contract; this hook never touches the saved game.
  */
 export const useBoardState = (initial: Board): BoardState => {
   const [board, setBoard] = useState(initial);

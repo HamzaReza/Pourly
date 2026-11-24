@@ -24,6 +24,15 @@ export const goBack = (): void => {
   }
 };
 
+/** Returns to Home: pops back to it when it is in the stack, otherwise replaces the route. */
+export const goHome = (): void => {
+  if (router.canDismiss()) {
+    router.dismissTo('/');
+  } else {
+    router.replace('/');
+  }
+};
+
 export const Screen = ({ title, showBack = true, children }: ScreenProps) => {
   const { t } = useTranslation();
   const insets = useSafeAreaInsets();
