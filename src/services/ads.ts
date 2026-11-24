@@ -3,7 +3,8 @@
  * (`ads.mock.ts`) until phase 7 installs AdMob with `setAdsProvider`, behind the same interface.
  *
  * - Rewards are granted by callers ONLY when `showRewarded` resolves `earned`.
- * - Game sounds are paused while an ad is on screen.
+ * - Game sounds are paused while an ad is on screen; `ads.lastRewardedAt` records every rewarded
+ *   ad actually shown (interstitial spacing, spec §13).
  * - When no ad is ready the player sees a localized "Ad not ready" toast and is never blocked.
  */
 import type { RewardedPlacement } from '@/config/ads';
@@ -73,10 +74,8 @@ const showRewarded = async (placement: RewardedPlacement): Promise<RewardedResul
     'unavailable',
   );
   if (result === 'unavailable') showToast('ads.notReady');
-  if (result === 'earned') {
-    track('ad_rewarded_earned', { placement });
-    useProgressStore.getState().recordRewardedAd(Date.now());
-  }
+  else useProgressStore.getState().recordRewardedAd(Date.now());
+  if (result === 'earned') track('ad_rewarded_earned', { placement });
   preload();
   return result;
 };

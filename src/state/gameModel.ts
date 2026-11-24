@@ -218,7 +218,10 @@ export const reduceSkip = (session: GameSession, now: number): GameSession | nul
 };
 
 /** True when the session is an unfinished level-mode game for `progressLevel`. */
-export const isResumable = (session: GameSession | null, progressLevel: number): boolean =>
+export const isResumable = (
+  session: GameSession | null,
+  progressLevel: number,
+): session is GameSession =>
   session !== null &&
   session.mode === 'level' &&
   session.status !== 'won' &&
