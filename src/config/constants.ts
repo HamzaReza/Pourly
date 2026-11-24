@@ -1,7 +1,6 @@
 import { PUBLIC_ENV } from './env';
 
-/** Segments per tube. */
-export const CAPACITY = 4;
+export { CAPACITY } from './game';
 
 /**
  * Signed-in purchases are fulfilled by the `revenuecatWebhook` Cloud Function (requires the
