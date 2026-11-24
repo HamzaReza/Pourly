@@ -1,0 +1,34 @@
+{
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Cancel",
+    "close": "Close",
+    "back": "Back"
+  },
+  "home": {
+    "play": "Level {{n}}",
+    "playA11y": "Play level {{n}}",
+    "daily": "Daily",
+    "shop": "Shop",
+    "themes": "Themes",
+    "settings": "Settings"
+  },
+  "game": {
+    "title": "Level {{n}}"
+  },
+  "daily": {
+    "title": "Daily Challenge"
+  },
+  "shop": {
+    "title": "Shop"
+  },
+  "themes": {
+    "title": "Themes"
+  },
+  "settings": {
+    "title": "Settings"
+  }
+}
