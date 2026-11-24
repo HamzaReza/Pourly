@@ -244,6 +244,10 @@ const precomputedLevel = (level: number): Level | null => {
   return decoded;
 };
 
+/** The level if it is available without generating (precomputed, or a cached runtime level). */
+export const peekLevel = (level: number): Level | null =>
+  precomputedLevel(level) ?? runtimeLevels.get(level) ?? null;
+
 /** Cooperative form of `getLevel`: done immediately for precomputed or cached levels. */
 export const createLevelTask = (level: number): Task<Level> => {
   const ready = precomputedLevel(level) ?? runtimeLevels.get(level);

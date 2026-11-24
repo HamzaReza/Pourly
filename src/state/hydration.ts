@@ -1,5 +1,6 @@
 import { logger } from '@/utils/logger';
 
+import { useGameStore } from './gameStore';
 import { useProgressStore } from './progressStore';
 import { useSettingsStore } from './settingsStore';
 
@@ -35,7 +36,11 @@ export const waitForStoresHydrated = async (
     timer = setTimeout(() => resolve('timeout'), timeoutMs);
   });
   const result = await Promise.race([
-    Promise.all([waitFor(useSettingsStore.persist), waitFor(useProgressStore.persist)]),
+    Promise.all([
+      waitFor(useSettingsStore.persist),
+      waitFor(useProgressStore.persist),
+      waitFor(useGameStore.persist),
+    ]),
     timeout,
   ]);
   if (timer !== undefined) clearTimeout(timer);

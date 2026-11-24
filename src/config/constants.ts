@@ -23,4 +23,5 @@ export const MANAGE_SUBSCRIPTIONS_URL = 'https://play.google.com/store/account/s
 export const STORAGE_KEYS = {
   settings: 'pourly.settings',
   progress: 'pourly.progress',
+  game: 'pourly.game',
 } as const;

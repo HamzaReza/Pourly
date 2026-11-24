@@ -45,7 +45,11 @@ export const applyCompleteLevel = (
  * A level skipped with the SKIP_LEVEL ad: completed with 1★ unless better stars exist, no coins.
  * It breaks the 3★ streak and does not count toward the interstitial cadence (stuck flow).
  */
-export const applySkipLevel = (state: ProgressState, level: number, now: number): ProgressState => ({
+export const applySkipLevel = (
+  state: ProgressState,
+  level: number,
+  now: number,
+): ProgressState => ({
   ...state,
   stars: { ...state.stars, [level]: state.stars[level] ?? 1 },
   level: Math.max(state.level, level + 1),
