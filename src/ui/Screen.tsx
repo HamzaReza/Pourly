@@ -15,7 +15,8 @@ export interface ScreenProps {
   children?: ReactNode;
 }
 
-const goBack = (): void => {
+/** Pops the stack, or returns Home when there is nothing to pop. */
+export const goBack = (): void => {
   if (router.canGoBack()) {
     router.back();
   } else {

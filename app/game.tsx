@@ -1,8 +1,28 @@
 import { useLocalSearchParams } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { useCallback, useMemo, useState } from 'react';
+import { I18nManager, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
+import { useReducedMotion } from 'react-native-reanimated';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
+import { getLevel } from '@/game/generator';
+import type { Level } from '@/game/types';
+import { BoardView } from '@/render/Board';
+import type { Rect } from '@/render/layout';
+import type { CanvasSize } from '@/render/scene';
+import { getTheme, type Theme } from '@/render/themes';
+import { useBoardState } from '@/render/useBoardState';
 import { useProgressStore } from '@/state/progressStore';
-import { Screen } from '@/ui/Screen';
+import { useSettingsStore } from '@/state/settingsStore';
+import { IconButton } from '@/ui/IconButton';
+import { goBack } from '@/ui/Screen';
+import { MIN_TOUCH_TARGET, spacing } from '@/ui/tokens';
+
+/** Height reserved for the top bar (pause, level title, coins; phase 5). */
+const TOP_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.md;
+/** Height reserved for the bottom action bar (undo, hint, restart, +tube; phase 5). */
+const BOTTOM_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.xxl;
 
 const parseLevel = (value: string | string[] | undefined): number | null => {
   const raw = Array.isArray(value) ? value[0] : value;
@@ -10,11 +30,98 @@ const parseLevel = (value: string | string[] | undefined): number | null => {
   return Number.isInteger(level) && level >= 1 ? level : null;
 };
 
+interface GameBoardProps {
+  level: Level;
+  size: CanvasSize;
+  area: Rect;
+  theme: Theme;
+}
+
+/** Owns the board state of one level; remounted (via `key`) when the level changes. */
+const GameBoard = ({ level, size, area, theme }: GameBoardProps) => {
+  const colorBlind = useSettingsStore((state) => state.colorBlind);
+  const quality = useSettingsStore((state) => state.quality);
+  const reducedMotionSetting = useSettingsStore((state) => state.reducedMotion);
+  const systemReducedMotion = useReducedMotion();
+  const reducedMotion =
+    reducedMotionSetting === 'system' ? systemReducedMotion : reducedMotionSetting === 'on';
+  const { board, setSelected, pour } = useBoardState(level.board);
+
+  return (
+    <BoardView
+      board={board}
+      size={size}
+      area={area}
+      theme={theme}
+      colorBlind={colorBlind}
+      glow={quality !== 'low'}
+      reducedMotion={reducedMotion}
+      onSelect={setSelected}
+      onPour={pour}
+    />
+  );
+};
+
 export default function GameScreen() {
   const { t } = useTranslation();
   const params = useLocalSearchParams<{ mode?: string; level?: string }>();
   const progressLevel = useProgressStore((state) => state.level);
-  const level = parseLevel(params.level) ?? progressLevel;
+  const themeId = useProgressStore((state) => state.activeTheme);
+  const levelNumber = parseLevel(params.level) ?? progressLevel;
+  const level = useMemo(() => getLevel(levelNumber), [levelNumber]);
+  const theme = getTheme(themeId);
+  const insets = useSafeAreaInsets();
+  const [size, setSize] = useState<CanvasSize | null>(null);
 
-  return <Screen title={t('game.title', { n: level })} />;
+  const onLayout = useCallback((event: LayoutChangeEvent) => {
+    const { width, height } = event.nativeEvent.layout;
+    setSize((previous) =>
+      previous !== null && previous.width === width && previous.height === height
+        ? previous
+        : { width, height },
+    );
+  }, []);
+
+  const area = useMemo<Rect | null>(() => {
+    if (size === null) return null;
+    const x = insets.left + spacing.sm;
+    const y = insets.top + TOP_BAR_HEIGHT;
+    return {
+      x,
+      y,
+      width: Math.max(0, size.width - x - insets.right - spacing.sm),
+      height: Math.max(0, size.height - y - insets.bottom - BOTTOM_BAR_HEIGHT),
+    };
+  }, [size, insets.left, insets.top, insets.right, insets.bottom]);
+
+  return (
+    <View style={[styles.root, { backgroundColor: theme.background[0] }]} onLayout={onLayout}>
+      <StatusBar style={theme.statusBar} />
+      {size !== null && area !== null ? (
+        <GameBoard key={level.id} level={level} size={size} area={area} theme={theme} />
+      ) : null}
+      <View
+        pointerEvents="box-none"
+        style={[styles.topBar, { top: insets.top, start: insets.left + spacing.sm }]}
+      >
+        <IconButton
+          icon={I18nManager.isRTL ? 'chevron-forward' : 'chevron-back'}
+          accessibilityLabel={t('common.back')}
+          onPress={goBack}
+          color={theme.ui.text}
+        />
+      </View>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create({
+  root: {
+    flex: 1,
+  },
+  topBar: {
+    position: 'absolute',
+    height: TOP_BAR_HEIGHT,
+    justifyContent: 'center',
+  },
+});

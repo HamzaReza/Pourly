@@ -11,9 +11,17 @@ export interface IconButtonProps {
   accessibilityLabel: string;
   onPress: () => void;
   size?: number;
+  /** Icon color; defaults to the neutral chrome text color. */
+  color?: string;
 }
 
-const IconButtonComponent = ({ icon, accessibilityLabel, onPress, size = 24 }: IconButtonProps) => (
+const IconButtonComponent = ({
+  icon,
+  accessibilityLabel,
+  onPress,
+  size = 24,
+  color = colors.text,
+}: IconButtonProps) => (
   <Pressable
     accessibilityRole="button"
     accessibilityLabel={accessibilityLabel}
@@ -21,7 +29,7 @@ const IconButtonComponent = ({ icon, accessibilityLabel, onPress, size = 24 }: I
     onPress={onPress}
     style={({ pressed }) => [styles.base, pressed && styles.pressed]}
   >
-    <Ionicons name={icon} size={size} color={colors.text} />
+    <Ionicons name={icon} size={size} color={color} />
   </Pressable>
 );
 
