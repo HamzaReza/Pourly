@@ -51,6 +51,13 @@ export default function HomeScreen() {
           style={styles.rowItem}
         />
       </View>
+      {__DEV__ ? (
+        <Button
+          label="Dev: stress test"
+          onPress={() => router.push('/dev-stress')}
+          style={styles.devButton}
+        />
+      ) : null}
     </Screen>
   );
 }
@@ -77,5 +84,8 @@ const styles = StyleSheet.create({
   },
   rowItem: {
     flex: 1,
+  },
+  devButton: {
+    marginTop: spacing.md,
   },
 });

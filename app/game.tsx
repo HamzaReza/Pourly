@@ -1,8 +1,14 @@
 import { useLocalSearchParams } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { useCallback, useMemo, useState } from 'react';
-import { I18nManager, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
-import { useReducedMotion } from 'react-native-reanimated';
+import {
+  I18nManager,
+  Pressable,
+  StyleSheet,
+  Text,
+  View,
+  type LayoutChangeEvent,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
@@ -13,11 +19,15 @@ import type { Rect } from '@/render/layout';
 import type { CanvasSize } from '@/render/scene';
 import { getTheme, type Theme } from '@/render/themes';
 import { useBoardState } from '@/render/useBoardState';
+import { useRenderSettings } from '@/render/useRenderSettings';
+import { play } from '@/services/audio';
+import { hapticError, hapticPourStart, hapticSelect, hapticSuccess } from '@/services/haptics';
 import { useProgressStore } from '@/state/progressStore';
-import { useSettingsStore } from '@/state/settingsStore';
+import { FpsOverlay } from '@/ui/FpsOverlay';
 import { IconButton } from '@/ui/IconButton';
 import { goBack } from '@/ui/Screen';
-import { MIN_TOUCH_TARGET, spacing } from '@/ui/tokens';
+import { fontSizes, fontWeights, MIN_TOUCH_TARGET, spacing } from '@/ui/tokens';
+import { logger } from '@/utils/logger';
 
 /** Height reserved for the top bar (pause, level title, coins; phase 5). */
 const TOP_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.md;
@@ -30,6 +40,28 @@ const parseLevel = (value: string | string[] | undefined): number | null => {
   return Number.isInteger(level) && level >= 1 ? level : null;
 };
 
+const onPourStart = (): void => {
+  play('pour');
+  hapticPourStart();
+};
+
+const onPourLand = (): void => play('drop');
+
+const onTubeComplete = (): void => {
+  play('complete');
+  hapticSuccess();
+};
+
+const onInvalidMove = (): void => {
+  play('error');
+  hapticError();
+};
+
+const onWinStart = (): void => {
+  play('win');
+  hapticSuccess();
+};
+
 interface GameBoardProps {
   level: Level;
   size: CanvasSize;
@@ -39,13 +71,24 @@ interface GameBoardProps {
 
 /** Owns the board state of one level; remounted (via `key`) when the level changes. */
 const GameBoard = ({ level, size, area, theme }: GameBoardProps) => {
-  const colorBlind = useSettingsStore((state) => state.colorBlind);
-  const quality = useSettingsStore((state) => state.quality);
-  const reducedMotionSetting = useSettingsStore((state) => state.reducedMotion);
-  const systemReducedMotion = useReducedMotion();
-  const reducedMotion =
-    reducedMotionSetting === 'system' ? systemReducedMotion : reducedMotionSetting === 'on';
-  const { board, setSelected, pour } = useBoardState(level.board);
+  const { colorBlind, quality, reducedMotion } = useRenderSettings();
+  const { board, setSelected, commitPour } = useBoardState(level.board);
+  const levelId = level.id;
+
+  const onSelect = useCallback(
+    (index: number) => {
+      setSelected(index);
+      if (index < 0) return;
+      play('select');
+      hapticSelect();
+    },
+    [setSelected],
+  );
+
+  // Phase 5 shows the win overlay here.
+  const onWinSequenceEnd = useCallback(() => {
+    if (__DEV__) logger.debug('Win sequence finished', levelId);
+  }, [levelId]);
 
   return (
     <BoardView
@@ -54,10 +97,16 @@ const GameBoard = ({ level, size, area, theme }: GameBoardProps) => {
       area={area}
       theme={theme}
       colorBlind={colorBlind}
-      glow={quality !== 'low'}
+      quality={quality}
       reducedMotion={reducedMotion}
-      onSelect={setSelected}
-      onPour={pour}
+      onSelect={onSelect}
+      onPour={commitPour}
+      onPourStart={onPourStart}
+      onPourLand={onPourLand}
+      onTubeComplete={onTubeComplete}
+      onInvalidMove={onInvalidMove}
+      onWinStart={onWinStart}
+      onWinSequenceEnd={onWinSequenceEnd}
     />
   );
 };
@@ -72,6 +121,7 @@ export default function GameScreen() {
   const theme = getTheme(themeId);
   const insets = useSafeAreaInsets();
   const [size, setSize] = useState<CanvasSize | null>(null);
+  const [showFps, setShowFps] = useState(false);
 
   const onLayout = useCallback((event: LayoutChangeEvent) => {
     const { width, height } = event.nativeEvent.layout;
@@ -81,6 +131,8 @@ export default function GameScreen() {
         : { width, height },
     );
   }, []);
+
+  const toggleFps = useCallback(() => setShowFps((visible) => !visible), []);
 
   const area = useMemo<Rect | null>(() => {
     if (size === null) return null;
@@ -102,7 +154,10 @@ export default function GameScreen() {
       ) : null}
       <View
         pointerEvents="box-none"
-        style={[styles.topBar, { top: insets.top, start: insets.left + spacing.sm }]}
+        style={[
+          styles.topBar,
+          { top: insets.top, start: insets.left + spacing.sm, end: insets.right + spacing.sm },
+        ]}
       >
         <IconButton
           icon={I18nManager.isRTL ? 'chevron-forward' : 'chevron-back'}
@@ -110,7 +165,25 @@ export default function GameScreen() {
           onPress={goBack}
           color={theme.ui.text}
         />
+        <Pressable
+          accessibilityRole="header"
+          onLongPress={__DEV__ ? toggleFps : undefined}
+          style={styles.title}
+        >
+          <Text style={[styles.titleText, { color: theme.ui.text }]}>
+            {t('game.title', { n: levelNumber })}
+          </Text>
+        </Pressable>
+        <View style={styles.barSpacer} />
       </View>
+      {__DEV__ && showFps ? (
+        <View
+          pointerEvents="none"
+          style={[styles.fps, { top: insets.top + TOP_BAR_HEIGHT, end: insets.right + spacing.sm }]}
+        >
+          <FpsOverlay />
+        </View>
+      ) : null}
     </View>
   );
 }
@@ -122,6 +195,23 @@ const styles = StyleSheet.create({
   topBar: {
     position: 'absolute',
     height: TOP_BAR_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  title: {
+    flex: 1,
+    minHeight: MIN_TOUCH_TARGET,
+    alignItems: 'center',
     justifyContent: 'center',
+  },
+  titleText: {
+    fontSize: fontSizes.title,
+    fontWeight: fontWeights.bold,
+  },
+  barSpacer: {
+    width: MIN_TOUCH_TARGET,
+  },
+  fps: {
+    position: 'absolute',
   },
 });

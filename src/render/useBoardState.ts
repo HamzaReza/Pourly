@@ -1,7 +1,7 @@
 import { useCallback, useRef, useState } from 'react';
 
 import { applyPour, canPour } from '@/game/rules';
-import type { Board } from '@/game/types';
+import type { Board, PourOutcome } from '@/game/types';
 
 export interface BoardState {
   readonly board: Board;
@@ -14,10 +14,12 @@ export interface BoardState {
    * board untouched when the pour is not legal on the current board.
    */
   readonly pour: (from: number, to: number) => boolean;
+  /** Same as `pour`, but returns the outcome (new board and what moved) or null when illegal. */
+  readonly commitPour: (from: number, to: number) => PourOutcome | null;
 }
 
 /**
- * Minimal board holder for the phase-3 board. Phase 5 replaces it with the game store; the
+ * Minimal board holder for the board screen. Phase 5 replaces it with the game store; the
  * contract (board + pour + selection mirror) stays the same.
  */
 export const useBoardState = (initial: Board): BoardState => {
@@ -29,15 +31,20 @@ export const useBoardState = (initial: Board): BoardState => {
     selectedRef.current = index;
   }, []);
 
-  const pour = useCallback((from: number, to: number): boolean => {
+  const commitPour = useCallback((from: number, to: number): PourOutcome | null => {
     selectedRef.current = -1;
     const current = boardRef.current;
-    if (!canPour(current, from, to)) return false;
-    const next = applyPour(current, { from, to }).board;
-    boardRef.current = next;
-    setBoard(next);
-    return true;
+    if (!canPour(current, from, to)) return null;
+    const outcome = applyPour(current, { from, to });
+    boardRef.current = outcome.board;
+    setBoard(outcome.board);
+    return outcome;
   }, []);
 
-  return { board, selectedRef, setSelected, pour };
+  const pour = useCallback(
+    (from: number, to: number): boolean => commitPour(from, to) !== null,
+    [commitPour],
+  );
+
+  return { board, selectedRef, setSelected, pour, commitPour };
 };
