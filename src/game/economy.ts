@@ -2,7 +2,7 @@
  * Pure economy rules (spec §11): win rewards, power-up cost resolution and skip eligibility.
  * Every number comes from `ECONOMY`; the UI renders the typed decisions these return.
  */
-import { ECONOMY } from '@/config/economy';
+import { ECONOMY, type RewardBundle } from '@/config/economy';
 import type { StarCount } from '@/state/progressModel';
 
 export interface WinRewardInput {
@@ -28,6 +28,37 @@ export const winReward = ({ stars, hard, isVip, doubled }: WinRewardInput): numb
   if (isVip) coins *= ECONOMY.vipMultiplier;
   if (doubled) coins *= 2;
   return coins;
+};
+
+/** Whole, non-negative count (bad input counts as 0). */
+const wholeCount = (value: number | undefined): number =>
+  value === undefined || !Number.isFinite(value) ? 0 : Math.max(0, Math.floor(value));
+
+/** Streak bonus of the daily challenge: `streakBonusPerDay` × streak, capped at `streakBonusCap`. */
+export const streakBonus = (streak: number): number =>
+  Math.min(ECONOMY.streakBonusCap, ECONOMY.streakBonusPerDay * wholeCount(streak));
+
+export interface DailyRewardInput {
+  /** The streak after today's completion. */
+  readonly streak: number;
+  readonly isVip: boolean;
+}
+
+/** Coins for the first daily completion of a day: (base + streak bonus), ×2 for VIP. */
+export const dailyChallengeReward = ({ streak, isVip }: DailyRewardInput): number => {
+  const coins = ECONOMY.dailyChallengeCoins + streakBonus(streak);
+  return isVip ? coins * ECONOMY.vipMultiplier : coins;
+};
+
+/** Multiplies every item of a reward bundle (VIP and ad doubling); empty items stay absent. */
+export const scaleReward = (bundle: RewardBundle, factor: number): RewardBundle => {
+  const times = wholeCount(factor);
+  const out: RewardBundle = {};
+  if (bundle.coins !== undefined) out.coins = wholeCount(bundle.coins) * times;
+  if (bundle.hints !== undefined) out.hints = wholeCount(bundle.hints) * times;
+  if (bundle.undos !== undefined) out.undos = wholeCount(bundle.undos) * times;
+  if (bundle.extraTubes !== undefined) out.extraTubes = wholeCount(bundle.extraTubes) * times;
+  return out;
 };
 
 export const canAfford = (coins: number, cost: number): boolean =>

@@ -46,3 +46,10 @@ export const isoWeekKey = (date: Date): string => {
   const week = Math.ceil(((utc.getTime() - yearStart) / 86_400_000 + 1) / 7);
   return `${isoYear}-W${pad2(week)}`;
 };
+
+/** Local midnight of a `YYYY-MM-DD` date, or null for malformed or impossible dates. */
+export const parseLocalDate = (value: string): Date | null => {
+  if (Number.isNaN(daysBetween(value, value))) return null;
+  const [year, month, day] = value.split('-').map(Number) as [number, number, number];
+  return new Date(year, month - 1, day);
+};

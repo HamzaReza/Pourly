@@ -1,3 +1,5 @@
+import { isThemeAvailable } from '@/game/themeUnlocks';
+
 import {
   createDefaultProgress,
   DEFAULT_THEME_ID,
@@ -132,7 +134,14 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
   if (!ownedThemes.includes(DEFAULT_THEME_ID)) ownedThemes.unshift(DEFAULT_THEME_ID);
   const activeTheme = str(v.activeTheme, d.activeTheme);
   const entitlements = asRecord(v.entitlements);
+  const vip = bool(entitlements.vip, d.entitlements.vip);
+  const starterPackPurchased = bool(v.starterPackPurchased, d.starterPackPurchased);
   const level = count(v.level, d.level);
+  const themeAvailable = isThemeAvailable(activeTheme, {
+    ownedThemes,
+    entitlements: { noAds: false, vip },
+    starterPackPurchased,
+  });
 
   return {
     schemaVersion: PROGRESS_VERSION,
@@ -155,16 +164,16 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
     lastVipClaimDate: dateOrNull(v.lastVipClaimDate, d.lastVipClaimDate),
     streakFreezeWeek: strOrNull(v.streakFreezeWeek, d.streakFreezeWeek),
     ownedThemes,
-    activeTheme: ownedThemes.includes(activeTheme) ? activeTheme : DEFAULT_THEME_ID,
+    activeTheme: themeAvailable ? activeTheme : DEFAULT_THEME_ID,
     entitlements: {
       noAds: bool(entitlements.noAds, d.entitlements.noAds),
-      vip: bool(entitlements.vip, d.entitlements.vip),
+      vip,
     },
     processedTransactions: uniqueStrings(v.processedTransactions).slice(
       -MAX_PROCESSED_TRANSACTIONS,
     ),
     starterPackExpiresAt: numOrNull(v.starterPackExpiresAt, d.starterPackExpiresAt),
-    starterPackPurchased: bool(v.starterPackPurchased, d.starterPackPurchased),
+    starterPackPurchased,
     ads: sanitizeAds(v.ads, d.ads),
     notifications: sanitizeNotifications(v.notifications, d.notifications),
     review: sanitizeReview(v.review, d.review),

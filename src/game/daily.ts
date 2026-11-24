@@ -37,6 +37,22 @@ export const dailySeed = (localDate: string): number => {
 
 export const dailyLevelId = (localDate: string): string => `daily-${localDate}`;
 
+const DAILY_ID = /^daily-(\d{4}-\d{2}-\d{2})$/;
+
+/** The local date of a daily level id (`daily-YYYY-MM-DD`), or null for any other id. */
+export const dailyDateOf = (levelId: string): string | null => {
+  const match = DAILY_ID.exec(levelId);
+  const date = match?.[1];
+  if (date === undefined || Number.isNaN(daysBetween(date, date))) return null;
+  return date;
+};
+
+/** True when the daily of `today` has been completed (its reward already granted). */
+export const isDailyDone = (
+  state: Pick<ProgressState, 'lastDailyDate' | 'dailyHistory'>,
+  today: string,
+): boolean => state.lastDailyDate === today || state.dailyHistory[today] !== undefined;
+
 /** Mid-high difficulty: 8–10 colors (picked by the date's seed), mystery on, 2 empty tubes. */
 export const dailyConfig = (localDate: string): LevelConfig => {
   const rng = createRng(dailySeed(localDate));
