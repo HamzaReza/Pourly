@@ -16,7 +16,9 @@ import { createPersistStorage } from './storage';
 
 export {
   DEFAULT_SETTINGS,
+  effectiveQuality,
   SETTINGS_VERSION,
+  type EffectiveQuality,
   type QualitySetting,
   type ReducedMotionSetting,
   type SettingsState,
@@ -27,7 +29,10 @@ export interface SettingsActions {
   setHaptics: (haptics: boolean) => void;
   setColorBlind: (colorBlind: boolean) => void;
   setReducedMotion: (reducedMotion: ReducedMotionSetting) => void;
+  /** An explicit choice; also clears `autoQualityDowngraded` so `auto` starts measuring afresh. */
   setQuality: (quality: QualitySetting) => void;
+  /** Called by the frame-time monitor; ignored unless `quality` is `auto`. */
+  markAutoQualityDowngraded: () => void;
   setLanguage: (language: LanguagePreference) => void;
   resetSettings: () => void;
 }
@@ -40,18 +45,22 @@ const pickSettings = (state: SettingsState): SettingsState => ({
   colorBlind: state.colorBlind,
   reducedMotion: state.reducedMotion,
   quality: state.quality,
+  autoQualityDowngraded: state.autoQualityDowngraded,
   language: state.language,
 });
 
 export const useSettingsStore = create<SettingsStore>()(
   persist<SettingsStore, [], [], SettingsState>(
-    (set) => ({
+    (set, get) => ({
       ...DEFAULT_SETTINGS,
       setSound: (sound) => set({ sound }),
       setHaptics: (haptics) => set({ haptics }),
       setColorBlind: (colorBlind) => set({ colorBlind }),
       setReducedMotion: (reducedMotion) => set({ reducedMotion }),
-      setQuality: (quality) => set({ quality }),
+      setQuality: (quality) => set({ quality, autoQualityDowngraded: false }),
+      markAutoQualityDowngraded: () => {
+        if (get().quality === 'auto') set({ autoQualityDowngraded: true });
+      },
       setLanguage: (language) => set({ language }),
       resetSettings: () => set({ ...DEFAULT_SETTINGS }),
     }),

@@ -218,6 +218,7 @@ export const migrateSettings = (persisted: unknown): SettingsState => {
     colorBlind: bool(v.colorBlind, DEFAULT_SETTINGS.colorBlind),
     reducedMotion: oneOf(REDUCED_MOTION, v.reducedMotion, DEFAULT_SETTINGS.reducedMotion),
     quality: oneOf(QUALITY, v.quality, DEFAULT_SETTINGS.quality),
+    autoQualityDowngraded: bool(v.autoQualityDowngraded, DEFAULT_SETTINGS.autoQualityDowngraded),
     language: str(v.language, DEFAULT_SETTINGS.language),
   };
 };
