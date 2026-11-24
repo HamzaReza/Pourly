@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, type StyleProp, type ViewStyle } from 'react-native';
 
 import type { ThemeUi } from '@/render/themes';
@@ -21,6 +21,8 @@ export interface ButtonProps {
   ui?: ThemeUi;
   /** Icon drawn after the label (for example `play` for "watch an ad"). */
   icon?: IconName;
+  /** Decoration drawn before the label (for example the hard-level crown). */
+  leading?: ReactNode;
   style?: StyleProp<ViewStyle>;
   testID?: string;
 }
@@ -42,6 +44,7 @@ const ButtonComponent = ({
   disabled = false,
   ui = NEUTRAL_UI,
   icon,
+  leading,
   style,
   testID,
 }: ButtonProps) => {
@@ -67,6 +70,7 @@ const ButtonComponent = ({
         style,
       ]}
     >
+      {leading}
       <Text style={[styles.label, primary && styles.primaryLabel, { color: foreground }]}>
         {label}
       </Text>

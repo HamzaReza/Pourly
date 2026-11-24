@@ -1,4 +1,4 @@
-import { memo } from 'react';
+import { memo, type ReactNode } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -18,6 +18,8 @@ export interface RewardOverlayProps {
   /** Granted items; coins count up, other items are listed. */
   reward: RewardBundle;
   onContinue: () => void;
+  /** Extra actions shown above Continue (for example "Double it ▶"). */
+  children?: ReactNode;
 }
 
 const ITEM_LINES = [
@@ -26,8 +28,15 @@ const ITEM_LINES = [
   ['extraTubes', 'reward.extraTubes'],
 ] as const;
 
-/** Generic reward card: shown after rewarded grants and after a skipped level. */
-const RewardOverlayComponent = ({ ui, title, message, reward, onContinue }: RewardOverlayProps) => {
+/** Generic reward card: rewarded grants, a skipped level, daily gifts and the VIP bonus. */
+const RewardOverlayComponent = ({
+  ui,
+  title,
+  message,
+  reward,
+  onContinue,
+  children,
+}: RewardOverlayProps) => {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotionPref();
   const coins = reward.coins ?? 0;
@@ -58,6 +67,7 @@ const RewardOverlayComponent = ({ ui, title, message, reward, onContinue }: Rewa
           </Text>
         );
       })}
+      {children}
       <Button variant="primary" label={t('common.continue')} onPress={onContinue} ui={ui} />
     </Overlay>
   );

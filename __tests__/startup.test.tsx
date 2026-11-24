@@ -10,7 +10,17 @@ import { revealApp } from '@/ui/splash';
 
 import { levelOf, revealBoard } from '../test-utils/boards';
 
+jest.mock('react-native-reanimated', () => jest.requireActual('../test-utils/reanimatedStub'));
 jest.mock('expo-router', () => jest.requireActual('../test-utils/gameScreenMocks').routerModule());
+jest.mock('@/services/audio', () =>
+  jest.requireActual('../test-utils/gameScreenMocks').audioModule(),
+);
+jest.mock('@/ui/home/HeroTubes', () => ({ HeroTubes: () => null }));
+jest.mock('@/ui/game/Crown', () => ({ Crown: () => null }));
+jest.mock('@/state/dailyLoader', () => ({
+  prepareDaily: jest.fn(() => new Promise(() => undefined)),
+  readyDaily: jest.fn(() => null),
+}));
 jest.mock('react-native-safe-area-context', () =>
   jest.requireActual('../test-utils/gameScreenMocks').safeAreaModule(),
 );
