@@ -5,3 +5,4 @@ ios
 .expo
 functions/lib
 yarn.lock
+docs/SPEC.md

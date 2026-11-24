@@ -1,56 +1,122 @@
-# Welcome to your Expo app 👋
+# Pourly
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+**Pourly: Water Sort Puzzle** is a hybrid-casual color-sort puzzle for Android, built with Expo and
+React Native. Pour liquid between tubes until every tube holds a single color. Meta systems (daily
+challenge, streaks, gifts, coins, themes) sit on top. The game is fully playable offline and as a
+guest; Google sign-in with Firebase cloud save is optional.
 
-## Get started
+- Product spec: [`docs/SPEC.md`](docs/SPEC.md)
+- Deviations and decisions: [`docs/DECISIONS.md`](docs/DECISIONS.md) (wins over the spec)
 
-1. Install dependencies
+Platform: **Android only.**
 
-   ```bash
-   npm install
-   ```
+## Prerequisites
 
-2. Start the app
+- Node.js 20.19+ (developed on 22.23)
+- Yarn classic 1.22.x (`yarn.lock` is the only lockfile; do not use npm or pnpm)
+- Android Studio with an emulator or a device, for development builds
+- An [EAS](https://expo.dev/eas) account for cloud builds
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Setup
 
 ```bash
-npm run reset-project
+yarn install
+cp .env.example .env   # then fill in the values you have
+yarn android           # builds and installs the development client (expo run:android)
+yarn start             # starts Metro for an installed development client
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+A development build (`expo-dev-client`) is required: AdMob, RevenueCat and Google Sign-In are
+native modules. Expo Go is only good for quick UI checks.
 
-### Other setup steps
+Add Expo/React Native packages with `npx expo install <pkg>` so versions stay aligned with the SDK.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Environment
 
-## Learn more
+All configuration comes from environment variables (see `.env.example`). Never commit `.env`.
 
-To learn more about developing your project with Expo, look at the following resources:
+| Variable                                                                          | Purpose                                                                                              |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `ANDROID_PACKAGE`                                                                 | Android application id. Default `com.pourly.water.app`. **Permanent once published on Google Play.** |
+| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`                                              | RevenueCat public Android SDK key.                                                                   |
+| `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`                                                | AdMob app id, written into the Android manifest at prebuild. Defaults to Google's sample id.         |
+| `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID` / `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`   | Production ad unit ids. Development builds always use Google test ids.                               |
+| `EXPO_PUBLIC_PRIVACY_URL` / `EXPO_PUBLIC_TERMS_URL` / `EXPO_PUBLIC_SUPPORT_EMAIL` | Legal links and support address.                                                                     |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`                                                | OAuth web client id for Google Sign-In.                                                              |
+| `EXPO_PUBLIC_FIREBASE_*`                                                          | Firebase JS SDK web config.                                                                          |
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+`app.config.ts` copies the public values into `extra`; the app reads them through
+`src/config/env.ts`. Values are baked in at build time.
 
-## Join the community
+## Scripts
 
-Join our community of developers creating universal apps.
+| Script                       | What it does                                                                         |
+| ---------------------------- | ------------------------------------------------------------------------------------ |
+| `yarn start`                 | Start Metro.                                                                         |
+| `yarn android`               | Build and run the Android development client (`expo run:android`).                   |
+| `yarn lint`                  | ESLint (flat config, `eslint-config-expo`).                                          |
+| `yarn typecheck`             | `tsc --noEmit` (strict).                                                             |
+| `yarn test` / `yarn test:ci` | Jest with the `jest-expo` preset.                                                    |
+| `yarn format`                | Prettier.                                                                            |
+| `yarn doctor`                | `expo-doctor`.                                                                       |
+| `yarn export:android`        | Export the Android JS bundle (`dist/`, gitignored).                                  |
+| `yarn prebuild:android`      | Regenerate the native `android/` project (gitignored; Continuous Native Generation). |
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## EAS build profiles
+
+| Profile       | Output        | Notes                                                       |
+| ------------- | ------------- | ----------------------------------------------------------- |
+| `development` | APK, internal | Development client.                                         |
+| `preview`     | APK, internal | Release mode for performance testing, Google test ad ids.   |
+| `production`  | AAB, store    | `autoIncrement` version code; app version source is remote. |
+
+## Project layout
+
+```
+app/          Expo Router routes (Home, game, daily, shop, themes, settings)
+src/config/   economy, products, ads, env, constants
+src/i18n/     i18next setup and locale JSON files
+src/state/    Zustand stores (persisted), models and migrations
+src/ui/       design tokens and shared components
+src/utils/    date helpers, logger
+docs/         spec and decisions
+```
+
+## Resolved versions
+
+| Package                                   | Version |
+| ----------------------------------------- | ------- |
+| Expo SDK (`expo`)                         | 58.0.26 |
+| React Native                              | 0.88.1  |
+| React                                     | 19.3.0  |
+| expo-router                               | 58.0.32 |
+| react-native-reanimated                   | 4.7.1   |
+| react-native-worklets                     | 0.13.0  |
+| @shopify/react-native-skia                | 2.14.0  |
+| react-native-gesture-handler              | 3.3.0   |
+| react-native-screens                      | 4.30.1  |
+| react-native-safe-area-context            | 5.11.1  |
+| expo-notifications                        | 58.1.9  |
+| expo-audio                                | 58.0.12 |
+| expo-haptics                              | 58.0.8  |
+| expo-localization                         | 58.0.5  |
+| expo-dev-client                           | 58.0.21 |
+| expo-build-properties                     | 58.0.12 |
+| @react-native-async-storage/async-storage | 2.2.0   |
+| zustand                                   | 5.1.0   |
+| i18next                                   | 27.2.7  |
+| react-i18next                             | 18.0.3  |
+| react-native-purchases                    | 11.0.4  |
+| react-native-google-mobile-ads            | 17.4.0  |
+| firebase                                  | 12.19.0 |
+| @react-native-google-signin/google-signin | 17.0.0  |
+| @expo/vector-icons                        | 15.1.1  |
+| TypeScript                                | 6.0.3   |
+| Jest                                      | 30.5.2  |
+| jest-expo                                 | 58.0.15 |
+| @testing-library/react-native             | 14.1.0  |
+| ESLint                                    | 9.39.5  |
+| eslint-config-expo                        | 58.0.4  |
+| Prettier                                  | 3.10.1  |
+| tsx                                       | 4.23.15 |
+| sharp                                     | 0.35.5  |
