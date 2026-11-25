@@ -26,6 +26,10 @@ google-services.json
 # Firebase
 functions/lib/
 firebase-debug.log
+firestore-debug.log
+ui-debug.log
+# Generated before each Hosting deploy by scripts/write-hosting-config.mjs
+public/site-config.js
 
 # Metro
 .metro-health-check*

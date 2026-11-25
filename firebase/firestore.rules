@@ -1,0 +1,86 @@
+rules_version = '2';
+
+// Pourly Firestore rules (spec §26.6).
+//
+// users/{uid}                  The player's cloud save. Only the signed-in owner reads or writes
+//                              it; every write is the full snapshot and is validated field by
+//                              field. Clients can never delete it (account deletion runs in the
+//                              `deleteMyAccount` Cloud Function with the Admin SDK).
+// users/{uid}/grants/{grantId} Purchases fulfilled by the `revenuecatWebhook` Cloud Function. The
+//                              owner reads them and may only flip `applied` from false to true
+//                              (with `appliedAt` = server time). Creating and deleting is
+//                              server-only.
+// Everything else is denied.
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isCount(value) {
+      return value is int && value >= 0 && value <= 1000000000;
+    }
+
+    function isShortString(value, max) {
+      return value is string && value.size() > 0 && value.size() <= max;
+    }
+
+    function isDateOrNull(value) {
+      return value == null || (value is string && value.matches('^[0-9]{4}-[0-9]{2}-[0-9]{2}$'));
+    }
+
+    function progressFields() {
+      return [
+        'schemaVersion', 'level', 'stars', 'coins', 'hints', 'undos', 'extraTubes', 'streak',
+        'bestStreak', 'lastDailyDate', 'dailyHistory', 'giftDayIndex', 'lastGiftDate',
+        'ownedThemes', 'activeTheme', 'processedTransactions', 'starterPackPurchased',
+        'updatedAt', 'lastWriterInstall'
+      ];
+    }
+
+    function isValidProgress(data) {
+      return data.keys().hasOnly(progressFields())
+        && data.keys().hasAll(progressFields())
+        && data.schemaVersion is int && data.schemaVersion >= 1 && data.schemaVersion <= 1000
+        && data.level is int && data.level >= 1 && data.level <= 1000000
+        && data.stars is map && data.stars.size() <= 20000
+        && isCount(data.coins)
+        && isCount(data.hints)
+        && isCount(data.undos)
+        && isCount(data.extraTubes)
+        && isCount(data.streak)
+        && isCount(data.bestStreak)
+        && isDateOrNull(data.lastDailyDate)
+        && data.dailyHistory is map && data.dailyHistory.size() <= 120
+        && isCount(data.giftDayIndex)
+        && isDateOrNull(data.lastGiftDate)
+        && data.ownedThemes is list && data.ownedThemes.size() <= 50
+        && isShortString(data.activeTheme, 32)
+        && data.processedTransactions is list && data.processedTransactions.size() <= 200
+        && data.starterPackPurchased is bool
+        && data.updatedAt == request.time
+        && isShortString(data.lastWriterInstall, 64);
+    }
+
+    match /users/{uid} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid) && isValidProgress(request.resource.data);
+      allow delete: if false;
+
+      match /grants/{grantId} {
+        allow read: if isOwner(uid);
+        allow create, delete: if false;
+        allow update: if isOwner(uid)
+          && resource.data.applied == false
+          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['applied', 'appliedAt'])
+          && request.resource.data.applied == true
+          && request.resource.data.appliedAt == request.time;
+      }
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
