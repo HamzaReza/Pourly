@@ -85,15 +85,21 @@
     "rewardSaved": "Le plateau a changé, ta récompense est gardée pour plus tard",
     "costFree": "gratuit : encore {{count}}",
     "costOwned": "encore {{count}}",
-    "costCoins": "{{count}} pièces",
+    "costCoins_many": "{{count}} pièces",
+    "costCoins_one": "{{count}} pièces",
+    "costCoins_other": "{{count}} pièces",
     "costAd": "regarder une pub",
     "costUsed": "déjà utilisé",
     "dailyTitle": "Défi · {{date}}",
     "dailyTitleA11y": "Défi du jour, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} pièces. Ouvrir la boutique",
-    "balanceA11y": "Solde : {{count}} pièces"
+    "badgeA11y_many": "{{count}} pièces. Ouvrir la boutique",
+    "badgeA11y_one": "{{count}} pièces. Ouvrir la boutique",
+    "badgeA11y_other": "{{count}} pièces. Ouvrir la boutique",
+    "balanceA11y_many": "Solde : {{count}} pièces",
+    "balanceA11y_one": "Solde : {{count}} pièces",
+    "balanceA11y_other": "Solde : {{count}} pièces"
   },
   "items": {
     "undo": "Une annulation",
@@ -111,7 +117,9 @@
   "win": {
     "title": "Niveau réussi !",
     "starsA11y": "{{count}} étoiles sur 3",
-    "coinsA11y": "{{count}} pièces gagnées",
+    "coinsA11y_many": "{{count}} pièces gagnées",
+    "coinsA11y_one": "{{count}} pièces gagnées",
+    "coinsA11y_other": "{{count}} pièces gagnées",
     "next": "Suivant",
     "nextA11y": "Jouer au niveau suivant",
     "double": "Doubler",
@@ -151,10 +159,18 @@
     "title": "Récompense",
     "skippedTitle": "Niveau passé",
     "skippedMessage": "Le niveau {{n}} compte comme réussi avec 1 étoile.",
-    "coins": "+{{count}} pièces",
-    "hints": "+{{count}} indices",
-    "undos": "+{{count}} annulations",
-    "extraTubes": "+{{count}} tubes"
+    "coins_many": "+{{count}} pièces",
+    "coins_one": "+{{count}} pièces",
+    "coins_other": "+{{count}} pièces",
+    "hints_many": "+{{count}} indices",
+    "hints_one": "+{{count}} indices",
+    "hints_other": "+{{count}} indices",
+    "undos_many": "+{{count}} annulations",
+    "undos_one": "+{{count}} annulations",
+    "undos_other": "+{{count}} annulations",
+    "extraTubes_many": "+{{count}} tubes",
+    "extraTubes_one": "+{{count}} tubes",
+    "extraTubes_other": "+{{count}} tubes"
   },
   "tutorial": {
     "level1": "Touche un tube, puis là où verser",

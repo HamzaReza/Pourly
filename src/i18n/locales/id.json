@@ -83,15 +83,15 @@
     "rewardSaved": "Papan berubah, jadi hadiahmu disimpan untuk nanti",
     "costFree": "Sisa {{count}} gratis",
     "costOwned": "Sisa {{count}}",
-    "costCoins": "{{count}} koin",
+    "costCoins_other": "{{count}} koin",
     "costAd": "tonton iklan",
     "costUsed": "sudah dipakai",
     "dailyTitle": "Harian · {{date}}",
     "dailyTitleA11y": "Tantangan harian, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} koin. Buka toko",
-    "balanceA11y": "Saldo: {{count}} koin"
+    "badgeA11y_other": "{{count}} koin. Buka toko",
+    "balanceA11y_other": "Saldo: {{count}} koin"
   },
   "items": {
     "undo": "Satu langkah mundur",
@@ -109,7 +109,7 @@
   "win": {
     "title": "Level selesai!",
     "starsA11y": "{{count}} dari 3 bintang",
-    "coinsA11y": "{{count}} koin didapat",
+    "coinsA11y_other": "{{count}} koin didapat",
     "next": "Lanjut",
     "nextA11y": "Main level berikutnya",
     "double": "Koin x2",
@@ -147,10 +147,10 @@
     "title": "Hadiah",
     "skippedTitle": "Level dilewati",
     "skippedMessage": "Level {{n}} dihitung selesai dengan 1 bintang.",
-    "coins": "+{{count}} koin",
-    "hints": "+{{count}} petunjuk",
-    "undos": "+{{count}} langkah mundur",
-    "extraTubes": "+{{count}} tabung"
+    "coins_other": "+{{count}} koin",
+    "hints_other": "+{{count}} petunjuk",
+    "undos_other": "+{{count}} langkah mundur",
+    "extraTubes_other": "+{{count}} tabung"
   },
   "tutorial": {
     "level1": "Ketuk tabung, lalu ketuk tempat menuang",

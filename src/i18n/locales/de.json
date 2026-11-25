@@ -84,15 +84,18 @@
     "rewardSaved": "Das Spielfeld hat sich geändert, deine Belohnung wurde für später aufbewahrt",
     "costFree": "noch {{count}} gratis",
     "costOwned": "noch {{count}}",
-    "costCoins": "{{count}} Münzen",
+    "costCoins_one": "{{count}} Münzen",
+    "costCoins_other": "{{count}} Münzen",
     "costAd": "Werbevideo ansehen",
     "costUsed": "schon benutzt",
     "dailyTitle": "Täglich · {{date}}",
     "dailyTitleA11y": "Tagesrätsel, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} Münzen. Shop öffnen",
-    "balanceA11y": "Guthaben: {{count}} Münzen"
+    "badgeA11y_one": "{{count}} Münzen. Shop öffnen",
+    "badgeA11y_other": "{{count}} Münzen. Shop öffnen",
+    "balanceA11y_one": "Guthaben: {{count}} Münzen",
+    "balanceA11y_other": "Guthaben: {{count}} Münzen"
   },
   "items": {
     "undo": "Ein Rückgängig",
@@ -110,7 +113,8 @@
   "win": {
     "title": "Level geschafft!",
     "starsA11y": "{{count}} von 3 Sternen",
-    "coinsA11y": "{{count}} Münzen verdient",
+    "coinsA11y_one": "{{count}} Münzen verdient",
+    "coinsA11y_other": "{{count}} Münzen verdient",
     "next": "Weiter",
     "nextA11y": "Nächstes Level spielen",
     "double": "Verdoppeln",
@@ -149,10 +153,14 @@
     "title": "Belohnung",
     "skippedTitle": "Level übersprungen",
     "skippedMessage": "Level {{n}} zählt als geschafft mit 1 Stern.",
-    "coins": "+{{count}} Münzen",
-    "hints": "+{{count}} Tipps",
-    "undos": "+{{count}} Rückgängig",
-    "extraTubes": "+{{count}} Gläser"
+    "coins_one": "+{{count}} Münzen",
+    "coins_other": "+{{count}} Münzen",
+    "hints_one": "+{{count}} Tipps",
+    "hints_other": "+{{count}} Tipps",
+    "undos_one": "+{{count}} Rückgängig",
+    "undos_other": "+{{count}} Rückgängig",
+    "extraTubes_one": "+{{count}} Gläser",
+    "extraTubes_other": "+{{count}} Gläser"
   },
   "tutorial": {
     "level1": "Tippe auf ein Glas, dann auf das Ziel",

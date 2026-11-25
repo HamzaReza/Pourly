@@ -84,15 +84,18 @@
     "rewardSaved": "बोर्ड बदल गया, इसलिए आपका इनाम बाद के लिए सेव हो गया",
     "costFree": "{{count}} फ़्री बचे",
     "costOwned": "{{count}} बचे",
-    "costCoins": "{{count}} सिक्के",
+    "costCoins_one": "{{count}} सिक्के",
+    "costCoins_other": "{{count}} सिक्के",
     "costAd": "विज्ञापन देखें",
     "costUsed": "पहले ही इस्तेमाल हुआ",
     "dailyTitle": "डेली · {{date}}",
     "dailyTitleA11y": "डेली चैलेंज, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} सिक्के। शॉप खोलें",
-    "balanceA11y": "बैलेंस: {{count}} सिक्के"
+    "badgeA11y_one": "{{count}} सिक्के। शॉप खोलें",
+    "badgeA11y_other": "{{count}} सिक्के। शॉप खोलें",
+    "balanceA11y_one": "बैलेंस: {{count}} सिक्के",
+    "balanceA11y_other": "बैलेंस: {{count}} सिक्के"
   },
   "items": {
     "undo": "एक अनडू",
@@ -110,7 +113,8 @@
   "win": {
     "title": "लेवल पूरा!",
     "starsA11y": "3 में से {{count}} स्टार",
-    "coinsA11y": "{{count}} सिक्के मिले",
+    "coinsA11y_one": "{{count}} सिक्के मिले",
+    "coinsA11y_other": "{{count}} सिक्के मिले",
     "next": "अगला",
     "nextA11y": "अगला लेवल खेलें",
     "double": "सिक्के दोगुने",
@@ -149,10 +153,14 @@
     "title": "इनाम",
     "skippedTitle": "लेवल स्किप हुआ",
     "skippedMessage": "लेवल {{n}} को 1 स्टार के साथ पूरा माना गया।",
-    "coins": "+{{count}} सिक्के",
-    "hints": "+{{count}} हिंट",
-    "undos": "+{{count}} अनडू",
-    "extraTubes": "+{{count}} ट्यूब"
+    "coins_one": "+{{count}} सिक्के",
+    "coins_other": "+{{count}} सिक्के",
+    "hints_one": "+{{count}} हिंट",
+    "hints_other": "+{{count}} हिंट",
+    "undos_one": "+{{count}} अनडू",
+    "undos_other": "+{{count}} अनडू",
+    "extraTubes_one": "+{{count}} ट्यूब",
+    "extraTubes_other": "+{{count}} ट्यूब"
   },
   "tutorial": {
     "level1": "एक ट्यूब पर टैप करें, फिर जहाँ डालना हो वहाँ टैप करें",

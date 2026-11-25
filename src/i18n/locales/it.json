@@ -85,15 +85,21 @@
     "rewardSaved": "Lo schema è cambiato: la ricompensa è salvata per dopo",
     "costFree": "Ancora {{count}} gratis",
     "costOwned": "Restano {{count}}",
-    "costCoins": "{{count}} monete",
+    "costCoins_many": "{{count}} monete",
+    "costCoins_one": "{{count}} monete",
+    "costCoins_other": "{{count}} monete",
     "costAd": "guarda un video",
     "costUsed": "già usato",
     "dailyTitle": "Sfida · {{date}}",
     "dailyTitleA11y": "Sfida giornaliera, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} monete. Apri il negozio",
-    "balanceA11y": "Saldo: {{count}} monete"
+    "badgeA11y_many": "{{count}} monete. Apri il negozio",
+    "badgeA11y_one": "{{count}} monete. Apri il negozio",
+    "badgeA11y_other": "{{count}} monete. Apri il negozio",
+    "balanceA11y_many": "Saldo: {{count}} monete",
+    "balanceA11y_one": "Saldo: {{count}} monete",
+    "balanceA11y_other": "Saldo: {{count}} monete"
   },
   "items": {
     "undo": "Un annullamento",
@@ -111,7 +117,9 @@
   "win": {
     "title": "Livello completato!",
     "starsA11y": "{{count}} stelle su 3",
-    "coinsA11y": "{{count}} monete guadagnate",
+    "coinsA11y_many": "{{count}} monete guadagnate",
+    "coinsA11y_one": "{{count}} monete guadagnate",
+    "coinsA11y_other": "{{count}} monete guadagnate",
     "next": "Avanti",
     "nextA11y": "Gioca il livello successivo",
     "double": "Monete x2",
@@ -151,10 +159,18 @@
     "title": "Ricompensa",
     "skippedTitle": "Livello saltato",
     "skippedMessage": "Il livello {{n}} conta come completato con 1 stella.",
-    "coins": "+{{count}} monete",
-    "hints": "+{{count}} aiuti",
-    "undos": "+{{count}} annullamenti",
-    "extraTubes": "+{{count}} tubi"
+    "coins_many": "+{{count}} monete",
+    "coins_one": "+{{count}} monete",
+    "coins_other": "+{{count}} monete",
+    "hints_many": "+{{count}} aiuti",
+    "hints_one": "+{{count}} aiuti",
+    "hints_other": "+{{count}} aiuti",
+    "undos_many": "+{{count}} annullamenti",
+    "undos_one": "+{{count}} annullamenti",
+    "undos_other": "+{{count}} annullamenti",
+    "extraTubes_many": "+{{count}} tubi",
+    "extraTubes_one": "+{{count}} tubi",
+    "extraTubes_other": "+{{count}} tubi"
   },
   "tutorial": {
     "level1": "Tocca un tubo, poi tocca dove versare",

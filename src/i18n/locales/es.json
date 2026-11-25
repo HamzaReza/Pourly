@@ -85,15 +85,21 @@
     "rewardSaved": "El tablero cambió, así que guardamos tu recompensa para después",
     "costFree": "quedan {{count}} gratis",
     "costOwned": "quedan {{count}}",
-    "costCoins": "{{count}} monedas",
+    "costCoins_many": "{{count}} monedas",
+    "costCoins_one": "{{count}} monedas",
+    "costCoins_other": "{{count}} monedas",
     "costAd": "ver un anuncio",
     "costUsed": "ya usado",
     "dailyTitle": "Diario · {{date}}",
     "dailyTitleA11y": "Reto diario, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} monedas. Abrir la tienda",
-    "balanceA11y": "Saldo: {{count}} monedas"
+    "badgeA11y_many": "{{count}} monedas. Abrir la tienda",
+    "badgeA11y_one": "{{count}} monedas. Abrir la tienda",
+    "badgeA11y_other": "{{count}} monedas. Abrir la tienda",
+    "balanceA11y_many": "Saldo: {{count}} monedas",
+    "balanceA11y_one": "Saldo: {{count}} monedas",
+    "balanceA11y_other": "Saldo: {{count}} monedas"
   },
   "items": {
     "undo": "Un deshacer",
@@ -111,7 +117,9 @@
   "win": {
     "title": "¡Nivel superado!",
     "starsA11y": "{{count}} de 3 estrellas",
-    "coinsA11y": "{{count}} monedas ganadas",
+    "coinsA11y_many": "{{count}} monedas ganadas",
+    "coinsA11y_one": "{{count}} monedas ganadas",
+    "coinsA11y_other": "{{count}} monedas ganadas",
     "next": "Siguiente",
     "nextA11y": "Jugar el siguiente nivel",
     "double": "Duplicar",
@@ -151,10 +159,18 @@
     "title": "Recompensa",
     "skippedTitle": "Nivel saltado",
     "skippedMessage": "El nivel {{n}} cuenta como superado con 1 estrella.",
-    "coins": "+{{count}} monedas",
-    "hints": "+{{count}} pistas",
-    "undos": "+{{count}} deshacer",
-    "extraTubes": "+{{count}} tubos"
+    "coins_many": "+{{count}} monedas",
+    "coins_one": "+{{count}} monedas",
+    "coins_other": "+{{count}} monedas",
+    "hints_many": "+{{count}} pistas",
+    "hints_one": "+{{count}} pistas",
+    "hints_other": "+{{count}} pistas",
+    "undos_many": "+{{count}} deshacer",
+    "undos_one": "+{{count}} deshacer",
+    "undos_other": "+{{count}} deshacer",
+    "extraTubes_many": "+{{count}} tubos",
+    "extraTubes_one": "+{{count}} tubos",
+    "extraTubes_other": "+{{count}} tubos"
   },
   "tutorial": {
     "level1": "Toca un tubo y luego toca dónde verter",

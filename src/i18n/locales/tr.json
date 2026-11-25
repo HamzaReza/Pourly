@@ -84,15 +84,18 @@
     "rewardSaved": "Tahta değişti, ödülün sonraya saklandı",
     "costFree": "Ücretsiz: {{count}}",
     "costOwned": "Kalan: {{count}}",
-    "costCoins": "{{count}} jeton",
+    "costCoins_one": "{{count}} jeton",
+    "costCoins_other": "{{count}} jeton",
     "costAd": "reklam izle",
     "costUsed": "zaten kullanıldı",
     "dailyTitle": "Günlük · {{date}}",
     "dailyTitleA11y": "Günlük görev, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} jeton. Mağazayı aç",
-    "balanceA11y": "Bakiye: {{count}} jeton"
+    "badgeA11y_one": "{{count}} jeton. Mağazayı aç",
+    "badgeA11y_other": "{{count}} jeton. Mağazayı aç",
+    "balanceA11y_one": "Bakiye: {{count}} jeton",
+    "balanceA11y_other": "Bakiye: {{count}} jeton"
   },
   "items": {
     "undo": "Geri alma",
@@ -110,7 +113,8 @@
   "win": {
     "title": "Seviye tamamlandı!",
     "starsA11y": "3 üzerinden {{count}} yıldız",
-    "coinsA11y": "{{count}} jeton kazanıldı",
+    "coinsA11y_one": "{{count}} jeton kazanıldı",
+    "coinsA11y_other": "{{count}} jeton kazanıldı",
     "next": "Sonraki",
     "nextA11y": "Sonraki seviyeyi oyna",
     "double": "2x jeton",
@@ -149,10 +153,14 @@
     "title": "Ödül",
     "skippedTitle": "Seviye geçildi",
     "skippedMessage": "Seviye {{n}}, 1 yıldızla tamamlanmış sayılır.",
-    "coins": "+{{count}} jeton",
-    "hints": "+{{count}} ipucu",
-    "undos": "+{{count}} geri alma",
-    "extraTubes": "+{{count}} tüp"
+    "coins_one": "+{{count}} jeton",
+    "coins_other": "+{{count}} jeton",
+    "hints_one": "+{{count}} ipucu",
+    "hints_other": "+{{count}} ipucu",
+    "undos_one": "+{{count}} geri alma",
+    "undos_other": "+{{count}} geri alma",
+    "extraTubes_one": "+{{count}} tüp",
+    "extraTubes_other": "+{{count}} tüp"
   },
   "tutorial": {
     "level1": "Bir tüpe dokun, sonra dökeceğin yere dokun",

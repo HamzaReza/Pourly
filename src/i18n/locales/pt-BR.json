@@ -85,15 +85,21 @@
     "rewardSaved": "O tabuleiro mudou, então sua recompensa foi guardada para depois",
     "costFree": "restam {{count}} grátis",
     "costOwned": "restam {{count}}",
-    "costCoins": "{{count}} moedas",
+    "costCoins_many": "{{count}} moedas",
+    "costCoins_one": "{{count}} moedas",
+    "costCoins_other": "{{count}} moedas",
     "costAd": "assistir a um anúncio",
     "costUsed": "já usado",
     "dailyTitle": "Diário · {{date}}",
     "dailyTitleA11y": "Desafio diário, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} moedas. Abrir a loja",
-    "balanceA11y": "Saldo: {{count}} moedas"
+    "badgeA11y_many": "{{count}} moedas. Abrir a loja",
+    "badgeA11y_one": "{{count}} moedas. Abrir a loja",
+    "badgeA11y_other": "{{count}} moedas. Abrir a loja",
+    "balanceA11y_many": "Saldo: {{count}} moedas",
+    "balanceA11y_one": "Saldo: {{count}} moedas",
+    "balanceA11y_other": "Saldo: {{count}} moedas"
   },
   "items": {
     "undo": "Um desfazer",
@@ -111,7 +117,9 @@
   "win": {
     "title": "Nível concluído!",
     "starsA11y": "{{count}} de 3 estrelas",
-    "coinsA11y": "{{count}} moedas ganhas",
+    "coinsA11y_many": "{{count}} moedas ganhas",
+    "coinsA11y_one": "{{count}} moedas ganhas",
+    "coinsA11y_other": "{{count}} moedas ganhas",
     "next": "Próximo",
     "nextA11y": "Jogar o próximo nível",
     "double": "Dobrar moedas",
@@ -151,10 +159,18 @@
     "title": "Recompensa",
     "skippedTitle": "Nível pulado",
     "skippedMessage": "O nível {{n}} conta como concluído com 1 estrela.",
-    "coins": "+{{count}} moedas",
-    "hints": "+{{count}} dicas",
-    "undos": "+{{count}} desfazer",
-    "extraTubes": "+{{count}} tubos"
+    "coins_many": "+{{count}} moedas",
+    "coins_one": "+{{count}} moedas",
+    "coins_other": "+{{count}} moedas",
+    "hints_many": "+{{count}} dicas",
+    "hints_one": "+{{count}} dicas",
+    "hints_other": "+{{count}} dicas",
+    "undos_many": "+{{count}} desfazer",
+    "undos_one": "+{{count}} desfazer",
+    "undos_other": "+{{count}} desfazer",
+    "extraTubes_many": "+{{count}} tubos",
+    "extraTubes_one": "+{{count}} tubos",
+    "extraTubes_other": "+{{count}} tubos"
   },
   "tutorial": {
     "level1": "Toque em um tubo e depois onde despejar",

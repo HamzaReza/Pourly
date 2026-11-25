@@ -83,15 +83,15 @@
     "rewardSaved": "보드가 바뀌어서 보상은 나중을 위해 저장했어요",
     "costFree": "무료 {{count}}회 남음",
     "costOwned": "{{count}}개 남음",
-    "costCoins": "{{count}}코인",
+    "costCoins_other": "{{count}}코인",
     "costAd": "광고 보기",
     "costUsed": "이미 사용함",
     "dailyTitle": "일일 · {{date}}",
     "dailyTitleA11y": "일일 챌린지, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}}코인. 상점 열기",
-    "balanceA11y": "잔액: {{count}}코인"
+    "badgeA11y_other": "{{count}}코인. 상점 열기",
+    "balanceA11y_other": "잔액: {{count}}코인"
   },
   "items": {
     "undo": "되돌리기",
@@ -109,7 +109,7 @@
   "win": {
     "title": "레벨 완료!",
     "starsA11y": "별 3개 중 {{count}}개",
-    "coinsA11y": "{{count}}코인 획득",
+    "coinsA11y_other": "{{count}}코인 획득",
     "next": "다음",
     "nextA11y": "다음 레벨 플레이",
     "double": "코인 2배",
@@ -147,10 +147,10 @@
     "title": "보상",
     "skippedTitle": "레벨 건너뜀",
     "skippedMessage": "레벨 {{n}}은(는) 별 1개로 완료 처리돼요.",
-    "coins": "+{{count}}코인",
-    "hints": "힌트 +{{count}}",
-    "undos": "되돌리기 +{{count}}",
-    "extraTubes": "튜브 +{{count}}"
+    "coins_other": "+{{count}}코인",
+    "hints_other": "힌트 +{{count}}",
+    "undos_other": "되돌리기 +{{count}}",
+    "extraTubes_other": "튜브 +{{count}}"
   },
   "tutorial": {
     "level1": "튜브를 탭한 다음, 부을 곳을 탭하세요",

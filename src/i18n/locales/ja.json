@@ -83,15 +83,15 @@
     "rewardSaved": "盤面が変わったため、報酬は後で使えるよう保存されました",
     "costFree": "無料あと{{count}}回",
     "costOwned": "あと{{count}}個",
-    "costCoins": "{{count}}コイン",
+    "costCoins_other": "{{count}}コイン",
     "costAd": "広告を見る",
     "costUsed": "使用済み",
     "dailyTitle": "デイリー · {{date}}",
     "dailyTitleA11y": "デイリーチャレンジ、{{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}}コイン。ショップを開く",
-    "balanceA11y": "所持コイン: {{count}}"
+    "badgeA11y_other": "{{count}}コイン。ショップを開く",
+    "balanceA11y_other": "所持コイン: {{count}}"
   },
   "items": {
     "undo": "元に戻す",
@@ -109,7 +109,7 @@
   "win": {
     "title": "レベルクリア！",
     "starsA11y": "星3つ中{{count}}つ",
-    "coinsA11y": "{{count}}コイン獲得",
+    "coinsA11y_other": "{{count}}コイン獲得",
     "next": "次へ",
     "nextA11y": "次のレベルをプレイ",
     "double": "コイン2倍",
@@ -147,10 +147,10 @@
     "title": "報酬",
     "skippedTitle": "レベルをスキップしました",
     "skippedMessage": "レベル {{n}} は星1つでクリア扱いになります。",
-    "coins": "+{{count}}コイン",
-    "hints": "ヒント+{{count}}",
-    "undos": "元に戻す+{{count}}",
-    "extraTubes": "チューブ+{{count}}"
+    "coins_other": "+{{count}}コイン",
+    "hints_other": "ヒント+{{count}}",
+    "undos_other": "元に戻す+{{count}}",
+    "extraTubes_other": "チューブ+{{count}}"
   },
   "tutorial": {
     "level1": "チューブをタップして、注ぎたい場所をタップ",
