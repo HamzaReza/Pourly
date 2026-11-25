@@ -24,4 +24,6 @@ export const STORAGE_KEYS = {
   settings: 'pourly.settings',
   progress: 'pourly.progress',
   game: 'pourly.game',
+  /** Development only: purchases made with the mock store. */
+  iapMock: 'pourly.iapMock',
 } as const;

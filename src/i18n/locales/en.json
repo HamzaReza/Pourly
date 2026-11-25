@@ -85,7 +85,8 @@
     "dailyTitleA11y": "Daily challenge, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} coins. Open the shop"
+    "badgeA11y": "{{count}} coins. Open the shop",
+    "balanceA11y": "Balance: {{count}} coins"
   },
   "items": {
     "undo": "An undo",
@@ -186,7 +187,94 @@
     "chestA11y": "Daily gift progress: {{day}} of 7 claimed. Day 7 is the chest"
   },
   "shop": {
-    "title": "Shop"
+    "title": "Shop",
+    "names": {
+      "coins_500": "Handful of coins",
+      "coins_1500": "Bag of coins",
+      "coins_4000": "Chest of coins",
+      "remove_ads": "Remove Ads",
+      "starter_pack": "Starter Pack",
+      "vip_weekly": "VIP Weekly",
+      "vip_monthly": "VIP Monthly"
+    },
+    "sections": {
+      "coins": "Coins",
+      "removeAds": "No ads",
+      "vip": "VIP",
+      "purchases": "Your purchases"
+    },
+    "coinsAmount_one": "{{value}} coin",
+    "coinsAmount_other": "{{value}} coins",
+    "loading": "Loading prices…",
+    "unavailableTitle": "Store unavailable",
+    "unavailableMessage": "Purchases aren't available right now. Please try again later.",
+    "loadFailed": "Couldn't load the store. Check your connection.",
+    "retry": "Try again",
+    "buyA11y": "Buy {{name}} for {{price}}",
+    "owned": "Owned",
+    "ownedA11y": "{{name}}: owned",
+    "notOffered": "Not available",
+    "notOfferedA11y": "{{name}} is not available right now",
+    "freeCoins": {
+      "title": "Free coins",
+      "button": "Free coins",
+      "a11y_one": "Watch an ad for {{value}} free coin",
+      "a11y_other": "Watch an ad for {{value}} free coins",
+      "reward_one": "+{{value}} coin for a short ad",
+      "reward_other": "+{{value}} coins for a short ad",
+      "left_one": "{{count}} left today",
+      "left_other": "{{count}} left today",
+      "cooldown": "Next in {{time}}",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "Free coins are available again in {{minutes}} min {{seconds}} s",
+      "capped": "That's all for today. Come back tomorrow!",
+      "granted_one": "+{{value}} coin",
+      "granted_other": "+{{value}} coins"
+    },
+    "removeAds": {
+      "description": "No more ads between levels. Rewarded ads stay optional for bonuses."
+    },
+    "starterPack": {
+      "description": "{{coins}} coins, {{hints}} hints, {{undos}} undos and the Aurora theme",
+      "oneTime": "One-time offer"
+    },
+    "vip": {
+      "subtitle": "The best way to play Pourly",
+      "benefits": {
+        "noInterstitials": "No ads between levels",
+        "giftX2": "Double daily gift",
+        "dailyBonus": "+{{coins}} coins and +{{hints}} hints every day",
+        "gold": "Exclusive Gold theme",
+        "badge": "VIP badge",
+        "freeze": "One streak freeze every week"
+      },
+      "active": "Active",
+      "activeA11y": "Your VIP subscription is active",
+      "period": {
+        "day_one": "per day",
+        "day_other": "every {{count}} days",
+        "week_one": "per week",
+        "week_other": "every {{count}} weeks",
+        "month_one": "per month",
+        "month_other": "every {{count}} months",
+        "year_one": "per year",
+        "year_other": "every {{count}} years"
+      },
+      "planPrice": "{{price}} {{period}}",
+      "subscribe": "Subscribe",
+      "subscribeA11y": "Subscribe to {{name}}: {{price}} {{period}}, renews automatically",
+      "renewNote": "Subscriptions renew automatically at the price shown until you cancel. Cancel anytime in Google Play, at least 24 hours before the next renewal. Payment is charged to your Google Play account."
+    },
+    "restore": "Restore purchases",
+    "restoreNote": "Restores Remove Ads, VIP and the Starter Pack theme. Coins, hints and undos can't be restored.",
+    "manage": "Manage subscription",
+    "terms": "Terms of Service",
+    "privacy": "Privacy Policy",
+    "thanksTitle": "Thank you!",
+    "thanksMessage": "Your purchase has been added.",
+    "alreadyOwnedTitle": "Already purchased",
+    "alreadyOwnedMessage": "This Google Play account already owns it. Restore your purchases to get it back.",
+    "restoreAction": "Restore purchases"
   },
   "themes": {
     "title": "Themes",
@@ -223,7 +311,8 @@
       "display": "Display",
       "language": "Language",
       "about": "About",
-      "progress": "Progress"
+      "progress": "Progress",
+      "purchases": "Purchases"
     },
     "sound": "Sound",
     "haptics": "Haptics",
@@ -259,6 +348,41 @@
     "resetConfirmTitle": "Are you sure?",
     "resetConfirmMessage": "This cannot be undone.",
     "resetConfirm": "Reset everything",
-    "version": "Version {{version}} (build {{build}})"
+    "version": "Version {{version}} (build {{build}})",
+    "restorePurchases": "Restore purchases",
+    "restoreHint": "Coins, hints and undos can't be restored",
+    "manageSubscription": "Manage subscription",
+    "adPrivacy": "Ad privacy options",
+    "adPrivacyHint": "Review your ad consent choices",
+    "adPrivacyFailed": "Couldn't open the ad privacy options"
+  },
+  "iap": {
+    "pending": "Purchase pending. It will be added once the payment clears.",
+    "pendingComplete": "Your pending purchase is complete!",
+    "networkError": "No connection. Check your internet and try again.",
+    "storeError": "The store couldn't complete the purchase. Please try again later.",
+    "unknownError": "Something went wrong with the purchase. Please try again.",
+    "adsRemoved": "Ads removed. Thanks for your support!",
+    "vipActive": "Welcome to VIP!",
+    "awaitingServer": "Purchase complete. Your items will arrive in a moment.",
+    "restored": "Purchases restored",
+    "nothingToRestore": "No purchases to restore on this account",
+    "restoreFailed": "Couldn't restore purchases. Please try again later."
+  },
+  "mockPurchase": {
+    "title": "TEST PURCHASE",
+    "message": "Mock store: nothing is charged. Choose how this test purchase ends.",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "Succeed",
+      "pending": "Pending payment",
+      "cancel": "Cancel",
+      "networkError": "Fail: network error",
+      "storeError": "Fail: store error"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "VIP member"
   }
 }
