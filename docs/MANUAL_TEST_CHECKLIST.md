@@ -61,6 +61,13 @@ steady 60 fps (16.7 ms frames), no janky frames during the listed moments.
 
 ## 2. App lifecycle and connectivity
 
+- [ ] **Launcher icon**: the three-tube icon on the home screen and app drawer under the launcher's
+      mask (circle, squircle or rounded square: Pixel and Samsung launchers); nothing clipped, the
+      tubes centered; with Android 13+ themed icons on, the monochrome tube silhouette shows
+- [ ] **Splash**: navy background with the centered tube mark on a cold start (Android 12+ and
+      an Android 10–11 device), in light and dark system mode; no white flash before the first
+      screen
+
 - [ ] **Cold start** (fresh install, release build): splash → playable level 1 in **< 3 s** (measure
       with a screen recording or `adb shell am start -W`); no onboarding screens
 - [ ] **Next level** after a win: board ready in **< 500 ms**, no spinner (also on a runtime level > 300)
@@ -155,10 +162,11 @@ Install from the internal track as a **license tester**. Check RevenueCat → Cu
 - [ ] No permission prompt on first launch
 - [ ] After winning level 3: the soft-prompt sheet; "Not now" → no system dialog; it returns once
       after a win of level 15
-- [ ] "Allow" → Android 13+ system dialog; allowed → reminders scheduled (`adb shell dumpsys alarm |
-  grep pourly` or wait for the slot)
+- [ ] "Allow" → Android 13+ system dialog; allowed → reminders scheduled (check
+      `adb shell dumpsys alarm | grep pourly`, or wait for the slot)
 - [ ] Denied twice / "Don't ask again": Settings switches open the app's system settings
-- [ ] Notification icon is a monochrome glyph tinted with the accent (temporary icon until phase 11)
+- [ ] Notification icon: the white tube glyph (`notification-icon.png`) shows crisply in the
+      status bar (not a white square) and is tinted with the accent `#2EC4FF` in the shade
 - [ ] `daily_ready` 10:30, `gift_ready` 18:00, `streak_risk` 20:00 (streak ≥ 2): copy localized in
       the Settings language; at most one per day; none 22:00–08:00
 - [ ] Comeback reminders after +1, +3, +7, +14 days without opening (advance the clock)

@@ -70,8 +70,8 @@ shared/           products.ts: the product → grant table shared with functions
 functions/        Cloud Functions package (Node 22): revenuecatWebhook, deleteMyAccount
 firebase/         Firestore rules and indexes, rules-test package (Vitest + emulator)
 public/           Firebase Hosting: landing, privacy policy, terms, account deletion, 404
-scripts/          generate-levels.ts, generate-sounds.mjs, write-hosting-config.mjs
-assets/           images (launcher/splash icons, temporary until phase 11) and generated sounds
+scripts/          generate-levels.ts, generate-sounds.mjs, generate-assets.mjs, write-hosting-config.mjs
+assets/           generated launcher, adaptive, splash and notification icons; generated sounds
 __tests__/        Jest suites for the app; test-utils/ holds fakes shared by the suites
 docs/             spec, decisions, setup guides, legal templates, checklists
 store-listing/    Play store listing drafts per locale
@@ -172,12 +172,29 @@ Functions secret (not an env var of the app): `REVENUECAT_WEBHOOK_SECRET`, set w
 | `yarn format`                | Prettier over the repo.                                                                  |
 | `yarn gen:levels`            | Generate and validate levels 1–300 into `src/game/levels.generated.ts` (~15 s, `tsx`).   |
 | `yarn gen:sounds`            | Generate the eight WAV effects into `assets/sounds/` (pure Node, byte-identical reruns). |
+| `yarn gen:assets`            | Draw the icons, splash mark, favicon and store graphics (SVG + `sharp`, see below).      |
+| `yarn gen:all`               | `gen:levels`, `gen:sounds` and `gen:assets` in sequence.                                 |
 | `yarn doctor`                | `expo-doctor`.                                                                           |
 | `yarn export:android`        | Export the Android JS bundle (`dist/`, gitignored).                                      |
 | `yarn prebuild:android`      | Regenerate the native `android/` project (gitignored; Continuous Native Generation).     |
 
-Procedural icon/splash generation (spec §21) arrives in phase 11; until then the launcher and
-splash images in `assets/images/` are temporary.
+**Generated assets** (`yarn gen:assets`, spec §21). `scripts/generate-assets.mjs` builds every
+image as SVG and rasterizes it with `sharp`: no downloads and no fonts (the "Pourly" wordmark is
+drawn from stroked paths), so reruns with the same `sharp` version are byte-identical (checked by
+`__tests__/generateAssets.test.ts`). The mark is three glass tubes of palette liquid on the Classic
+navy gradient.
+
+| File                                         | Size      | Used by                                                       |
+| -------------------------------------------- | --------- | ------------------------------------------------------------- |
+| `assets/images/icon.png`                     | 1024×1024 | `icon` (legacy launcher icon)                                 |
+| `assets/images/adaptive-icon-foreground.png` | 1024×1024 | `android.adaptiveIcon.foregroundImage` (66 dp safe circle)    |
+| `assets/images/adaptive-icon-background.png` | 1024×1024 | `android.adaptiveIcon.backgroundImage` (Classic gradient)     |
+| `assets/images/adaptive-icon-monochrome.png` | 1024×1024 | `android.adaptiveIcon.monochromeImage` (Android 13+ themed)   |
+| `assets/images/splash-icon.png`              | 1024×1024 | `expo-splash-screen` (`imageWidth` 240, background `#0E1A2B`) |
+| `assets/images/notification-icon.png`        | 96×96     | `expo-notifications` icon (white on transparent)              |
+| `public/favicon.png`                         | 64×64     | Firebase Hosting pages (the app has no web target)            |
+| `store-listing/assets/play-icon-512.png`     | 512×512   | Play Console app icon                                         |
+| `store-listing/assets/feature-graphic.png`   | 1024×500  | Play Console feature graphic                                  |
 
 **`functions/`** (run inside `functions/`)
 
@@ -295,17 +312,17 @@ needs a native setup and `google-services.json`, or any HTTP backend):
 
 ## Tests
 
-| Suite                               | Where                                                                  | Run                                                                  |
-| ----------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| App (Jest + `jest-expo`)            | `__tests__/` (76 suites, 680 tests at phase 9), fakes in `test-utils/` | `yarn test:ci`                                                       |
-| Cloud Functions (Vitest)            | `functions/test/`                                                      | `cd functions && yarn install && yarn test`                          |
-| Firestore rules (Vitest + emulator) | `firebase/test/firestore.rules.test.ts`                                | `cd firebase && yarn install && JAVA_HOME=<jdk 21+> yarn test:rules` |
+| Suite                               | Where                                                                   | Run                                                                  |
+| ----------------------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| App (Jest + `jest-expo`)            | `__tests__/` (78 suites, 760 tests at phase 11), fakes in `test-utils/` | `yarn test:ci`                                                       |
+| Cloud Functions (Vitest)            | `functions/test/` (3 files, 43 tests)                                   | `cd functions && yarn install && yarn test`                          |
+| Firestore rules (Vitest + emulator) | `firebase/test/firestore.rules.test.ts` (29 tests)                      | `cd firebase && yarn install && JAVA_HOME=<jdk 21+> yarn test:rules` |
 
 The app suites cover the rules engine, solver, generator and all 300 levels' solvability, level
 codec, daily and streak dates (time zones, clock rollback), economy, gifts, ad scheduler,
 notification planner (DST, quiet hours, caps), i18n key parity across locales, palette distances,
 layout and hit testing, migrations, fulfillment idempotency, cloud merge, auth transitions,
-RevenueCat identity, grants and screen smoke tests.
+RevenueCat identity, grants, screen smoke tests and the generated sounds and images.
 
 Full verification (spec §22):
 
@@ -317,6 +334,9 @@ yarn doctor
 yarn export:android
 yarn prebuild:android && (cd android && ./gradlew assembleDebug)
 ```
+
+The Android build uses JDK 17 (Gradle 9.4.1, AGP 9.2.1); the first Gradle run downloads Android
+SDK Platform 37 and Build-Tools 37.0.0 if they are missing.
 
 Device-only checks: [`docs/MANUAL_TEST_CHECKLIST.md`](docs/MANUAL_TEST_CHECKLIST.md).
 

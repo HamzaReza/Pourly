@@ -41,14 +41,14 @@ The English listing is a draft written against the app's real features; the othe
 
 ## Asset checklist
 
-| Asset                | Requirement                                                                                      | Status                                                               |
-| -------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
-| App icon             | 512 × 512 PNG, 32-bit, ≤ 1 MB (Play applies the rounded mask)                                    | To do (current `assets/images/icon.png` is temporary until phase 11) |
-| Feature graphic      | 1024 × 500 JPG or 24-bit PNG, no transparency; keep text away from edges                         | To do                                                                |
-| Phone screenshots    | 2–8 per language, 9:16 portrait, at least 1080 × 1920 recommended (4+ for promotion eligibility) | To do                                                                |
-| 7-inch tablet shots  | Optional, up to 8                                                                                | Optional                                                             |
-| 10-inch tablet shots | Optional, up to 8                                                                                | Optional                                                             |
-| Promo video          | Optional YouTube URL, landscape, no age restriction                                              | Optional                                                             |
+| Asset                | Requirement                                                                                      | Status                                                      |
+| -------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------- |
+| App icon             | 512 × 512 PNG, 32-bit, ≤ 1 MB (Play applies the rounded mask)                                    | Done: `assets/play-icon-512.png` (`yarn gen:assets`)        |
+| Feature graphic      | 1024 × 500 JPG or 24-bit PNG, no transparency; keep text away from edges                         | Done: `assets/feature-graphic.png` (RGB, `yarn gen:assets`) |
+| Phone screenshots    | 2–8 per language, 9:16 portrait, at least 1080 × 1920 recommended (4+ for promotion eligibility) | To do                                                       |
+| 7-inch tablet shots  | Optional, up to 8                                                                                | Optional                                                    |
+| 10-inch tablet shots | Optional, up to 8                                                                                | Optional                                                    |
+| Promo video          | Optional YouTube URL, landscape, no age restriction                                              | Optional                                                    |
 
 Suggested screenshot set (portrait, real gameplay, with a short localized caption each): the first
 level mid-pour; a colourful 12–14 colour board; the win screen with stars and confetti; the daily
