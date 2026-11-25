@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Delete your Pourly account</title>
+    <meta
+      name="description"
+      content="Delete your Pourly account and the game data stored with it."
+    />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main>
+      <a class="brand" href="/">Pourly</a>
+      <h1>Delete your Pourly account</h1>
+      <p>
+        If you signed in to Pourly with Google, you can delete your account and the data stored with
+        it here. You can also do it in the app: Settings → Account → Delete account and data.
+      </p>
+
+      <h2>What is deleted</h2>
+      <ul>
+        <li>
+          Your cloud save: levels, stars, coins, hints, undos, extra tubes, daily streaks and
+          history, the daily gift cycle and unlocked themes.
+        </li>
+        <li>Records of purchases delivered to your account by our server.</li>
+        <li>Your Pourly sign-in (the link between Pourly and your Google account).</li>
+      </ul>
+      <p>
+        Deletion is immediate and cannot be undone. Purchases themselves are handled by Google Play:
+        Remove Ads and VIP stay with your Google Play account and can be restored in the app, and
+        subscriptions must be cancelled in Google Play.
+      </p>
+
+      <div class="card" id="flow">
+        <div id="step-signin">
+          <p>Sign in with the Google account you use in Pourly to continue.</p>
+          <div class="actions">
+            <button class="button" id="signin" type="button" disabled>Sign in with Google</button>
+          </div>
+        </div>
+
+        <div id="step-confirm" hidden>
+          <p>Signed in as <strong id="email"></strong>.</p>
+          <label class="check">
+            <input type="checkbox" id="understand" />
+            <span
+              >I understand that my Pourly account and its data will be deleted permanently.</span
+            >
+          </label>
+          <div class="actions">
+            <button class="button danger" id="delete" type="button" disabled>
+              Delete my account
+            </button>
+            <button class="button secondary" id="switch" type="button">Use another account</button>
+          </div>
+        </div>
+
+        <p class="status" id="status" role="status" aria-live="polite"></p>
+      </div>
+
+      <div class="card">
+        <h2>Never signed in?</h2>
+        <p>
+          Without an account, your progress is stored only on your device and never on our servers.
+          Uninstalling Pourly removes it.
+        </p>
+      </div>
+
+      <footer>
+        <p id="support-line" hidden>Questions? Contact us at <a id="support-link" href="/"></a>.</p>
+        <p><a href="/privacy">Privacy Policy</a> · <a href="/terms">Terms of Service</a></p>
+      </footer>
+    </main>
+
+    <script src="/site-config.js"></script>
+    <script type="module">
+      // Firebase web SDK pinned to the version the app uses; the project config comes from the
+      // Firebase Hosting reserved URL, so nothing project-specific lives in this file.
+      import { initializeApp } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-app.js';
+      import {
+        getAuth,
+        GoogleAuthProvider,
+        signInWithPopup,
+        signOut,
+      } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-auth.js';
+      import {
+        getFunctions,
+        httpsCallable,
+      } from 'https://www.gstatic.com/firebasejs/12.19.0/firebase-functions.js';
+
+      const $ = (id) => document.getElementById(id);
+      const status = (text, kind) => {
+        $('status').textContent = text;
+        $('status').className = kind ? `status ${kind}` : 'status';
+      };
+
+      const support = window.POURLY_SITE && window.POURLY_SITE.supportEmail;
+      if (typeof support === 'string' && support.includes('@')) {
+        $('support-link').textContent = support;
+        $('support-link').href = `mailto:${support}`;
+        $('support-line').hidden = false;
+      }
+
+      let auth;
+      let functions;
+      try {
+        const response = await fetch('/__/firebase/init.json');
+        if (!response.ok) throw new Error(`init.json ${response.status}`);
+        const app = initializeApp(await response.json());
+        auth = getAuth(app);
+        functions = getFunctions(app, 'us-central1');
+        $('signin').disabled = false;
+      } catch (error) {
+        console.error(error);
+        status('This page could not load. Please try again later.', 'error');
+      }
+
+      const showSignedIn = (user) => {
+        $('email').textContent = user.email || user.displayName || 'your Google account';
+        $('step-signin').hidden = true;
+        $('step-confirm').hidden = false;
+        $('understand').checked = false;
+        $('delete').disabled = true;
+      };
+
+      const showSignedOut = () => {
+        $('step-signin').hidden = false;
+        $('step-confirm').hidden = true;
+      };
+
+      $('signin').addEventListener('click', async () => {
+        status('');
+        $('signin').disabled = true;
+        try {
+          const provider = new GoogleAuthProvider();
+          provider.setCustomParameters({ prompt: 'select_account' });
+          const { user } = await signInWithPopup(auth, provider);
+          showSignedIn(user);
+        } catch (error) {
+          if (error && error.code !== 'auth/popup-closed-by-user') {
+            console.error(error);
+            status('Sign-in failed. Allow pop-ups for this site and try again.', 'error');
+          }
+        } finally {
+          $('signin').disabled = false;
+        }
+      });
+
+      $('understand').addEventListener('change', () => {
+        $('delete').disabled = !$('understand').checked;
+      });
+
+      $('switch').addEventListener('click', async () => {
+        await signOut(auth);
+        status('');
+        showSignedOut();
+      });
+
+      $('delete').addEventListener('click', async () => {
+        $('delete').disabled = true;
+        $('switch').disabled = true;
+        status('Deleting your account…');
+        try {
+          await httpsCallable(functions, 'deleteMyAccount')();
+          await signOut(auth).catch(() => undefined);
+          $('step-confirm').hidden = true;
+          status(
+            'Your Pourly account and its data were deleted. On your phone, Pourly now plays as a guest.',
+            'ok',
+          );
+        } catch (error) {
+          console.error(error);
+          status('Your account could not be deleted. Please try again in a moment.', 'error');
+          $('delete').disabled = !$('understand').checked;
+        } finally {
+          $('switch').disabled = false;
+        }
+      });
+    </script>
+  </body>
+</html>
