@@ -13,6 +13,7 @@ import { track } from '@/services/analytics';
 import { initAudio, shutdownAudio } from '@/services/audio';
 import { startAdsWhenEligible } from '@/services/consent';
 import { startPurchases } from '@/services/fulfillment';
+import { readLaunchRoute, startNotifications } from '@/services/notifications';
 import { initGameLifecycle, localToday } from '@/state/gameFlow';
 import { useGameStore } from '@/state/gameStore';
 import { waitForStoresHydrated } from '@/state/hydration';
@@ -40,7 +41,7 @@ const bootstrap = async (): Promise<void> => {
   progress.touchOpen(now);
   progress.enforceThemeEntitlements(now);
   useGameStore.getState().discardStale(progress.level, dailyLevelId(localToday(now)));
-  decideAutoStart();
+  decideAutoStart(await readLaunchRoute());
   track('app_open', { session: useProgressStore.getState().sessionCount });
 };
 
@@ -63,14 +64,17 @@ export default function RootLayout() {
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(revealApp, SPLASH_SAFETY_MS);
-    // Ads and purchases start after the first frame, never on the launch path (spec §12, §13).
+    // Ads, purchases and notification scheduling start after the first frame, never on the
+    // launch path (spec §12, §13, §14).
     let stopPurchases: () => void = () => undefined;
     let stopAds: () => void = () => undefined;
+    let stopNotifications: () => void = () => undefined;
     const idle = requestIdleCallback(
       () => {
         ads.preload();
         stopPurchases = startPurchases();
         stopAds = startAdsWhenEligible();
+        stopNotifications = startNotifications();
       },
       { timeout: 2000 },
     );
@@ -79,6 +83,7 @@ export default function RootLayout() {
       cancelIdleCallback(idle);
       stopPurchases();
       stopAds();
+      stopNotifications();
     };
   }, [ready]);
 

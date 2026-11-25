@@ -16,7 +16,7 @@ import { prepareLevel } from '@/state/levelLoader';
 import { claimDailyGift, claimVipDailyBonus, doubleGiftWithAd } from '@/state/metaFlow';
 import { useProgressStore } from '@/state/progressStore';
 import { effectiveQuality, useSettingsStore } from '@/state/settingsStore';
-import { consumeAutoStart, shouldAutoStart } from '@/state/startup';
+import { consumeAutoStart, consumeLaunchRoute, shouldAutoStart } from '@/state/startup';
 import { Button } from '@/ui/Button';
 import { CoinBadge } from '@/ui/CoinBadge';
 import { Crown } from '@/ui/game/Crown';
@@ -96,6 +96,7 @@ export default function HomeScreen() {
   const level = useProgressStore((state) => state.level);
   const canResume = useGameStore((state) => isResumable(selectLevelSlot(state), level));
   const [autoStart] = useState(shouldAutoStart);
+  const [launchRoute] = useState(consumeLaunchRoute);
   const [focused, setFocused] = useState(true);
   const [today, setToday] = useState(() => localToday());
   const [reward, setReward] = useState<HomeReward | null>(null);
@@ -113,6 +114,11 @@ export default function HomeScreen() {
     }
     revealApp();
   }, [autoStart]);
+
+  // A daily, streak or gift notification that launched the app opens the Daily screen over Home.
+  useEffect(() => {
+    if (launchRoute === '/daily') router.push('/daily');
+  }, [launchRoute]);
 
   useFocusEffect(
     useCallback(() => {

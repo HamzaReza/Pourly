@@ -49,8 +49,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-notifications',
       {
+        // Temporary monochrome icon until phase 11 generates the notification icon; the color is
+        // the app accent (`colors.accent` in src/ui/tokens.ts).
         icon: './assets/images/android-icon-monochrome.png',
-        color: '#208AEF',
+        color: '#2EC4FF',
       },
     ],
     'expo-localization',
