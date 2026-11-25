@@ -127,23 +127,23 @@ All configuration comes from environment variables (`.env` locally, EAS environm
 cloud builds). Never commit `.env`. `app.config.ts` copies the public values into `extra`; the app
 reads them through `src/config/env.ts`. Values are baked in at build time.
 
-| Variable (`.env.example`)                  | Purpose                                                                                                                                            |
-| ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `ANDROID_PACKAGE`                          | Android application id. Default `com.pourly.water.app`. **Permanent once published.**                                                              |
-| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`       | RevenueCat public Google SDK key. Empty: the mock store in development, "Store unavailable" in release builds.                                     |
-| `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`         | AdMob app id, written into the Android manifest at prebuild. Defaults to Google's sample id `ca-app-pub-3940256099942544~3347511713`.              |
-| `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID`       | Production rewarded ad unit id. Development and `preview` builds always use Google test units. Empty in a release build: rewarded ads off.         |
-| `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`   | Production interstitial ad unit id. Same rules as above.                                                                                           |
-| `EXPO_PUBLIC_PRIVACY_URL`                  | Privacy policy link in Settings and the Shop. Empty: `https://<project id>.web.app/privacy` (served by Hosting from `public/privacy-policy.html`). |
-| `EXPO_PUBLIC_TERMS_URL`                    | Terms link. Empty: `https://<project id>.web.app/terms` (served from `public/terms-of-service.html`).                                              |
-| `EXPO_PUBLIC_SUPPORT_EMAIL`                | "Contact support" address in Settings and on the delete-account page. Set it to `rezahamza5@gmail.com`.                                            |
-| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`         | Firebase's Web OAuth client id for Google Sign-In. Empty: cloud features disabled.                                                                 |
-| `EXPO_PUBLIC_FIREBASE_API_KEY`             | Firebase web config (`apiKey`). Required for cloud features.                                                                                       |
-| `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Firebase web config (`authDomain`). Required for cloud features.                                                                                   |
-| `EXPO_PUBLIC_FIREBASE_PROJECT_ID`          | Firebase project id. Required for cloud features; also builds the default Hosting URLs (privacy, terms, delete account).                           |
-| `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Firebase web config (`storageBucket`).                                                                                                             |
-| `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase web config (`messagingSenderId`).                                                                                                         |
-| `EXPO_PUBLIC_FIREBASE_APP_ID`              | Firebase web config (`appId`). Required for cloud features.                                                                                        |
+| Variable (`.env.example`)                  | Purpose                                                                                                                                                            |
+| ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ANDROID_PACKAGE`                          | Android application id. Default `com.pourly.water.app`. **Permanent once published.**                                                                              |
+| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`       | RevenueCat public Google SDK key. Empty: the mock store in development, "Store unavailable" in release builds.                                                     |
+| `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`         | AdMob app id, written into the Android manifest at prebuild. Defaults to Google's sample id `ca-app-pub-3940256099942544~3347511713`.                              |
+| `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID`       | Production rewarded ad unit id. Development and `preview` builds always use Google test units. Empty in a release build: rewarded ads off.                         |
+| `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`   | Production interstitial ad unit id. Same rules as above.                                                                                                           |
+| `EXPO_PUBLIC_PRIVACY_URL`                  | Privacy policy link in Settings and the Shop. Empty: `https://<project id>.web.app/privacy` (served by Hosting from `public/privacy-policy.html`).                 |
+| `EXPO_PUBLIC_TERMS_URL`                    | Terms link. Empty: `https://<project id>.web.app/terms` (served from `public/terms-of-service.html`).                                                              |
+| `EXPO_PUBLIC_SUPPORT_EMAIL`                | "Contact support" address in Settings and on the delete-account page. Defaults to `rezahamza5@gmail.com` (the permanent support address); set it only to override. |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`         | Firebase's Web OAuth client id for Google Sign-In. Empty: cloud features disabled.                                                                                 |
+| `EXPO_PUBLIC_FIREBASE_API_KEY`             | Firebase web config (`apiKey`). Required for cloud features.                                                                                                       |
+| `EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN`         | Firebase web config (`authDomain`). Required for cloud features.                                                                                                   |
+| `EXPO_PUBLIC_FIREBASE_PROJECT_ID`          | Firebase project id. Required for cloud features; also builds the default Hosting URLs (privacy, terms, delete account).                                           |
+| `EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET`      | Firebase web config (`storageBucket`).                                                                                                                             |
+| `EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID` | Firebase web config (`messagingSenderId`).                                                                                                                         |
+| `EXPO_PUBLIC_FIREBASE_APP_ID`              | Firebase web config (`appId`). Required for cloud features.                                                                                                        |
 
 When the project id is empty, the privacy/terms defaults fall back to `https://example.com/...`, so
 always set the URLs or the project id for a store build.

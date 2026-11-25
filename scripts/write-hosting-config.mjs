@@ -1,7 +1,7 @@
 /**
  * Writes `public/site-config.js` (gitignored) before a Hosting deploy, so the static pages can show
  * the support email without hard-coding it. Reads `EXPO_PUBLIC_SUPPORT_EMAIL` from the environment,
- * falling back to the project's `.env`. Without a value the pages simply hide the support line.
+ * falling back to the project's `.env`, then to the owner's permanent support address.
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
@@ -20,7 +20,10 @@ const fromDotEnv = () => {
   return '';
 };
 
-const value = (process.env[KEY] ?? '').trim() || fromDotEnv();
+/** The owner's permanent support address; env or `.env` can still override it. */
+const DEFAULT_SUPPORT_EMAIL = 'rezahamza5@gmail.com';
+
+const value = (process.env[KEY] ?? '').trim() || fromDotEnv() || DEFAULT_SUPPORT_EMAIL;
 const supportEmail = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value) ? value : '';
 const config = { supportEmail };
 writeFileSync(

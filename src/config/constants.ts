@@ -16,7 +16,7 @@ const HOSTING_ORIGIN =
   PUBLIC_ENV.firebase.projectId.length > 0
     ? `https://${PUBLIC_ENV.firebase.projectId}.web.app`
     : 'https://example.com';
-const FALLBACK_SUPPORT_EMAIL = 'support@example.com';
+const FALLBACK_SUPPORT_EMAIL = 'rezahamza5@gmail.com';
 
 export const PRIVACY_URL = PUBLIC_ENV.privacyUrl || `${HOSTING_ORIGIN}/privacy`;
 export const TERMS_URL = PUBLIC_ENV.termsUrl || `${HOSTING_ORIGIN}/terms`;

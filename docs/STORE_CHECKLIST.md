@@ -239,7 +239,7 @@ identifiers baked into the app, not secrets) for the `production` profile:
 - [ ] `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`
 - [ ] `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`, `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID`,
       `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`
-- [ ] `EXPO_PUBLIC_SUPPORT_EMAIL=rezahamza5@gmail.com`; `EXPO_PUBLIC_PRIVACY_URL` and
+- [ ] `EXPO_PUBLIC_SUPPORT_EMAIL` (defaults to rezahamza5@gmail.com); `EXPO_PUBLIC_PRIVACY_URL` and
       `EXPO_PUBLIC_TERMS_URL` empty (they default to the Hosting pages) or set to the
       `/privacy-policy` and `/terms-of-service` URLs
 - [ ] `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID` and all six `EXPO_PUBLIC_FIREBASE_*` values
