@@ -55,6 +55,7 @@ const writeGrant = async (plan: GrantPlan): Promise<'created' | 'exists'> => {
       createdAt: FieldValue.serverTimestamp(),
       applied: false,
       appliedAt: null,
+      claimedBy: null,
     });
     return 'created';
   });

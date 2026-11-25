@@ -354,3 +354,14 @@ export const useProgressStore = create<ProgressStore>()(
     },
   ),
 );
+
+/**
+ * Writes the current progress to storage now and resolves once it is stored. The persist
+ * middleware starts the same write on every change without waiting for it; callers that must not
+ * lose a change (a paid grant just applied) await this instead.
+ */
+export const flushProgress = async (): Promise<void> => {
+  const { name, storage, version, partialize } = useProgressStore.persist.getOptions();
+  if (name === undefined || storage === undefined || partialize === undefined) return;
+  await storage.setItem(name, { state: partialize(useProgressStore.getState()), version });
+};

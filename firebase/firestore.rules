@@ -7,8 +7,9 @@ rules_version = '2';
 //                              field. Clients can never delete it (account deletion runs in the
 //                              `deleteMyAccount` Cloud Function with the Admin SDK).
 // users/{uid}/grants/{grantId} Purchases fulfilled by the `revenuecatWebhook` Cloud Function. The
-//                              owner reads them and may only flip `applied` from false to true
-//                              (with `appliedAt` = server time). Creating and deleting is
+//                              owner reads them and may only claim one: `applied` false → true,
+//                              `appliedAt` = server time and `claimedBy` = the claiming install's
+//                              id (1–64 characters), nothing else. Creating and deleting is
 //                              server-only.
 // Everything else is denied.
 service cloud.firestore {
@@ -73,9 +74,11 @@ service cloud.firestore {
         allow create, delete: if false;
         allow update: if isOwner(uid)
           && resource.data.applied == false
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['applied', 'appliedAt'])
+          && request.resource.data.diff(resource.data).affectedKeys()
+               .hasOnly(['applied', 'appliedAt', 'claimedBy'])
           && request.resource.data.applied == true
-          && request.resource.data.appliedAt == request.time;
+          && request.resource.data.appliedAt == request.time
+          && isShortString(request.resource.data.claimedBy, 64);
       }
     }
 

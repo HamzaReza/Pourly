@@ -86,7 +86,7 @@ From the repository root:
 ```sh
 cd functions && yarn install && cd ..
 firebase functions:secrets:set REVENUECAT_WEBHOOK_SECRET   # paste a long random value
-firebase deploy --only firestore:rules
+firebase deploy --only firestore                            # rules and indexes
 firebase deploy --only functions                            # runs `yarn build` (predeploy)
 firebase deploy --only hosting                              # writes public/site-config.js first
 ```
@@ -186,8 +186,14 @@ users/{uid}/grants/{grantId}       server grants (webhook-written; clients may o
 snapshot with known fields only, non-negative integer balances, `level ≥ 1`, at most 200
 transaction ids, 120 daily results, 50 themes, a 20 000-entry stars map, bounded strings, ISO
 dates and `updatedAt == request.time`. Clients cannot delete the save. Grants: readable by the
-owner, never created or deleted by clients; the only update allowed is `applied: false → true`
-with `appliedAt == request.time` and no other field changed. Everything else is denied.
+owner, never created or deleted by clients; the only update allowed is the claim:
+`applied: false → true`, `appliedAt == request.time` and `claimedBy` (the claiming install's id,
+1–64 characters), with no other field changed. Everything else is denied.
+
+`firebase/firestore.indexes.json` holds one composite index (`grants`: `claimedBy` ascending,
+`appliedAt` descending) for the query that recovers grants this install claimed but never applied
+(for example when the app was killed right after the claim). `firebase deploy --only firestore`
+deploys the rules and the index together.
 
 ## Emulators and rules tests
 
@@ -217,5 +223,6 @@ uid `alice`:
 2. `create /users/alice` with a full valid snapshot (all fields listed above, `updatedAt` = request
    time) → allowed; with `coins: -1`, an extra `entitlements` field or a missing field → denied.
 3. `update /users/alice/grants/x` where the stored doc has `applied: false`, changing only
-   `applied: true` and `appliedAt` (request time) → allowed; changing `coins` → denied.
+   `applied: true`, `appliedAt` (request time) and `claimedBy` (a short string) → allowed;
+   without `claimedBy`, or also changing `coins` → denied.
 4. `create` or `delete` on `/users/alice/grants/x` → denied; any other collection → denied.
