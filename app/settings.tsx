@@ -1,6 +1,6 @@
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
-import { useCallback, useState, useSyncExternalStore } from 'react';
+import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
@@ -21,7 +21,14 @@ import { languageNativeName } from '@/i18n/format';
 import { track } from '@/services/analytics';
 import { isPrivacyOptionsRequired, showPrivacyOptions, subscribeConsent } from '@/services/consent';
 import { restorePurchases } from '@/services/fulfillment';
+import {
+  getNotificationPermission,
+  requestNotificationPermission,
+  subscribeNotificationPermission,
+  syncNotificationPermission,
+} from '@/services/notifications';
 import { resetAllProgress } from '@/state/metaFlow';
+import { useProgressStore, type NotificationToggle } from '@/state/progressStore';
 import {
   useSettingsStore,
   type QualitySetting,
@@ -75,6 +82,21 @@ export default function SettingsScreen() {
   const [versionInfo] = useState(appVersion);
   const [restoring, setRestoring] = useState(false);
   const privacyOptionsRequired = useSyncExternalStore(subscribeConsent, isPrivacyOptionsRequired);
+  const notifications = useProgressStore((state) => state.notifications);
+  const permission = useSyncExternalStore(
+    subscribeNotificationPermission,
+    getNotificationPermission,
+  );
+
+  useEffect(() => {
+    void syncNotificationPermission();
+  }, []);
+
+  /** Whether Android lets Pourly post notifications (the stored mirror until it is read). */
+  const notificationsAllowed = permission?.granted ?? notifications.granted;
+  /** Android will not show its prompt again: only the app's system settings can allow them. */
+  const notificationsBlocked =
+    permission !== null && !permission.granted && !permission.canAskAgain;
 
   const settings = () => useSettingsStore.getState();
 
@@ -107,6 +129,28 @@ export default function SettingsScreen() {
     setRestoring(true);
     restorePurchases().finally(() => setRestoring(false));
   }, []);
+
+  /**
+   * A reminder toggle. The choice is stored either way; turning one on without permission opens
+   * Android's prompt, or the app's system settings once Android no longer shows that prompt. The
+   * schedule follows the stored choice and permission (see `notifications.ts`).
+   */
+  const onReminderToggle = useCallback(
+    (toggle: NotificationToggle, value: boolean) => {
+      useProgressStore.getState().setNotificationToggle(toggle, value);
+      changed(toggle === 'dailyEnabled' ? 'dailyReminders' : 'streakReminders', value);
+      if (!value || notificationsAllowed) return;
+      if (notificationsBlocked) {
+        Linking.openSettings().catch((error: unknown) => {
+          logger.warn('Could not open the app settings', error);
+          showToast('settings.openSettingsFailed');
+        });
+        return;
+      }
+      void requestNotificationPermission();
+    },
+    [notificationsAllowed, notificationsBlocked],
+  );
 
   const onAdPrivacy = useCallback(() => {
     showPrivacyOptions()
@@ -206,6 +250,34 @@ export default function SettingsScreen() {
             changed('haptics', value);
           }}
         />
+      </SettingsSection>
+      <SettingsSection ui={ui} title={t('settings.sections.notifications')}>
+        <ToggleRow
+          ui={ui}
+          icon="notifications"
+          label={t('settings.dailyReminders')}
+          hint={t('settings.dailyRemindersHint')}
+          value={notificationsAllowed && notifications.dailyEnabled}
+          onChange={(value) => onReminderToggle('dailyEnabled', value)}
+          testID="setting-daily-reminders"
+        />
+        <ToggleRow
+          ui={ui}
+          icon="flame"
+          label={t('settings.streakReminders')}
+          hint={t('settings.streakRemindersHint')}
+          value={notificationsAllowed && notifications.streakEnabled}
+          onChange={(value) => onReminderToggle('streakEnabled', value)}
+          testID="setting-streak-reminders"
+        />
+        {notificationsAllowed ? null : (
+          <InfoRow
+            ui={ui}
+            text={t(
+              notificationsBlocked ? 'settings.notificationsBlocked' : 'settings.notificationsOff',
+            )}
+          />
+        )}
       </SettingsSection>
       <SettingsSection ui={ui} title={t('settings.sections.display')}>
         <ToggleRow

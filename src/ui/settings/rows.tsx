@@ -1,7 +1,7 @@
 /**
  * Building blocks of the Settings screen (also used for the Shop's sections). Each phase adds its
- * own `SettingsSection` (Purchases and Ad privacy in phase 7; Notifications and Account later)
- * built from these rows.
+ * own `SettingsSection` (Purchases and Ad privacy in phase 7, Notifications in phase 8, Account
+ * later) built from these rows.
  */
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, type ReactNode } from 'react';
