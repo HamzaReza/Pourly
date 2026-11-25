@@ -1,0 +1,33 @@
+{
+  "name": "pourly-functions",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pourly Cloud Functions: RevenueCat webhook (server-side purchase fulfillment) and account deletion.",
+  "main": "lib/index.js",
+  "engines": {
+    "node": "22"
+  },
+  "scripts": {
+    "copy-shared": "node scripts/copy-shared.mjs",
+    "prebuild": "node scripts/copy-shared.mjs",
+    "build": "tsc -p tsconfig.json",
+    "pretest": "node scripts/copy-shared.mjs",
+    "test": "vitest run --passWithNoTests",
+    "typecheck": "node scripts/copy-shared.mjs && tsc -p tsconfig.json --noEmit",
+    "serve": "yarn build && firebase emulators:start --only functions,firestore,auth",
+    "deploy": "firebase deploy --only functions",
+    "logs": "firebase functions:log"
+  },
+  "devDependencies": {
+    "@types/node": "^22",
+    "typescript": "~6.0.3",
+    "vitest": "^4"
+  },
+  "resolutions": {
+    "@firebase/database-compat": "2.1.7"
+  },
+  "dependencies": {
+    "firebase-admin": "^14.5.1",
+    "firebase-functions": "^7.4.0"
+  }
+}

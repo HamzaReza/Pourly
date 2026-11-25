@@ -1,0 +1,4 @@
+node_modules/
+lib/
+# Copied from ../shared by scripts/copy-shared.mjs before every build and test run.
+src/shared/
