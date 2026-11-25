@@ -19,10 +19,10 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   android: {
     package: env(process.env.ANDROID_PACKAGE, DEFAULT_ANDROID_PACKAGE),
     adaptiveIcon: {
-      backgroundColor: '#E6F4FE',
-      foregroundImage: './assets/images/android-icon-foreground.png',
-      backgroundImage: './assets/images/android-icon-background.png',
-      monochromeImage: './assets/images/android-icon-monochrome.png',
+      backgroundColor: '#16294A',
+      foregroundImage: './assets/images/adaptive-icon-foreground.png',
+      backgroundImage: './assets/images/adaptive-icon-background.png',
+      monochromeImage: './assets/images/adaptive-icon-monochrome.png',
     },
     predictiveBackGestureEnabled: false,
     blockedPermissions: ['android.permission.RECORD_AUDIO'],
@@ -32,9 +32,9 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-splash-screen',
       {
-        backgroundColor: '#208AEF',
+        backgroundColor: '#0E1A2B',
         image: './assets/images/splash-icon.png',
-        imageWidth: 76,
+        imageWidth: 240,
       },
     ],
     [
@@ -49,9 +49,8 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     [
       'expo-notifications',
       {
-        // Temporary monochrome icon until phase 11 generates the notification icon; the color is
-        // the app accent (`colors.accent` in src/ui/tokens.ts).
-        icon: './assets/images/android-icon-monochrome.png',
+        // White-on-transparent status-bar icon; the color is the app accent (`colors.accent`).
+        icon: './assets/images/notification-icon.png',
         color: '#2EC4FF',
       },
     ],
