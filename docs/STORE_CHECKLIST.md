@@ -7,16 +7,16 @@ needs the hosted pages).
 
 Facts used throughout:
 
-| Item                     | Value                                                                                              |
-| ------------------------ | -------------------------------------------------------------------------------------------------- |
-| Developer                | Infratek Systems                                                                                   |
-| Support / privacy        | rezahamza5@gmail.com                                                                               |
-| Package (application id) | `com.pourly.water.app` (**permanent** once the first build is uploaded)                            |
-| Store title              | `Pourly: Water Sort Puzzle` (25 characters)                                                        |
-| Hosting origin           | `https://pourly-app.web.app` (placeholder project `pourly-app`; use your project id)               |
-| Privacy policy URL       | `https://pourly-app.web.app/privacy-policy` (the app links `/privacy`, which serves the same page) |
-| Terms URL                | `https://pourly-app.web.app/terms-of-service` (the app links `/terms`)                             |
-| Account deletion URL     | `https://pourly-app.web.app/delete-account`                                                        |
+| Item                     | Value                                                                                                |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Developer                | Infratek Systems                                                                                     |
+| Support / privacy        | rezahamza5@gmail.com                                                                                 |
+| Package (application id) | `com.pourly.water.app` (**permanent** once the first build is uploaded)                              |
+| Store title              | `Pourly: Water Sort Puzzle` (25 characters)                                                          |
+| Hosting origin           | `https://pourly-1c779.web.app` (Firebase project `pourly-1c779`)                                     |
+| Privacy policy URL       | `https://pourly-1c779.web.app/privacy-policy` (the app links `/privacy`, which serves the same page) |
+| Terms URL                | `https://pourly-1c779.web.app/terms-of-service` (the app links `/terms`)                             |
+| Account deletion URL     | `https://pourly-1c779.web.app/delete-account`                                                        |
 
 Before starting: Firebase is set up and Hosting is deployed (`docs/FIREBASE_SETUP.md`), so the
 three URLs above load.
@@ -26,7 +26,7 @@ three URLs above load.
 - [ ] Play Console → **Create app**: name `Pourly: Water Sort Puzzle`, default language English
       (United States), **Game**, **Free**, accept the declarations.
 - [ ] Store settings → App category: **Game → Puzzle**. Tags: Puzzle, Casual, Offline, Single
-      player. Contact email `rezahamza5@gmail.com`; website `https://pourly-app.web.app`.
+      player. Contact email `rezahamza5@gmail.com`; website `https://pourly-1c779.web.app`.
 - [ ] Set up a **payments profile** (merchant account) for the developer account; in-app products
       cannot be created without it.
 - [ ] Test and release → App integrity → **Play App Signing**: keep Google-managed signing (the
@@ -37,7 +37,7 @@ three URLs above load.
 
 ### Privacy policy
 
-- [ ] URL: `https://pourly-app.web.app/privacy-policy` (source: `docs/PRIVACY_POLICY.md`, page:
+- [ ] URL: `https://pourly-1c779.web.app/privacy-policy` (source: `docs/PRIVACY_POLICY.md`, page:
       `public/privacy-policy.html`).
 
 ### Ads
@@ -95,9 +95,9 @@ Answer the overview questions:
 - [ ] Is all user data encrypted in transit? **Yes** (HTTPS/TLS to Firebase, RevenueCat and AdMob)
 - [ ] Do you provide a way for users to request that their data is deleted? **Yes**: in the app
       (Settings → Account → Delete account and data) and at
-      `https://pourly-app.web.app/delete-account`.
+      `https://pourly-1c779.web.app/delete-account`.
 - [ ] Delete account URL (required because the app lets users create an account):
-      `https://pourly-app.web.app/delete-account`.
+      `https://pourly-1c779.web.app/delete-account`.
 
 Data types. "Collected" = sent off the device. Service providers processing data on our behalf
 (Firebase, RevenueCat) count as **collected, not shared**; AdMob is Google's own advertising
@@ -223,8 +223,8 @@ prices; adjust as you like):
       share" entry) to support the CCPA note in the privacy policy.
 - [ ] **app-ads.txt**: AdMob → Apps → app-ads.txt shows your line
       (`google.com, pub-XXXXXXXXXXXXXXXX, DIRECT, f08c47fec0942fa0`). Add it as `public/app-ads.txt`,
-      deploy Hosting so it is served at `https://pourly-app.web.app/app-ads.txt`, and set the
-      **Website** field of the Play store listing to `https://pourly-app.web.app` (app-ads.txt must
+      deploy Hosting so it is served at `https://pourly-1c779.web.app/app-ads.txt`, and set the
+      **Website** field of the Play store listing to `https://pourly-1c779.web.app` (app-ads.txt must
       live at the root of the developer website domain). AdMob verifies it within about 24 h.
 - [ ] Fill `.env` (or EAS environment variables for the `production` profile) with the three AdMob
       values. `preview` builds keep Google's sample app id and test units (`eas.json`).

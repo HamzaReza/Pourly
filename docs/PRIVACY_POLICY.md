@@ -4,7 +4,7 @@
 > This text was checked against the app's real data flows (`src/services/`, `functions/`,
 > `firebase/firestore.rules`) at version 1.0.0. It is not legal advice. The hosted copy is
 > `public/privacy-policy.html` (served at `/privacy-policy` and `/privacy`); keep both in step.
-> URLs use the placeholder Firebase project `pourly-app`; replace it if your project id differs.
+> URLs use the Firebase project `pourly-1c779`.
 
 **Effective date:** 2026-11-25
 
@@ -179,7 +179,7 @@ information.
 
 - **In the app:** Settings → Account → **Delete account and data**. You will be asked to choose
   your Google account again to confirm.
-- **On the web:** **https://pourly-app.web.app/delete-account** (sign in with the same Google
+- **On the web:** **https://pourly-1c779.web.app/delete-account** (sign in with the same Google
   account and confirm).
 
 Both delete your cloud save, your purchase grant records and your Pourly sign-in. Deletion cannot

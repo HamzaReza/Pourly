@@ -15,8 +15,8 @@ The app uses the **Firebase JS SDK** (not React Native Firebase), so there is **
 
 ## 1. Create the project
 
-1. In the [Firebase console](https://console.firebase.google.com/) create a project (for example
-   `pourly-app`). Google Analytics is not needed (the app has no Firebase Analytics in v1).
+1. In the [Firebase console](https://console.firebase.google.com/) create a project (Pourly's is
+   `pourly-1c779`). Google Analytics is not needed (the app has no Firebase Analytics in v1).
 2. **Upgrade to Blaze** (Project settings → Usage and billing).
 3. **Firestore**: Build → Firestore Database → Create database, production mode, location
    `nam5 (us-central)` (the Functions run in `us-central1`).
@@ -78,8 +78,8 @@ firebase login                 # once, on your machine
 firebase use --add             # pick your project; replaces the placeholder in .firebaserc
 ```
 
-`.firebaserc` in the repo contains the placeholder project id **`pourly-app`**. Either create your
-project with that id or run `firebase use --add` and commit the change.
+`.firebaserc` in the repo points at the project **`pourly-1c779`**. For a different project, run
+`firebase use --add` and commit the change.
 
 ## 4. Deploy
 
