@@ -380,19 +380,28 @@ const OUTPUTS = [
   { dir: IMAGES_DIR, file: 'notification-icon.png', size: [96, 96], svg: notificationSvg },
   { dir: HOSTING_DIR, file: 'favicon.png', size: [64, 64], svg: iconSvg },
   { dir: STORE_DIR, file: 'play-icon-512.png', size: [512, 512], svg: iconSvg },
-  { dir: STORE_DIR, file: 'feature-graphic.png', size: [1024, 500], svg: featureGraphicSvg },
+  /** Play rejects a feature graphic with an alpha channel: written as 24-bit RGB. */
+  {
+    dir: STORE_DIR,
+    file: 'feature-graphic.png',
+    size: [1024, 500],
+    svg: featureGraphicSvg,
+    opaque: true,
+  },
 ];
 
-const render = async ({ dir, file, size, svg: build }) => {
+const render = async ({ dir, file, size, svg: build, opaque = false }) => {
   const [width, height] = size;
   mkdirSync(dir, { recursive: true });
   const path = join(dir, file);
-  await sharp(Buffer.from(build()), { density: 72 })
-    .resize(width, height, { kernel: 'lanczos3' })
+  const image = sharp(Buffer.from(build()), { density: 72 }).resize(width, height, {
+    kernel: 'lanczos3',
+  });
+  await (opaque ? image.removeAlpha() : image)
     .png({ compressionLevel: 9, adaptiveFiltering: true })
     .toFile(path);
   const meta = await sharp(path).metadata();
-  console.log(`${relative(ROOT, path)}  ${meta.width}×${meta.height}`);
+  console.log(`${relative(ROOT, path)}  ${meta.width}×${meta.height}, ${meta.channels} channels`);
 };
 
 for (const output of OUTPUTS) {

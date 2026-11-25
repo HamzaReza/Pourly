@@ -8,16 +8,25 @@ const IMAGES = join(ROOT, 'assets', 'images');
 const STORE = join(ROOT, 'store-listing', 'assets');
 const HOSTING = join(ROOT, 'public');
 
-const OUTPUTS: readonly { dir: string; file: string; width: number; height: number }[] = [
-  { dir: IMAGES, file: 'icon.png', width: 1024, height: 1024 },
-  { dir: IMAGES, file: 'adaptive-icon-foreground.png', width: 1024, height: 1024 },
-  { dir: IMAGES, file: 'adaptive-icon-background.png', width: 1024, height: 1024 },
-  { dir: IMAGES, file: 'adaptive-icon-monochrome.png', width: 1024, height: 1024 },
-  { dir: IMAGES, file: 'splash-icon.png', width: 1024, height: 1024 },
-  { dir: IMAGES, file: 'notification-icon.png', width: 96, height: 96 },
-  { dir: HOSTING, file: 'favicon.png', width: 64, height: 64 },
-  { dir: STORE, file: 'play-icon-512.png', width: 512, height: 512 },
-  { dir: STORE, file: 'feature-graphic.png', width: 1024, height: 500 },
+const RGB = 2;
+const RGBA = 6;
+
+const OUTPUTS: readonly {
+  dir: string;
+  file: string;
+  width: number;
+  height: number;
+  colorType: number;
+}[] = [
+  { dir: IMAGES, file: 'icon.png', width: 1024, height: 1024, colorType: RGBA },
+  { dir: IMAGES, file: 'adaptive-icon-foreground.png', width: 1024, height: 1024, colorType: RGBA },
+  { dir: IMAGES, file: 'adaptive-icon-background.png', width: 1024, height: 1024, colorType: RGBA },
+  { dir: IMAGES, file: 'adaptive-icon-monochrome.png', width: 1024, height: 1024, colorType: RGBA },
+  { dir: IMAGES, file: 'splash-icon.png', width: 1024, height: 1024, colorType: RGBA },
+  { dir: IMAGES, file: 'notification-icon.png', width: 96, height: 96, colorType: RGBA },
+  { dir: HOSTING, file: 'favicon.png', width: 64, height: 64, colorType: RGBA },
+  { dir: STORE, file: 'play-icon-512.png', width: 512, height: 512, colorType: RGBA },
+  { dir: STORE, file: 'feature-graphic.png', width: 1024, height: 500, colorType: RGB },
 ];
 
 /** Reads width, height and color type from a PNG's IHDR chunk. */
@@ -27,8 +36,6 @@ const pngHeader = (bytes: Buffer) => ({
   height: bytes.readUInt32BE(20),
   colorType: bytes.readUInt8(25),
 });
-
-const RGBA = 6;
 
 /** Runs a short sharp script in plain Node (sharp's native module stays out of the Jest VM). */
 const sharpEval = (source: string): string => {
@@ -41,13 +48,16 @@ const sharpEval = (source: string): string => {
 };
 
 describe('generate-assets output', () => {
-  it.each(OUTPUTS)('$file is a $width×$height RGBA PNG', ({ dir, file, width, height }) => {
-    const header = pngHeader(readFileSync(join(dir, file)));
-    expect(header.signature).toBe('89504e470d0a1a0a');
-    expect(header.width).toBe(width);
-    expect(header.height).toBe(height);
-    expect(header.colorType).toBe(RGBA);
-  });
+  it.each(OUTPUTS)(
+    '$file is a $width×$height PNG of color type $colorType',
+    ({ dir, file, width, height, colorType }) => {
+      const header = pngHeader(readFileSync(join(dir, file)));
+      expect(header.signature).toBe('89504e470d0a1a0a');
+      expect(header.width).toBe(width);
+      expect(header.height).toBe(height);
+      expect(header.colorType).toBe(colorType);
+    },
+  );
 
   it.each(['notification-icon.png', 'adaptive-icon-monochrome.png'])(
     '%s is white on transparent',
