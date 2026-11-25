@@ -122,6 +122,61 @@ export const applyStoreTransaction = (
 };
 
 // ---------------------------------------------------------------------------------------------
+// Refunds (server grants)
+// ---------------------------------------------------------------------------------------------
+
+export type RefundResult =
+  | {
+      readonly kind: 'refunded';
+      /** What was actually removed (balances never go below 0). */
+      readonly removed: Required<RewardBundle>;
+    }
+  | { readonly kind: 'duplicate' }
+  | { readonly kind: 'invalid' };
+
+export interface RefundOutcome {
+  readonly state: ProgressState;
+  readonly result: RefundResult;
+}
+
+/**
+ * Applies a refunded purchase (owner decision O7): the product's items are taken back once per
+ * refund id (`{transactionId}_refund`), each balance floored at 0. Themes and the Starter Pack
+ * flag stay (the theme may be in use; the offer must not reopen).
+ */
+export const applyRefund = (
+  state: ProgressState,
+  refundId: string,
+  productId: ProductId,
+  now: number,
+): RefundOutcome => {
+  const id = refundId.trim();
+  if (id.length === 0) return { state, result: { kind: 'invalid' } };
+  if (state.processedTransactions.includes(id)) return { state, result: { kind: 'duplicate' } };
+  const { grant } = PRODUCTS[productId];
+  const take = (balance: number, amount: number | undefined): number =>
+    Math.min(balance, Math.max(0, Math.floor(amount ?? 0)));
+  const removed = {
+    coins: take(state.coins, grant.coins),
+    hints: take(state.hints, grant.hints),
+    undos: take(state.undos, grant.undos),
+    extraTubes: take(state.extraTubes, grant.extraTubes),
+  };
+  return {
+    state: {
+      ...state,
+      coins: state.coins - removed.coins,
+      hints: state.hints - removed.hints,
+      undos: state.undos - removed.undos,
+      extraTubes: state.extraTubes - removed.extraTubes,
+      processedTransactions: rememberTransaction(state.processedTransactions, id),
+      updatedAt: now,
+    },
+    result: { kind: 'refunded', removed },
+  };
+};
+
+// ---------------------------------------------------------------------------------------------
 // Pending purchases
 // ---------------------------------------------------------------------------------------------
 

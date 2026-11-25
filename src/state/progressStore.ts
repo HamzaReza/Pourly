@@ -5,18 +5,26 @@ import { STORAGE_KEYS } from '@/config/constants';
 import type { RewardBundle } from '@/config/economy';
 import type { ProductId } from '@/config/products';
 import type { GiftClaim, VipBonusClaim } from '@/game/gifts';
+import type { CloudProgress } from '@/services/cloudMerge';
 import {
   applyEntitlements,
   applyPendingPurchase,
   applyPrunePending,
+  applyRefund,
   applyRestoredProducts,
   applyStoreTransaction,
   type GrantResult,
+  type RefundResult,
 } from '@/services/fulfillmentCore';
 import type { StoreEntitlements, StoreTransaction } from '@/services/iapTypes';
 
 import { migrateProgress } from './migrations';
-import { createDefaultProgress, PROGRESS_VERSION, type ProgressState } from './progressModel';
+import {
+  createDefaultProgress,
+  PROGRESS_VERSION,
+  type Balances,
+  type ProgressState,
+} from './progressModel';
 import {
   applyClaimFreeCoins,
   applyClaimGift,
@@ -118,9 +126,46 @@ export interface ProgressActions {
   setNotificationToggle: (toggle: NotificationToggle, enabled: boolean, now?: number) => void;
   /** Records a store review request (60-day spacing, 3 at most). */
   recordReviewPrompt: (now?: number) => void;
+  /** Takes back a refunded purchase's items once per refund id (server grant). */
+  refundTransaction: (refundId: string, productId: ProductId, now?: number) => RefundResult;
+  /** Writes a merged cloud save and its sync baseline. */
+  applyCloudProgress: (cloud: CloudProgress, baseline: Balances, now?: number) => void;
+  /** Sets or clears the cloud-sync baseline (`lastSyncedBalances`). */
+  setSyncBaseline: (baseline: Balances | null) => void;
 }
 
 export type ProgressStore = ProgressState & ProgressActions;
+
+/**
+ * Pure reducer behind `applyCloudProgress`: the merged cloud fields replace the local ones, the
+ * baseline is stored and an active theme that is no longer available falls back to Classic.
+ */
+export const applyCloudSave = (
+  state: ProgressState,
+  cloud: CloudProgress,
+  baseline: Balances,
+  now: number,
+): ProgressState =>
+  applyThemeFallback(
+    {
+      ...state,
+      ...cloud,
+      stars: { ...cloud.stars },
+      dailyHistory: { ...state.dailyHistory, ...cloud.dailyHistory },
+      ownedThemes: [...cloud.ownedThemes],
+      processedTransactions: [...cloud.processedTransactions],
+      lastSyncedBalances: { ...baseline },
+      updatedAt: now,
+    },
+    now,
+  );
+
+/** Whether the player ever bought something (a granted transaction or a store entitlement). */
+export const hasAnyPurchase = (state: ProgressState): boolean =>
+  state.processedTransactions.length > 0 ||
+  state.starterPackPurchased ||
+  state.entitlements.noAds ||
+  state.entitlements.vip;
 
 /** Pure reducer behind `touchOpen`, exported for tests. */
 export const applyTouchOpen = (state: ProgressState, now: number): ProgressState => ({
@@ -163,6 +208,9 @@ const pickProgress = (state: ProgressStore): ProgressState => {
     setNotificationsGranted: _setNotificationsGranted,
     setNotificationToggle: _setNotificationToggle,
     recordReviewPrompt: _recordReviewPrompt,
+    refundTransaction: _refundTransaction,
+    applyCloudProgress: _applyCloudProgress,
+    setSyncBaseline: _setSyncBaseline,
     ...data
   } = state;
   return data;
@@ -280,6 +328,18 @@ export const useProgressStore = create<ProgressStore>()(
       },
       recordReviewPrompt: (now = Date.now()) =>
         set((state) => applyReviewPrompted(pickProgress(state), now)),
+      refundTransaction: (refundId, productId, now = Date.now()) => {
+        const current = pickProgress(get());
+        const { state, result } = applyRefund(current, refundId, productId, now);
+        if (state !== current) set(state);
+        return result;
+      },
+      applyCloudProgress: (cloud, baseline, now = Date.now()) =>
+        set((state) =>
+          applyCloudSave(pickProgress(state), cloud, baseline, Math.max(state.updatedAt, now)),
+        ),
+      setSyncBaseline: (baseline) =>
+        set({ lastSyncedBalances: baseline === null ? null : { ...baseline } }),
     }),
     {
       name: STORAGE_KEYS.progress,

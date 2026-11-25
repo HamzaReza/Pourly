@@ -11,6 +11,10 @@ export type GameModeParam = 'level' | 'daily';
 /** How a power-up was paid for. */
 export type PaymentSource = 'free' | 'inventory' | 'coins' | 'ad';
 
+/** Why a sign-in did not complete (`sign_in_failed`). */
+export type SignInFailureReason =
+  'cancelled' | 'playServices' | 'network' | 'inProgress' | 'unavailable' | 'unknown';
+
 /** Parameters of every event, keyed by event name. */
 export interface AnalyticsEvents {
   app_open: { session: number };
@@ -46,6 +50,10 @@ export interface AnalyticsEvents {
   theme_unlocked: { themeId: string; via: string };
   setting_changed: { setting: string; value: string };
   tutorial_step: { level: number; step: number };
+  sign_in_success: { method: 'google' };
+  sign_in_failed: { method: 'google'; reason: SignInFailureReason };
+  sign_out: { method: 'google' };
+  account_deleted: { method: 'google' };
 }
 
 export type AnalyticsEvent = keyof AnalyticsEvents;

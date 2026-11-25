@@ -23,7 +23,13 @@
     "shop": "Shop",
     "themes": "Themes",
     "settings": "Settings",
-    "playHardA11y": "Play level {{n}}, hard level"
+    "playHardA11y": "Play level {{n}}, hard level",
+    "signInCard": {
+      "title": "Sign in to save your progress",
+      "body": "Keep your levels, coins and purchases safe and play on any device.",
+      "button": "Sign in",
+      "dismissA11y": "Hide the sign-in suggestion"
+    }
   },
   "dailyCard": {
     "title": "Daily Challenge",
@@ -313,7 +319,8 @@
       "about": "About",
       "progress": "Progress",
       "purchases": "Purchases",
-      "notifications": "Notifications"
+      "notifications": "Notifications",
+      "account": "Account"
     },
     "sound": "Sound",
     "haptics": "Haptics",
@@ -363,6 +370,42 @@
     "notificationsOff": "Notifications are off for Pourly. Turn on a reminder to allow them.",
     "notificationsBlocked": "Notifications are blocked in Android settings. Turn on a reminder to open the settings.",
     "openSettingsFailed": "Couldn't open the app settings"
+  },
+  "account": {
+    "signIn": "Sign in with Google",
+    "signInHint": "Save your progress and purchases to your Google account and continue on any device",
+    "signedInAs": "Signed in as {{email}}",
+    "signedIn": "Signed in with Google",
+    "signOut": "Sign out",
+    "signOutHint": "Your progress stays on this device",
+    "delete": "Delete account and data",
+    "deleteHint": "Removes your cloud save and your Pourly account",
+    "unavailable": "Sign-in unavailable in this build",
+    "working": "Please wait…",
+    "deleteTitle": "Delete your account?",
+    "deleteMessage": "This permanently deletes your Pourly account and its cloud save: levels, stars, coins, hints, undos, streaks and themes. Progress on this device is reset too. Remove Ads, VIP and purchases stay with your Google Play account and can be restored.",
+    "deleteContinue": "Continue",
+    "deleteConfirmTitle": "Delete everything?",
+    "deleteConfirmMessage": "Choose your Google account again to confirm. This cannot be undone.",
+    "deleteConfirm": "Delete my account",
+    "toast": {
+      "signedIn": "Signed in. Your progress is now saved to your account.",
+      "signedOut": "Signed out. Your progress stays on this device.",
+      "deleted": "Your account and cloud data were deleted.",
+      "deleteFailed": "Couldn't delete your account. Please try again.",
+      "wrongAccount": "Choose the Google account you are signed in with.",
+      "playServices": "Google Play services are missing or out of date. Update them and try again.",
+      "network": "No connection. Check your internet and try again.",
+      "inProgress": "Sign-in is already in progress.",
+      "signInFailed": "Couldn't sign in. Please try again.",
+      "unavailable": "Sign-in is unavailable in this build."
+    }
+  },
+  "cloud": {
+    "grantArrived": "Your purchase has arrived!",
+    "grantTitle": "Purchase delivered",
+    "grantMessage": "Thank you for your support!",
+    "refundApplied": "A refunded purchase was removed from your balance."
   },
   "iap": {
     "pending": "Purchase pending. It will be added once the payment clears.",

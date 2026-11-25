@@ -1,5 +1,6 @@
 import { logger } from '@/utils/logger';
 
+import { useCloudStore } from './cloudStore';
 import { useGameStore } from './gameStore';
 import { useProgressStore } from './progressStore';
 import { useSettingsStore } from './settingsStore';
@@ -40,6 +41,7 @@ export const waitForStoresHydrated = async (
       waitFor(useSettingsStore.persist),
       waitFor(useProgressStore.persist),
       waitFor(useGameStore.persist),
+      waitFor(useCloudStore.persist),
     ]),
     timeout,
   ]);
