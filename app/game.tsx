@@ -28,6 +28,8 @@ import { useRenderSettings } from '@/render/useRenderSettings';
 import { track } from '@/services/analytics';
 import { play } from '@/services/audio';
 import { hapticError, hapticPourStart, hapticSelect, hapticSuccess } from '@/services/haptics';
+import { answerNotificationPrompt, notificationPromptDue } from '@/services/notificationPrompt';
+import { currentReviewInput, requestReviewIfDue, reviewVerdict } from '@/services/review';
 import {
   activatePowerUp,
   buyPowerUpWithAd,
@@ -57,6 +59,7 @@ import { ActionBar } from '@/ui/game/ActionBar';
 import { createBoardEvents, type BoardEvents } from '@/ui/game/boardEvents';
 import { GameHud } from '@/ui/game/GameHud';
 import { NotEnoughCoinsOverlay } from '@/ui/game/overlays/NotEnoughCoinsOverlay';
+import { NotificationPromptOverlay } from '@/ui/game/overlays/NotificationPromptOverlay';
 import { PauseOverlay } from '@/ui/game/overlays/PauseOverlay';
 import { RestartConfirmOverlay } from '@/ui/game/overlays/RestartConfirmOverlay';
 import { RewardOverlay } from '@/ui/game/overlays/RewardOverlay';
@@ -76,6 +79,9 @@ const TOP_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.md;
 const BOTTOM_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.xxl;
 
 type HintSearch = () => Promise<Move | null>;
+
+/** How the player leaves the Win overlay. */
+type WinExit = 'next' | 'home';
 
 /** Overlays opened by the player's actions (the others follow the game status). */
 type ModalState =
@@ -258,6 +264,11 @@ export default function GameScreen() {
   const [modal, setModal] = useState<ModalState>(null);
   const [busy, setBusy] = useState(false);
   const [winSequenceDoneFor, setWinSequenceDoneFor] = useState<string | null>(null);
+  /** The Win overlay exit that waits behind the notification soft-prompt. */
+  const [promptAfter, setPromptAfter] = useState<WinExit | null>(null);
+  const [promptBusy, setPromptBusy] = useState(false);
+  /** True while a store review runs between the Win overlay and its exit. */
+  const reviewing = useRef(false);
   const [stuckVisible, setStuckVisible] = useState(
     () => mountSession?.status === 'stuck' || mountSession?.pausedFrom === 'stuck',
   );
@@ -407,6 +418,60 @@ export default function GameScreen() {
     void onNextPressed();
   }, []);
 
+  const exitWin = useCallback(
+    (exit: WinExit) => {
+      if (exit === 'next') onNext();
+      else goHome();
+    },
+    [onNext],
+  );
+
+  /**
+   * Leaving the Win overlay (Next, Home or back). The notification soft-prompt, when due, comes
+   * first and the exit continues after the answer. Otherwise a due store review is requested with
+   * the Win overlay already hidden, and the exit continues once the review flow returns.
+   */
+  const leaveWin = useCallback(
+    (exit: WinExit) => {
+      if (notificationPromptDue()) {
+        setPromptAfter(exit);
+        return;
+      }
+      const review = currentReviewInput();
+      if (review === null || reviewVerdict(review, Date.now()) !== 'allowed') {
+        exitWin(exit);
+        return;
+      }
+      setWinSequenceDoneFor(null);
+      reviewing.current = true;
+      void requestReviewIfDue(review).finally(() => {
+        reviewing.current = false;
+        exitWin(exit);
+      });
+    },
+    [exitWin],
+  );
+
+  const onWinNext = useCallback(() => leaveWin('next'), [leaveWin]);
+  const onWinHome = useCallback(() => leaveWin('home'), [leaveWin]);
+
+  const answerPrompt = useCallback(
+    (allow: boolean) => {
+      if (promptAfter === null || promptBusy) return;
+      const exit = promptAfter;
+      setPromptBusy(true);
+      void answerNotificationPrompt(allow).finally(() => {
+        setPromptBusy(false);
+        setPromptAfter(null);
+        exitWin(exit);
+      });
+    },
+    [promptAfter, promptBusy, exitWin],
+  );
+
+  const onPromptAllow = useCallback(() => answerPrompt(true), [answerPrompt]);
+  const onPromptNotNow = useCallback(() => answerPrompt(false), [answerPrompt]);
+
   const onPause = useCallback(() => game().pause(), []);
   const onResume = useCallback(() => game().resume(), []);
   const dismissStuck = useCallback(() => setStuckVisible(false), []);
@@ -417,21 +482,40 @@ export default function GameScreen() {
 
   const showStuck = stuckVisible && status === 'stuck';
   const showPause = status === 'paused';
+  const showPrompt = promptAfter !== null;
   const showWin =
-    status === 'won' && result !== null && !result.skipped && winSequenceDoneFor === levelId;
+    status === 'won' &&
+    result !== null &&
+    !result.skipped &&
+    winSequenceDoneFor === levelId &&
+    !showPrompt;
   const showSkipped = status === 'won' && result !== null && result.skipped;
 
   const backAction = useRef<() => void>(() => undefined);
   useEffect(() => {
     backAction.current = () => {
+      if (reviewing.current) return;
       if (modal !== null) setModal(null);
+      else if (showPrompt) onPromptNotNow();
       else if (showPause) game().resume();
       else if (showStuck) setStuckVisible(false);
       else if (showSkipped) onNext();
+      else if (showWin) onWinHome();
       else if (status === 'won') goHome();
       else game().pause();
     };
-  }, [modal, showPause, showStuck, showSkipped, status, onNext]);
+  }, [
+    modal,
+    showPrompt,
+    onPromptNotNow,
+    showPause,
+    showStuck,
+    showSkipped,
+    showWin,
+    onWinHome,
+    status,
+    onNext,
+  ]);
 
   useFocusEffect(
     useCallback(() => {
@@ -456,7 +540,8 @@ export default function GameScreen() {
 
   const tutorialLevel =
     mode === 'level' && isTutorialLevel(levelNumber, tutorialDone) ? levelNumber : null;
-  const overlayOpen = modal !== null || showPause || showStuck || showWin || showSkipped;
+  const overlayOpen =
+    modal !== null || showPause || showStuck || showWin || showSkipped || showPrompt;
   const live = status !== null && isActive(status);
 
   return (
@@ -519,7 +604,21 @@ export default function GameScreen() {
         </View>
       ) : null}
       {showWin && result !== null ? (
-        <WinOverlay ui={ui} result={result} onNext={onNext} onDouble={onDouble} onHome={goHome} />
+        <WinOverlay
+          ui={ui}
+          result={result}
+          onNext={onWinNext}
+          onDouble={onDouble}
+          onHome={onWinHome}
+        />
+      ) : null}
+      {showPrompt ? (
+        <NotificationPromptOverlay
+          ui={ui}
+          busy={promptBusy}
+          onAllow={onPromptAllow}
+          onNotNow={onPromptNotNow}
+        />
       ) : null}
       {showSkipped ? (
         <RewardOverlay
