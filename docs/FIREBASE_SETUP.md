@@ -66,7 +66,9 @@ These values are public identifiers, not secrets; they are baked into the app at
 For EAS builds, add them as EAS environment variables (or a `.env` the build can read).
 
 `EXPO_PUBLIC_PRIVACY_URL` / `EXPO_PUBLIC_TERMS_URL` may stay empty: they then default to
-`https://<project id>.web.app/privacy` and `/terms` (Hosting pages added in phase 10).
+`https://<project id>.web.app/privacy` and `/terms`. Hosting serves those paths with rewrites to
+`public/privacy-policy.html` and `public/terms-of-service.html` (also reachable at
+`/privacy-policy` and `/terms-of-service`).
 
 ## 3. Firebase CLI
 
@@ -96,7 +98,9 @@ firebase deploy --only hosting                              # writes public/site
 - `hosting` predeploy (`scripts/write-hosting-config.mjs`) writes `public/site-config.js`
   (gitignored) with `EXPO_PUBLIC_SUPPORT_EMAIL` from the environment or `.env`, so the delete page
   can show the support address.
-- Hosting serves `public/` with `cleanUrls`: `/delete-account` serves `delete-account.html`.
+- Hosting serves `public/` with `cleanUrls`: `/delete-account` serves `delete-account.html`,
+  `/privacy-policy` and `/terms-of-service` the legal pages; two `rewrites` also map the app's
+  default `/privacy` and `/terms` links to them.
   Firebase adds `<project>.web.app` and `<project>.firebaseapp.com` to Authentication → Settings →
   Authorized domains automatically; add any custom domain there yourself.
 
