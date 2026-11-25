@@ -48,6 +48,45 @@ All configuration comes from environment variables (see `.env.example`). Never c
 `app.config.ts` copies the public values into `extra`; the app reads them through
 `src/config/env.ts`. Values are baked in at build time.
 
+Development-only switches (not in `.env.example`):
+
+| Variable                            | Purpose                                                                                                                                         |
+| ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EXPO_PUBLIC_ADS_USE_TEST_IDS=true` | Google test ad units in a release-mode build (set by the `preview` profile).                                                                    |
+| `EXPO_PUBLIC_UMP_DEBUG_EEA=true`    | Development builds only: the UMP consent SDK treats the device as being in the EEA, so the consent form and "Ad privacy options" can be tested. |
+
+## Purchases and ads
+
+**Which provider runs**
+
+| Build                                         | Purchases (`src/services/iap.ts`)               | Ads (`src/services/ads.ts`)                                     |
+| --------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------- |
+| Expo Go                                       | Mock store ("TEST PURCHASE" sheet)              | Mock ads ("TEST AD (mock)")                                     |
+| Development build, no RevenueCat key          | Mock store                                      | Mock until level 5, then AdMob test units once consent allows   |
+| Development build with the key                | RevenueCat (sandbox / license testers)          | Same as above                                                   |
+| `preview` (release mode)                      | RevenueCat with the key, otherwise unavailable  | None until level 5, then AdMob **test** units after consent     |
+| `production` with the key and ad unit ids     | RevenueCat                                      | None until level 5, then AdMob production units after consent   |
+| Release build missing the key / an ad unit id | Shop shows "Store unavailable"; nothing crashes | That ad format stays off (warning logged in development builds) |
+
+Mock purchases (Remove Ads, Starter Pack, VIP) are remembered on the device under
+`pourly.iapMock`, so they survive restarts and Restore Purchases can bring them back. "Pending
+payment" completes about four seconds later, like a real pending payment.
+
+**RevenueCat dashboard setup**
+
+- Offering `default` with one package per product: `coins_500`, `coins_1500`, `coins_4000`,
+  `remove_ads`, `starter_pack`, `vip_weekly`, `vip_monthly` (Play product ids; subscriptions may
+  use any base plan id).
+- Entitlements: `no_ads` (attach `remove_ads`) and `vip` (attach `vip_weekly` and `vip_monthly`).
+- In Google Play, `coins_*` are consumable; `remove_ads` and `starter_pack` are one-time products
+  that RevenueCat must treat as **non-consumable** (otherwise Restore cannot bring the Starter
+  Pack's theme back).
+
+**Consent testing**: set `EXPO_PUBLIC_UMP_DEBUG_EEA=true`, reinstall the development build (UMP
+stores its answer) and reach level 5 on an **emulator**, which UMP treats as a test device
+automatically. The debug geography is ignored on physical devices unless their hashed id (printed
+by UMP in logcat) is registered as a UMP test device, which this app does not configure.
+
 ## Scripts
 
 | Script                       | What it does                                                                         |
