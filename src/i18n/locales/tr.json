@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "nativeName": "Türkçe"
+  },
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "Tamam",
+    "cancel": "İptal",
+    "close": "Kapat",
+    "back": "Geri",
+    "continue": "Devam",
+    "on": "Açık",
+    "off": "Kapalı",
+    "notNow": "Şimdi değil"
+  },
+  "home": {
+    "play": "Seviye {{n}}",
+    "playA11y": "Oyna: seviye {{n}}",
+    "resume": "Devam: Seviye {{n}}",
+    "resumeA11y": "Seviye {{n}}: kaldığın yerden devam et",
+    "shop": "Mağaza",
+    "themes": "Temalar",
+    "settings": "Ayarlar",
+    "playHardA11y": "Oyna: seviye {{n}}, zor seviye",
+    "signInCard": {
+      "title": "İlerlemeni kaydetmek için giriş yap",
+      "body": "Seviyelerini, jetonlarını ve satın alımlarını güvende tut, her cihazda oyna.",
+      "button": "Giriş yap",
+      "dismissA11y": "Giriş önerisini gizle"
+    }
+  },
+  "dailyCard": {
+    "title": "Günlük Görev",
+    "streak_one": "{{value}} günlük seri",
+    "streak_other": "{{value}} günlük seri",
+    "noStreak": "Bugün bir seri başlat",
+    "openA11y": "Günlük görev. {{streak}}. Takvimi aç",
+    "play": "Oyna",
+    "playA11y": "Bugünün görevini oyna",
+    "done": "Bitti ✓",
+    "doneA11y": "Bugünün görevi tamamlandı. Takvimi aç"
+  },
+  "gift": {
+    "button": "Hediye",
+    "readyA11y": "Günlük hediyeni al",
+    "waitA11y": "Günlük hediye alındı. Sonraki yarın hazır",
+    "title": "Günlük hediye",
+    "day": "Gün {{day}} / 7",
+    "chest": "7. gün sandığı!",
+    "double": "2 katına çık",
+    "doubleA11y": "Reklam izleyerek hediyeyi ikiye katla",
+    "doubled": "Hediye ikiye katlandı!",
+    "comeBack": "Sonraki hediyen yarın hazır"
+  },
+  "vipBonus": {
+    "button": "VIP bonusu",
+    "a11y": "VIP günlük bonusunu al",
+    "title": "VIP günlük bonusu",
+    "message": "VIP olduğun için teşekkürler!"
+  },
+  "starterPack": {
+    "title": "Başlangıç Paketi",
+    "subtitle": "Jeton, ipucu, geri alma ve Aurora teması",
+    "endsIn": "Kalan: {{time}}",
+    "endsInA11y": "Başlangıç Paketi teklifi. Bitmesine {{hours}} sa {{minutes}} dk",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "Gör",
+    "viewA11y": "Başlangıç Paketini mağazada gör"
+  },
+  "game": {
+    "title": "Seviye {{n}}",
+    "hardTitleA11y": "Seviye {{n}}, zor seviye",
+    "pause": "Durdur",
+    "undo": "Geri al",
+    "hint": "İpucu",
+    "restart": "Baştan",
+    "addTube": "+Tüp",
+    "skip": "Geç",
+    "skipA11y": "Reklam izleyerek bu seviyeyi geç",
+    "actionA11y": "{{action}}, {{detail}}",
+    "noHint": "Bu tahta için ipucu bulunamadı",
+    "rewardSaved": "Tahta değişti, ödülün sonraya saklandı",
+    "costFree": "Ücretsiz: {{count}}",
+    "costOwned": "Kalan: {{count}}",
+    "costCoins": "{{count}} jeton",
+    "costAd": "reklam izle",
+    "costUsed": "zaten kullanıldı",
+    "dailyTitle": "Günlük · {{date}}",
+    "dailyTitleA11y": "Günlük görev, {{date}}"
+  },
+  "coins": {
+    "badgeA11y": "{{count}} jeton. Mağazayı aç",
+    "balanceA11y": "Bakiye: {{count}} jeton"
+  },
+  "items": {
+    "undo": "Geri alma",
+    "hint": "İpucu",
+    "extraTube": "Ekstra tüp"
+  },
+  "pause": {
+    "title": "Duraklatıldı",
+    "resume": "Devam et",
+    "restart": "Baştan",
+    "home": "Menü",
+    "sound": "Ses",
+    "haptics": "Titreşim"
+  },
+  "win": {
+    "title": "Seviye tamamlandı!",
+    "starsA11y": "3 üzerinden {{count}} yıldız",
+    "coinsA11y": "{{count}} jeton kazanıldı",
+    "next": "Sonraki",
+    "nextA11y": "Sonraki seviyeyi oyna",
+    "double": "2x jeton",
+    "doubleA11y": "Reklam izleyerek jetonlarını ikiye katla",
+    "home": "Menü",
+    "dailyTitle": "Günlük görev tamam!",
+    "streak_one": "{{value}} günlük seri",
+    "streak_other": "{{value}} günlük seri",
+    "dailyReplay": "Bugün zaten tamamlandı. Tekrar oynamak sadece eğlence için."
+  },
+  "stuck": {
+    "title": "Hamle kalmadı",
+    "message": "Bir hamleyi geri al, tüp ekle, baştan başla ya da seviyeyi geç.",
+    "messageNoSkip": "Bir hamleyi geri al, tüp ekle ya da baştan başla.",
+    "undo": "Geri al",
+    "addTube": "+Tüp",
+    "restart": "Baştan",
+    "skip": "Seviyeyi geç",
+    "skipA11y": "Reklam izleyerek bu seviyeyi geç",
+    "keepLooking": "Aramaya devam"
+  },
+  "notEnough": {
+    "title": "Yetersiz jeton",
+    "message": "{{item}}: {{cost}} jeton. Sende {{coins}} jeton var.",
+    "watchAd": "Reklam izle",
+    "watchAdA11y": "Reklam izleyerek kazan: {{item}}",
+    "shop": "Mağaza"
+  },
+  "restartConfirm": {
+    "title": "Seviye baştan başlasın mı?",
+    "message": "Bu denemede ücretli bir öğe kullandın. Baştan başlarsan onu kaybedersin.",
+    "confirm": "Yine de baştan",
+    "cancel": "Oynamaya devam"
+  },
+  "reward": {
+    "title": "Ödül",
+    "skippedTitle": "Seviye geçildi",
+    "skippedMessage": "Seviye {{n}}, 1 yıldızla tamamlanmış sayılır.",
+    "coins": "+{{count}} jeton",
+    "hints": "+{{count}} ipucu",
+    "undos": "+{{count}} geri alma",
+    "extraTubes": "+{{count}} tüp"
+  },
+  "tutorial": {
+    "level1": "Bir tüpe dokun, sonra dökeceğin yere dokun",
+    "level2": "Sadece aynı rengin üstüne ya da boş tüpe dök",
+    "level3": "Her rengi kendi tüpünde topla"
+  },
+  "ads": {
+    "notReady": "Reklam hazır değil, birazdan tekrar dene",
+    "mockTitle": "TEST REKLAMI (mock)",
+    "mockRewarded": "Ödüllü reklam: {{placement}}",
+    "mockInterstitial": "Geçiş reklamı",
+    "mockCountdown": "Ödül {{count}} sn sonra",
+    "mockEarned": "Ödül kazanıldı",
+    "mockClose": "Reklamı kapat",
+    "mockCloseEarly": "Reklamı ödülsüz kapat"
+  },
+  "daily": {
+    "title": "Günlük Görev",
+    "prevMonth": "Önceki ay",
+    "nextMonth": "Sonraki ay",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}, tamamlandı",
+    "todayA11y": "{{date}}, bugün",
+    "todayDoneA11y": "{{date}}, bugün, tamamlandı",
+    "currentStreak": "Mevcut seri",
+    "bestStreak": "En uzun seri",
+    "days_one": "{{value}} gün",
+    "days_other": "{{value}} gün",
+    "streakA11y_one": "{{label}}: {{value}} gün",
+    "streakA11y_other": "{{label}}: {{value}} gün",
+    "play": "Bugünün görevini oyna",
+    "done": "Bitti ✓",
+    "doneMessage": "Bugünün görevi tamamlandı. Yarın tekrar gel!",
+    "playAgain": "Tekrar oyna",
+    "playAgainA11y": "Bugünün görevini eğlence için tekrar oyna (ödül yok)",
+    "chestTitle": "7. gün sandığı",
+    "chestProgress": "7 hediyeden {{day}} tanesi alındı",
+    "chestA11y": "Günlük hediye ilerlemesi: 7 hediyeden {{day}} tanesi alındı. 7. gün sandık var"
+  },
+  "shop": {
+    "title": "Mağaza",
+    "names": {
+      "coins_500": "Bir avuç jeton",
+      "coins_1500": "Bir torba jeton",
+      "coins_4000": "Bir sandık jeton",
+      "remove_ads": "Reklamları Kaldır",
+      "starter_pack": "Başlangıç Paketi",
+      "vip_weekly": "Haftalık VIP",
+      "vip_monthly": "Aylık VIP"
+    },
+    "sections": {
+      "coins": "Jetonlar",
+      "removeAds": "Reklamsız",
+      "vip": "VIP",
+      "purchases": "Satın alımların"
+    },
+    "coinsAmount_one": "{{value}} jeton",
+    "coinsAmount_other": "{{value}} jeton",
+    "loading": "Fiyatlar yükleniyor…",
+    "unavailableTitle": "Mağaza kullanılamıyor",
+    "unavailableMessage": "Satın alma şu anda kullanılamıyor. Lütfen daha sonra tekrar dene.",
+    "loadFailed": "Mağaza yüklenemedi. Bağlantını kontrol et.",
+    "retry": "Tekrar dene",
+    "buyA11y": "{{name}} satın al: {{price}}",
+    "owned": "Alındı",
+    "ownedA11y": "{{name}}: alındı",
+    "notOffered": "Mevcut değil",
+    "notOfferedA11y": "{{name}} şu anda mevcut değil",
+    "freeCoins": {
+      "title": "Bedava jeton",
+      "button": "Bedava jeton",
+      "a11y_one": "{{value}} bedava jeton için reklam izle",
+      "a11y_other": "{{value}} bedava jeton için reklam izle",
+      "reward_one": "Kısa bir reklama +{{value}} jeton",
+      "reward_other": "Kısa bir reklama +{{value}} jeton",
+      "left_one": "Bugün {{count}} kaldı",
+      "left_other": "Bugün {{count}} kaldı",
+      "cooldown": "Sonraki: {{time}}",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "Bedava jetonlar {{minutes}} dk {{seconds}} sn sonra yine hazır",
+      "capped": "Bugünlük bu kadar. Yarın tekrar gel!",
+      "granted_one": "+{{value}} jeton",
+      "granted_other": "+{{value}} jeton"
+    },
+    "removeAds": {
+      "description": "Seviyeler arasında artık reklam yok. Bonus veren ödüllü reklamlar isteğe bağlı kalır."
+    },
+    "starterPack": {
+      "description": "{{coins}} jeton, {{hints}} ipucu, {{undos}} geri alma ve Aurora teması",
+      "oneTime": "Tek seferlik teklif"
+    },
+    "vip": {
+      "subtitle": "Pourly oynamanın en iyi yolu",
+      "benefits": {
+        "noInterstitials": "Seviyeler arasında reklam yok",
+        "giftX2": "İki kat günlük hediye",
+        "dailyBonus": "Her gün +{{coins}} jeton ve +{{hints}} ipucu",
+        "gold": "Özel Altın teması",
+        "badge": "VIP rozeti",
+        "freeze": "Her hafta bir seri dondurma"
+      },
+      "active": "Aktif",
+      "activeA11y": "VIP aboneliğin aktif",
+      "period": {
+        "day_one": "günlük",
+        "day_other": "{{count}} günde bir",
+        "week_one": "haftalık",
+        "week_other": "{{count}} haftada bir",
+        "month_one": "aylık",
+        "month_other": "{{count}} ayda bir",
+        "year_one": "yıllık",
+        "year_other": "{{count}} yılda bir"
+      },
+      "planPrice": "{{price}} {{period}}",
+      "subscribe": "Abone ol",
+      "subscribeA11y": "{{name}} aboneliği: {{price}} {{period}}, otomatik yenilenir",
+      "renewNote": "Abonelikler, iptal edene kadar gösterilen fiyattan otomatik olarak yenilenir. Bir sonraki yenilemeden en az 24 saat önce Google Play'den istediğin zaman iptal edebilirsin. Ödeme Google Play hesabından alınır."
+    },
+    "restore": "Satın alımları geri yükle",
+    "restoreNote": "Reklamları Kaldır, VIP ve Başlangıç Paketi temasını geri yükler. Jeton, ipucu ve geri almalar geri yüklenemez.",
+    "manage": "Aboneliği yönet",
+    "terms": "Hizmet Şartları",
+    "privacy": "Gizlilik Politikası",
+    "thanksTitle": "Teşekkürler!",
+    "thanksMessage": "Satın alımın eklendi.",
+    "alreadyOwnedTitle": "Zaten satın alındı",
+    "alreadyOwnedMessage": "Bu Google Play hesabı buna zaten sahip. Geri almak için satın alımlarını geri yükle.",
+    "restoreAction": "Satın alımları geri yükle"
+  },
+  "themes": {
+    "title": "Temalar",
+    "names": {
+      "classic": "Klasik",
+      "ember": "Kor",
+      "sunset": "Gün Batımı",
+      "forest": "Orman",
+      "candy": "Şeker",
+      "neon": "Neon",
+      "aurora": "Aurora",
+      "gold": "Altın"
+    },
+    "inUse": "Kullanımda",
+    "inUseA11y": "{{name}} teması, kullanımda",
+    "apply": "Uygula",
+    "applyA11y": "{{name}} temasını uygula",
+    "unlockA11y": "{{name}} temasını {{price}} jetona aç",
+    "starterPack": "Başlangıç Paketi",
+    "starterPackA11y": "{{name}}, Başlangıç Paketi ile gelir. Mağazayı aç",
+    "vip": "VIP",
+    "vipA11y": "{{name}}, VIP'e dahildir. Mağazayı aç",
+    "previewA11y": "{{name}} teması önizlemesi",
+    "confirmTitle": "{{name}} açılsın mı?",
+    "confirmMessage": "{{name}} teması için {{price}} jeton harca. Sende {{coins}} jeton var.",
+    "confirm": "Temayı aç",
+    "item": "{{name}} teması",
+    "unlocked": "{{name}} açıldı"
+  },
+  "settings": {
+    "title": "Ayarlar",
+    "sections": {
+      "sound": "Ses ve titreşim",
+      "display": "Ekran",
+      "language": "Dil",
+      "about": "Hakkında",
+      "progress": "İlerleme",
+      "purchases": "Satın alımlar",
+      "notifications": "Bildirimler",
+      "account": "Hesap"
+    },
+    "sound": "Ses",
+    "haptics": "Titreşim",
+    "colorBlind": "Renk körü sembolleri",
+    "colorBlindHint": "Her renge bir şekil ekler",
+    "reducedMotion": "Azaltılmış hareket",
+    "motion": {
+      "system": "Sistem",
+      "on": "Açık",
+      "off": "Kapalı"
+    },
+    "quality": "Performans modu",
+    "qualityOptions": {
+      "auto": "Otomatik",
+      "high": "Yüksek",
+      "low": "Düşük"
+    },
+    "qualityLowered": "Bu cihazda oyunun akıcı kalması için efektler otomatik olarak azaltıldı",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "Dil",
+    "languageSystem": "Sistem varsayılanı",
+    "languageA11y": "Dil: {{name}}. Değiştir",
+    "rtlRestart": "Yerleşim yönünü değiştirmek için uygulamayı yeniden başlat",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Hizmet Şartları",
+    "support": "Destekle iletişime geç",
+    "linkFailed": "Bağlantı açılamadı",
+    "reset": "İlerlemeyi sıfırla",
+    "resetHint": "1. seviyeden yeniden başla",
+    "resetTitle": "İlerleme sıfırlansın mı?",
+    "resetMessage": "Seviyeler, yıldızlar, jetonlar, öğeler, seriler ve jetonla açılan temalar silinecek. Satın alımlar korunur.",
+    "resetContinue": "Devam",
+    "resetConfirmTitle": "Emin misin?",
+    "resetConfirmMessage": "Bu işlem geri alınamaz.",
+    "resetConfirm": "Her şeyi sıfırla",
+    "version": "Sürüm {{version}} (derleme {{build}})",
+    "restorePurchases": "Satın alımları geri yükle",
+    "restoreHint": "Jeton, ipucu ve geri almalar geri yüklenemez",
+    "manageSubscription": "Aboneliği yönet",
+    "adPrivacy": "Reklam gizlilik seçenekleri",
+    "adPrivacyHint": "Reklam izni tercihlerini gözden geçir",
+    "adPrivacyFailed": "Reklam gizlilik seçenekleri açılamadı",
+    "dailyReminders": "Günlük hatırlatıcılar",
+    "dailyRemindersHint": "Günlük görev, günlük hediye ve geri dönüş hatırlatıcıları",
+    "streakReminders": "Seri hatırlatıcıları",
+    "streakRemindersHint": "Serin bozulmadan önce akşam bir uyarı",
+    "notificationsOff": "Pourly bildirimleri kapalı. İzin vermek için bir hatırlatıcıyı aç.",
+    "notificationsBlocked": "Bildirimler Android ayarlarında engellendi. Ayarları açmak için bir hatırlatıcıyı aç.",
+    "openSettingsFailed": "Uygulama ayarları açılamadı"
+  },
+  "account": {
+    "signIn": "Google ile giriş yap",
+    "signInHint": "İlerlemeni ve satın alımlarını Google hesabına kaydet, her cihazda devam et",
+    "signedInAs": "Giriş yapıldı: {{email}}",
+    "signedIn": "Google ile giriş yapıldı",
+    "signOut": "Çıkış yap",
+    "signOutHint": "İlerlemen bu cihazda kalır",
+    "delete": "Hesabı ve verileri sil",
+    "deleteHint": "Bulut kaydını ve Pourly hesabını siler",
+    "unavailable": "Bu sürümde giriş yapılamıyor",
+    "working": "Lütfen bekle…",
+    "deleteTitle": "Hesabın silinsin mi?",
+    "deleteMessage": "Pourly hesabın ve bulut kaydın kalıcı olarak silinir: seviyeler, yıldızlar, jetonlar, ipuçları, geri almalar, seriler ve temalar. Bu cihazdaki ilerleme de sıfırlanır. Reklamları Kaldır, VIP ve satın alımlar Google Play hesabında kalır ve geri yüklenebilir.",
+    "deleteContinue": "Devam",
+    "deleteConfirmTitle": "Her şey silinsin mi?",
+    "deleteConfirmMessage": "Onaylamak için Google hesabını tekrar seç. Bu işlem geri alınamaz.",
+    "deleteConfirm": "Hesabımı sil",
+    "toast": {
+      "signedIn": "Giriş yapıldı. İlerlemen artık hesabına kaydediliyor.",
+      "signedOut": "Çıkış yapıldı. İlerlemen bu cihazda kalır.",
+      "deleted": "Hesabın ve bulut verilerin silindi.",
+      "deleteFailed": "Hesabın silinemedi. Lütfen tekrar dene.",
+      "wrongAccount": "Giriş yaptığın Google hesabını seç.",
+      "playServices": "Google Play Hizmetleri eksik veya güncel değil. Güncelleyip tekrar dene.",
+      "network": "Bağlantı yok. İnternetini kontrol edip tekrar dene.",
+      "inProgress": "Giriş zaten sürüyor.",
+      "signInFailed": "Giriş yapılamadı. Lütfen tekrar dene.",
+      "unavailable": "Bu sürümde giriş yapılamıyor."
+    }
+  },
+  "cloud": {
+    "grantArrived": "Satın alımın geldi!",
+    "grantTitle": "Satın alım teslim edildi",
+    "grantMessage": "Desteğin için teşekkürler!",
+    "refundApplied": "İade edilen bir satın alım bakiyenden düşüldü."
+  },
+  "iap": {
+    "pending": "Satın alım beklemede. Ödeme onaylanınca eklenecek.",
+    "pendingComplete": "Bekleyen satın alımın tamamlandı!",
+    "networkError": "Bağlantı yok. İnternetini kontrol edip tekrar dene.",
+    "storeError": "Mağaza satın alımı tamamlayamadı. Lütfen daha sonra tekrar dene.",
+    "unknownError": "Satın alımda bir sorun oluştu. Lütfen tekrar dene.",
+    "adsRemoved": "Reklamlar kaldırıldı. Desteğin için teşekkürler!",
+    "vipActive": "VIP'e hoş geldin!",
+    "awaitingServer": "Satın alım tamamlandı. Öğelerin birazdan gelecek.",
+    "restored": "Satın alımlar geri yüklendi",
+    "nothingToRestore": "Bu hesapta geri yüklenecek satın alım yok",
+    "restoreFailed": "Satın alımlar geri yüklenemedi. Lütfen daha sonra tekrar dene."
+  },
+  "mockPurchase": {
+    "title": "TEST SATIN ALIMI",
+    "message": "Sahte mağaza: ücret alınmaz. Bu test satın alımının nasıl biteceğini seç.",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "Başarılı",
+      "pending": "Ödeme beklemede",
+      "cancel": "İptal",
+      "networkError": "Hata: ağ hatası",
+      "storeError": "Hata: mağaza hatası"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "VIP üye"
+  },
+  "notificationPrompt": {
+    "title": "Hiçbir bulmacayı kaçırma",
+    "message": "Günlük görev hazır olduğunda ve serin bitmeden önce hatırlatma al. Günde en fazla bir hatırlatma.",
+    "allow": "İzin ver",
+    "allowA11y": "Hatırlatmalara izin ver",
+    "notNow": "Şimdi değil",
+    "notNowA11y": "Şimdi değil, hatırlatma yok"
+  },
+  "notifications": {
+    "channelName": "Hatırlatıcılar",
+    "channelDescription": "Günlük görev, seri ve hediye hatırlatıcıları",
+    "streakRiskTitle": "{{n}} günlük serin tehlikede!",
+    "streakRiskBody": "Serini korumak için bugünün görevini gece yarısından önce çöz.",
+    "dailyReadyTitle": "Bugünün görevi hazır",
+    "dailyReadyBody": "Yeni bir bulmaca seni bekliyor. Birkaç dökmede çözebilir misin?",
+    "giftReadyTitle": "Günlük hediyen seni bekliyor",
+    "giftReadyBody": "Gün {{n}} / 7 hediyen hazır. Almak için Pourly'yi aç.",
+    "comeback1Title": "Yeni günlük bulmaca hazır",
+    "comeback1Body": "Birkaç tüp dök, zihnini zinde tut. Seviye {{n}} seni bekliyor.",
+    "comeback2Title": "Tüplerin seni özledi",
+    "comeback2Body": "Seviye {{n}} hâlâ seni bekliyor. Kısa bir oyun için geri dön.",
+    "comeback3Title": "Bir hafta oldu!",
+    "comeback3Body": "Hemen geri dön: Seviye {{n}} hazır olduğunda seni bekliyor.",
+    "comeback4Title": "Son bir dökme?",
+    "comeback4Body": "Bu son hatırlatmamız. Seviye {{n}} kaydedildi ve hazır olduğunda seni bekliyor."
+  }
+}

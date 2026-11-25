@@ -1,0 +1,452 @@
+{
+  "meta": {
+    "nativeName": "Bahasa Indonesia"
+  },
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Batal",
+    "close": "Tutup",
+    "back": "Kembali",
+    "continue": "Lanjut",
+    "on": "Nyala",
+    "off": "Mati",
+    "notNow": "Nanti saja"
+  },
+  "home": {
+    "play": "Level {{n}}",
+    "playA11y": "Main level {{n}}",
+    "resume": "Lanjut level {{n}}",
+    "resumeA11y": "Lanjutkan level {{n}} dari posisi terakhir",
+    "shop": "Toko",
+    "themes": "Tema",
+    "settings": "Setelan",
+    "playHardA11y": "Main level {{n}}, level sulit",
+    "signInCard": {
+      "title": "Masuk untuk menyimpan progres",
+      "body": "Amankan level, koin, dan pembelianmu, lalu main di perangkat apa pun.",
+      "button": "Masuk",
+      "dismissA11y": "Sembunyikan saran masuk"
+    }
+  },
+  "dailyCard": {
+    "title": "Tantangan Harian",
+    "streak_other": "{{value}} hari beruntun",
+    "noStreak": "Mulai beruntun hari ini",
+    "openA11y": "Tantangan harian. {{streak}}. Buka kalender",
+    "play": "Main",
+    "playA11y": "Main tantangan harian hari ini",
+    "done": "Selesai ✓",
+    "doneA11y": "Tantangan harian hari ini selesai. Buka kalender"
+  },
+  "gift": {
+    "button": "Hadiah",
+    "readyA11y": "Klaim hadiah harianmu",
+    "waitA11y": "Hadiah harian sudah diklaim. Hadiah berikutnya siap besok",
+    "title": "Hadiah harian",
+    "day": "Hari {{day}} dari 7",
+    "chest": "Peti hari ke-7!",
+    "double": "Gandakan",
+    "doubleA11y": "Gandakan hadiah ini dengan menonton iklan",
+    "doubled": "Hadiah digandakan!",
+    "comeBack": "Hadiah berikutnya siap besok"
+  },
+  "vipBonus": {
+    "button": "Bonus VIP",
+    "a11y": "Klaim bonus harian VIP",
+    "title": "Bonus harian VIP",
+    "message": "Terima kasih sudah jadi VIP!"
+  },
+  "starterPack": {
+    "title": "Paket Pemula",
+    "subtitle": "Koin, petunjuk, langkah mundur, dan tema Aurora",
+    "endsIn": "Sisa {{time}}",
+    "endsInA11y": "Penawaran Paket Pemula. Berakhir dalam {{hours}} jam {{minutes}} menit",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "Lihat",
+    "viewA11y": "Lihat Paket Pemula di toko"
+  },
+  "game": {
+    "title": "Level {{n}}",
+    "hardTitleA11y": "Level {{n}}, level sulit",
+    "pause": "Jeda",
+    "undo": "Mundur",
+    "hint": "Petunjuk",
+    "restart": "Ulangi",
+    "addTube": "+Tabung",
+    "skip": "Lewati",
+    "skipA11y": "Lewati level ini dengan menonton iklan",
+    "actionA11y": "{{action}}, {{detail}}",
+    "noHint": "Tidak ada petunjuk untuk papan ini",
+    "rewardSaved": "Papan berubah, jadi hadiahmu disimpan untuk nanti",
+    "costFree": "Sisa {{count}} gratis",
+    "costOwned": "Sisa {{count}}",
+    "costCoins": "{{count}} koin",
+    "costAd": "tonton iklan",
+    "costUsed": "sudah dipakai",
+    "dailyTitle": "Harian · {{date}}",
+    "dailyTitleA11y": "Tantangan harian, {{date}}"
+  },
+  "coins": {
+    "badgeA11y": "{{count}} koin. Buka toko",
+    "balanceA11y": "Saldo: {{count}} koin"
+  },
+  "items": {
+    "undo": "Satu langkah mundur",
+    "hint": "Satu petunjuk",
+    "extraTube": "Satu tabung ekstra"
+  },
+  "pause": {
+    "title": "Dijeda",
+    "resume": "Lanjut",
+    "restart": "Ulangi",
+    "home": "Menu",
+    "sound": "Suara",
+    "haptics": "Getaran"
+  },
+  "win": {
+    "title": "Level selesai!",
+    "starsA11y": "{{count}} dari 3 bintang",
+    "coinsA11y": "{{count}} koin didapat",
+    "next": "Lanjut",
+    "nextA11y": "Main level berikutnya",
+    "double": "Koin x2",
+    "doubleA11y": "Gandakan koinmu dengan menonton iklan",
+    "home": "Menu",
+    "dailyTitle": "Harian selesai!",
+    "streak_other": "{{value}} hari beruntun",
+    "dailyReplay": "Sudah selesai hari ini. Main ulang hanya untuk seru-seruan."
+  },
+  "stuck": {
+    "title": "Langkah habis",
+    "message": "Mundur satu langkah, tambah tabung, ulangi, atau lewati level ini.",
+    "messageNoSkip": "Mundur satu langkah, tambah tabung, atau ulangi.",
+    "undo": "Mundur",
+    "addTube": "+Tabung",
+    "restart": "Ulangi",
+    "skip": "Lewati level",
+    "skipA11y": "Lewati level ini dengan menonton iklan",
+    "keepLooking": "Cari lagi"
+  },
+  "notEnough": {
+    "title": "Koin tidak cukup",
+    "message": "{{item}} seharga {{cost}} koin. Kamu punya {{coins}}.",
+    "watchAd": "Tonton iklan",
+    "watchAdA11y": "Tonton iklan untuk mendapatkan {{item}}",
+    "shop": "Toko"
+  },
+  "restartConfirm": {
+    "title": "Ulangi level?",
+    "message": "Kamu memakai item berbayar di percobaan ini. Jika diulang, item itu hilang.",
+    "confirm": "Tetap ulangi",
+    "cancel": "Lanjut main"
+  },
+  "reward": {
+    "title": "Hadiah",
+    "skippedTitle": "Level dilewati",
+    "skippedMessage": "Level {{n}} dihitung selesai dengan 1 bintang.",
+    "coins": "+{{count}} koin",
+    "hints": "+{{count}} petunjuk",
+    "undos": "+{{count}} langkah mundur",
+    "extraTubes": "+{{count}} tabung"
+  },
+  "tutorial": {
+    "level1": "Ketuk tabung, lalu ketuk tempat menuang",
+    "level2": "Tuang hanya ke warna yang sama atau tabung kosong",
+    "level3": "Kumpulkan tiap warna di tabungnya sendiri"
+  },
+  "ads": {
+    "notReady": "Iklan belum siap, coba lagi sebentar",
+    "mockTitle": "IKLAN UJI (mock)",
+    "mockRewarded": "Iklan berhadiah: {{placement}}",
+    "mockInterstitial": "Iklan interstisial",
+    "mockCountdown": "Hadiah dalam {{count}} dtk",
+    "mockEarned": "Hadiah didapat",
+    "mockClose": "Tutup iklan",
+    "mockCloseEarly": "Tutup iklan tanpa hadiah"
+  },
+  "daily": {
+    "title": "Tantangan Harian",
+    "prevMonth": "Bulan sebelumnya",
+    "nextMonth": "Bulan berikutnya",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}, selesai",
+    "todayA11y": "{{date}}, hari ini",
+    "todayDoneA11y": "{{date}}, hari ini, selesai",
+    "currentStreak": "Beruntun saat ini",
+    "bestStreak": "Beruntun terpanjang",
+    "days_other": "{{value}} hari",
+    "streakA11y_other": "{{label}}: {{value}} hari",
+    "play": "Main tantangan hari ini",
+    "done": "Selesai ✓",
+    "doneMessage": "Tantangan hari ini selesai. Kembali lagi besok!",
+    "playAgain": "Main lagi",
+    "playAgainA11y": "Main ulang tantangan hari ini untuk seru-seruan (tanpa hadiah)",
+    "chestTitle": "Peti hari ke-7",
+    "chestProgress": "{{day}} dari 7 hadiah diklaim",
+    "chestA11y": "Progres hadiah harian: {{day}} dari 7 diklaim. Hari ke-7 adalah peti"
+  },
+  "shop": {
+    "title": "Toko",
+    "names": {
+      "coins_500": "Segenggam koin",
+      "coins_1500": "Sekantong koin",
+      "coins_4000": "Sepeti koin",
+      "remove_ads": "Hapus Iklan",
+      "starter_pack": "Paket Pemula",
+      "vip_weekly": "VIP Mingguan",
+      "vip_monthly": "VIP Bulanan"
+    },
+    "sections": {
+      "coins": "Koin",
+      "removeAds": "Tanpa iklan",
+      "vip": "VIP",
+      "purchases": "Pembelianmu"
+    },
+    "coinsAmount_other": "{{value}} koin",
+    "loading": "Memuat harga…",
+    "unavailableTitle": "Toko tidak tersedia",
+    "unavailableMessage": "Pembelian sedang tidak tersedia. Coba lagi nanti.",
+    "loadFailed": "Gagal memuat toko. Periksa koneksimu.",
+    "retry": "Coba lagi",
+    "buyA11y": "Beli {{name}} seharga {{price}}",
+    "owned": "Dimiliki",
+    "ownedA11y": "{{name}}: dimiliki",
+    "notOffered": "Tidak tersedia",
+    "notOfferedA11y": "{{name}} sedang tidak tersedia",
+    "freeCoins": {
+      "title": "Koin gratis",
+      "button": "Koin gratis",
+      "a11y_other": "Tonton iklan untuk {{value}} koin gratis",
+      "reward_other": "+{{value}} koin untuk iklan singkat",
+      "left_other": "Sisa {{count}} hari ini",
+      "cooldown": "Lagi dalam {{time}}",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "Koin gratis tersedia lagi dalam {{minutes}} menit {{seconds}} detik",
+      "capped": "Sudah habis untuk hari ini. Kembali lagi besok!",
+      "granted_other": "+{{value}} koin"
+    },
+    "removeAds": {
+      "description": "Tak ada lagi iklan di antara level. Iklan berhadiah tetap opsional untuk bonus."
+    },
+    "starterPack": {
+      "description": "{{coins}} koin, {{hints}} petunjuk, {{undos}} langkah mundur, dan tema Aurora",
+      "oneTime": "Penawaran sekali saja"
+    },
+    "vip": {
+      "subtitle": "Cara terbaik main Pourly",
+      "benefits": {
+        "noInterstitials": "Tanpa iklan di antara level",
+        "giftX2": "Hadiah harian ganda",
+        "dailyBonus": "+{{coins}} koin dan +{{hints}} petunjuk setiap hari",
+        "gold": "Tema Emas eksklusif",
+        "badge": "Lencana VIP",
+        "freeze": "1 pelindung beruntun tiap minggu"
+      },
+      "active": "Aktif",
+      "activeA11y": "Langganan VIP-mu aktif",
+      "period": {
+        "day_other": "per {{count}} hari",
+        "week_other": "per {{count}} minggu",
+        "month_other": "per {{count}} bulan",
+        "year_other": "per {{count}} tahun"
+      },
+      "planPrice": "{{price}} {{period}}",
+      "subscribe": "Langganan",
+      "subscribeA11y": "Langganan {{name}}: {{price}} {{period}}, diperpanjang otomatis",
+      "renewNote": "Langganan diperpanjang otomatis dengan harga yang ditampilkan sampai kamu membatalkannya. Batalkan kapan saja di Google Play, paling lambat 24 jam sebelum perpanjangan berikutnya. Pembayaran ditagihkan ke akun Google Play-mu."
+    },
+    "restore": "Pulihkan pembelian",
+    "restoreNote": "Memulihkan Hapus Iklan, VIP, dan tema Paket Pemula. Koin, petunjuk, dan langkah mundur tidak bisa dipulihkan.",
+    "manage": "Kelola langganan",
+    "terms": "Persyaratan Layanan",
+    "privacy": "Kebijakan Privasi",
+    "thanksTitle": "Terima kasih!",
+    "thanksMessage": "Pembelianmu sudah ditambahkan.",
+    "alreadyOwnedTitle": "Sudah dibeli",
+    "alreadyOwnedMessage": "Akun Google Play ini sudah memilikinya. Pulihkan pembelian untuk mendapatkannya kembali.",
+    "restoreAction": "Pulihkan pembelian"
+  },
+  "themes": {
+    "title": "Tema",
+    "names": {
+      "classic": "Klasik",
+      "ember": "Bara",
+      "sunset": "Senja",
+      "forest": "Hutan",
+      "candy": "Permen",
+      "neon": "Neon",
+      "aurora": "Aurora",
+      "gold": "Emas"
+    },
+    "inUse": "Dipakai",
+    "inUseA11y": "Tema {{name}}, sedang dipakai",
+    "apply": "Pakai",
+    "applyA11y": "Pakai tema {{name}}",
+    "unlockA11y": "Buka kunci tema {{name}} seharga {{price}} koin",
+    "starterPack": "Paket Pemula",
+    "starterPackA11y": "{{name}} ada di Paket Pemula. Buka toko",
+    "vip": "VIP",
+    "vipA11y": "{{name}} termasuk dalam VIP. Buka toko",
+    "previewA11y": "Pratinjau tema {{name}}",
+    "confirmTitle": "Buka kunci {{name}}?",
+    "confirmMessage": "Pakai {{price}} koin untuk tema {{name}}. Kamu punya {{coins}}.",
+    "confirm": "Buka tema",
+    "item": "Tema {{name}}",
+    "unlocked": "{{name}} terbuka"
+  },
+  "settings": {
+    "title": "Setelan",
+    "sections": {
+      "sound": "Suara & getaran",
+      "display": "Tampilan",
+      "language": "Bahasa",
+      "about": "Tentang",
+      "progress": "Progres",
+      "purchases": "Pembelian",
+      "notifications": "Notifikasi",
+      "account": "Akun"
+    },
+    "sound": "Suara",
+    "haptics": "Getaran",
+    "colorBlind": "Simbol buta warna",
+    "colorBlindHint": "Menambahkan bentuk ke setiap warna",
+    "reducedMotion": "Kurangi gerakan",
+    "motion": {
+      "system": "Sistem",
+      "on": "Nyala",
+      "off": "Mati"
+    },
+    "quality": "Mode performa",
+    "qualityOptions": {
+      "auto": "Otomatis",
+      "high": "Tinggi",
+      "low": "Rendah"
+    },
+    "qualityLowered": "Mode otomatis mengurangi efek agar game tetap lancar di perangkat ini",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "Bahasa",
+    "languageSystem": "Default sistem",
+    "languageA11y": "Bahasa: {{name}}. Ubah",
+    "rtlRestart": "Mulai ulang aplikasi untuk mengganti arah tata letak",
+    "privacy": "Kebijakan Privasi",
+    "terms": "Persyaratan Layanan",
+    "support": "Hubungi dukungan",
+    "linkFailed": "Tidak dapat membuka tautan",
+    "reset": "Reset progres",
+    "resetHint": "Mulai lagi dari level 1",
+    "resetTitle": "Reset progres?",
+    "resetMessage": "Level, bintang, koin, item, beruntun, dan tema koin akan dihapus. Pembelian tetap tersimpan.",
+    "resetContinue": "Lanjut",
+    "resetConfirmTitle": "Kamu yakin?",
+    "resetConfirmMessage": "Tindakan ini tidak bisa dibatalkan.",
+    "resetConfirm": "Reset semuanya",
+    "version": "Versi {{version}} (build {{build}})",
+    "restorePurchases": "Pulihkan pembelian",
+    "restoreHint": "Koin, petunjuk, dan langkah mundur tidak bisa dipulihkan",
+    "manageSubscription": "Kelola langganan",
+    "adPrivacy": "Opsi privasi iklan",
+    "adPrivacyHint": "Tinjau pilihan persetujuan iklanmu",
+    "adPrivacyFailed": "Tidak dapat membuka opsi privasi iklan",
+    "dailyReminders": "Pengingat harian",
+    "dailyRemindersHint": "Pengingat tantangan harian, hadiah harian, dan ajakan kembali",
+    "streakReminders": "Pengingat beruntun",
+    "streakRemindersHint": "Peringatan di malam hari sebelum beruntunmu putus",
+    "notificationsOff": "Notifikasi Pourly nonaktif. Nyalakan pengingat untuk mengizinkannya.",
+    "notificationsBlocked": "Notifikasi diblokir di setelan Android. Nyalakan pengingat untuk membuka setelan.",
+    "openSettingsFailed": "Tidak dapat membuka setelan aplikasi"
+  },
+  "account": {
+    "signIn": "Masuk dengan Google",
+    "signInHint": "Simpan progres dan pembelian ke akun Google-mu dan lanjutkan di perangkat apa pun",
+    "signedInAs": "Masuk sebagai {{email}}",
+    "signedIn": "Terhubung dengan Google",
+    "signOut": "Keluar",
+    "signOutHint": "Progresmu tetap ada di perangkat ini",
+    "delete": "Hapus akun dan data",
+    "deleteHint": "Menghapus simpanan cloud dan akun Pourly-mu",
+    "unavailable": "Masuk tidak tersedia di build ini",
+    "working": "Tunggu sebentar…",
+    "deleteTitle": "Hapus akunmu?",
+    "deleteMessage": "Ini akan menghapus permanen akun Pourly dan simpanan cloud-nya: level, bintang, koin, petunjuk, langkah mundur, beruntun, dan tema. Progres di perangkat ini juga direset. Hapus Iklan, VIP, dan pembelian tetap ada di akun Google Play-mu dan bisa dipulihkan.",
+    "deleteContinue": "Lanjut",
+    "deleteConfirmTitle": "Hapus semuanya?",
+    "deleteConfirmMessage": "Pilih lagi akun Google-mu untuk konfirmasi. Tindakan ini tidak bisa dibatalkan.",
+    "deleteConfirm": "Hapus akunku",
+    "toast": {
+      "signedIn": "Berhasil masuk. Progresmu kini tersimpan di akunmu.",
+      "signedOut": "Berhasil keluar. Progresmu tetap ada di perangkat ini.",
+      "deleted": "Akun dan data cloud-mu sudah dihapus.",
+      "deleteFailed": "Gagal menghapus akunmu. Coba lagi.",
+      "wrongAccount": "Pilih akun Google yang kamu pakai untuk masuk.",
+      "playServices": "Layanan Google Play tidak ada atau sudah usang. Perbarui lalu coba lagi.",
+      "network": "Tidak ada koneksi. Periksa internetmu dan coba lagi.",
+      "inProgress": "Proses masuk sedang berjalan.",
+      "signInFailed": "Gagal masuk. Coba lagi.",
+      "unavailable": "Masuk tidak tersedia di build ini."
+    }
+  },
+  "cloud": {
+    "grantArrived": "Pembelianmu sudah tiba!",
+    "grantTitle": "Pembelian terkirim",
+    "grantMessage": "Terima kasih atas dukunganmu!",
+    "refundApplied": "Pembelian yang di-refund telah dikurangi dari saldomu."
+  },
+  "iap": {
+    "pending": "Pembelian tertunda. Akan ditambahkan setelah pembayaran selesai.",
+    "pendingComplete": "Pembelianmu yang tertunda sudah selesai!",
+    "networkError": "Tidak ada koneksi. Periksa internetmu dan coba lagi.",
+    "storeError": "Toko tidak dapat menyelesaikan pembelian. Coba lagi nanti.",
+    "unknownError": "Terjadi masalah pada pembelian. Coba lagi.",
+    "adsRemoved": "Iklan dihapus. Terima kasih atas dukunganmu!",
+    "vipActive": "Selamat datang di VIP!",
+    "awaitingServer": "Pembelian selesai. Item-mu akan segera tiba.",
+    "restored": "Pembelian dipulihkan",
+    "nothingToRestore": "Tidak ada pembelian untuk dipulihkan di akun ini",
+    "restoreFailed": "Gagal memulihkan pembelian. Coba lagi nanti."
+  },
+  "mockPurchase": {
+    "title": "PEMBELIAN UJI",
+    "message": "Toko tiruan: tidak ada biaya. Pilih hasil akhir pembelian uji ini.",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "Berhasil",
+      "pending": "Pembayaran tertunda",
+      "cancel": "Batal",
+      "networkError": "Gagal: error jaringan",
+      "storeError": "Gagal: error toko"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "Anggota VIP"
+  },
+  "notificationPrompt": {
+    "title": "Jangan lewatkan puzzle",
+    "message": "Dapatkan pengingat saat tantangan harian siap dan sebelum beruntunmu putus. Paling banyak satu pengingat sehari.",
+    "allow": "Izinkan",
+    "allowA11y": "Izinkan pengingat",
+    "notNow": "Nanti saja",
+    "notNowA11y": "Nanti saja, tanpa pengingat"
+  },
+  "notifications": {
+    "channelName": "Pengingat",
+    "channelDescription": "Pengingat tantangan harian, beruntun, dan hadiah",
+    "streakRiskTitle": "Beruntun {{n}} harimu terancam!",
+    "streakRiskBody": "Selesaikan tantangan harian sebelum tengah malam agar tetap berlanjut.",
+    "dailyReadyTitle": "Tantangan harian sudah siap",
+    "dailyReadyBody": "Puzzle baru menantimu. Bisa selesai dalam beberapa tuangan?",
+    "giftReadyTitle": "Hadiah harianmu menunggu",
+    "giftReadyBody": "Hadiah hari ke-{{n}} dari 7 siap diklaim. Buka Pourly untuk mengambilnya.",
+    "comeback1Title": "Puzzle harian baru sudah siap",
+    "comeback1Body": "Tuang beberapa tabung dan jaga otakmu tetap tajam. Level {{n}} menunggu.",
+    "comeback2Title": "Tabung-tabungmu kangen kamu",
+    "comeback2Body": "Level {{n}} masih menunggumu. Yuk, main sebentar.",
+    "comeback3Title": "Sudah seminggu!",
+    "comeback3Body": "Ayo main lagi: level {{n}} siap kapan pun kamu mau.",
+    "comeback4Title": "Satu tuangan lagi?",
+    "comeback4Body": "Ini pengingat terakhir kami. Level {{n}} tersimpan dan menunggumu kapan saja."
+  }
+}

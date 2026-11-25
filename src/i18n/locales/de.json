@@ -1,0 +1,465 @@
+{
+  "meta": {
+    "nativeName": "Deutsch"
+  },
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "Abbrechen",
+    "close": "Schließen",
+    "back": "Zurück",
+    "continue": "Weiter",
+    "on": "An",
+    "off": "Aus",
+    "notNow": "Später"
+  },
+  "home": {
+    "play": "Level {{n}}",
+    "playA11y": "Level {{n}} spielen",
+    "resume": "Weiter: Level {{n}}",
+    "resumeA11y": "Level {{n}} dort fortsetzen, wo du aufgehört hast",
+    "shop": "Shop",
+    "themes": "Designs",
+    "settings": "Optionen",
+    "playHardA11y": "Level {{n}} spielen, schweres Level",
+    "signInCard": {
+      "title": "Melde dich an, um deinen Fortschritt zu sichern",
+      "body": "Behalte deine Level, Münzen und Käufe und spiele auf jedem Gerät weiter.",
+      "button": "Anmelden",
+      "dismissA11y": "Anmeldevorschlag ausblenden"
+    }
+  },
+  "dailyCard": {
+    "title": "Tagesrätsel",
+    "streak_one": "{{value}} Tag in Folge",
+    "streak_other": "{{value}} Tage in Folge",
+    "noStreak": "Starte heute eine Serie",
+    "openA11y": "Tagesrätsel. {{streak}}. Kalender öffnen",
+    "play": "Spielen",
+    "playA11y": "Heutiges Tagesrätsel spielen",
+    "done": "Fertig ✓",
+    "doneA11y": "Das heutige Tagesrätsel ist geschafft. Kalender öffnen"
+  },
+  "gift": {
+    "button": "Geschenk",
+    "readyA11y": "Hol dir dein tägliches Geschenk",
+    "waitA11y": "Tägliches Geschenk abgeholt. Das nächste gibt es morgen",
+    "title": "Tagesgeschenk",
+    "day": "Tag {{day}} von 7",
+    "chest": "Truhe an Tag 7!",
+    "double": "Verdoppeln",
+    "doubleA11y": "Verdopple dieses Geschenk mit einem Werbevideo",
+    "doubled": "Geschenk verdoppelt!",
+    "comeBack": "Dein nächstes Geschenk gibt es morgen"
+  },
+  "vipBonus": {
+    "button": "VIP-Bonus",
+    "a11y": "Hol dir deinen täglichen VIP-Bonus",
+    "title": "Täglicher VIP-Bonus",
+    "message": "Danke, dass du VIP bist!"
+  },
+  "starterPack": {
+    "title": "Starterpaket",
+    "subtitle": "Münzen, Tipps, Rückgängig und das Design Aurora",
+    "endsIn": "Endet in {{time}}",
+    "endsInA11y": "Starterpaket-Angebot. Endet in {{hours}} Std. {{minutes}} Min.",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "Ansehen",
+    "viewA11y": "Starterpaket im Shop ansehen"
+  },
+  "game": {
+    "title": "Level {{n}}",
+    "hardTitleA11y": "Level {{n}}, schweres Level",
+    "pause": "Pause",
+    "undo": "Zurück",
+    "hint": "Tipp",
+    "restart": "Neustart",
+    "addTube": "+Glas",
+    "skip": "Überspringen",
+    "skipA11y": "Dieses Level mit einem Werbevideo überspringen",
+    "actionA11y": "{{action}}, {{detail}}",
+    "noHint": "Kein Tipp für dieses Spielfeld gefunden",
+    "rewardSaved": "Das Spielfeld hat sich geändert, deine Belohnung wurde für später aufbewahrt",
+    "costFree": "noch {{count}} gratis",
+    "costOwned": "noch {{count}}",
+    "costCoins": "{{count}} Münzen",
+    "costAd": "Werbevideo ansehen",
+    "costUsed": "schon benutzt",
+    "dailyTitle": "Täglich · {{date}}",
+    "dailyTitleA11y": "Tagesrätsel, {{date}}"
+  },
+  "coins": {
+    "badgeA11y": "{{count}} Münzen. Shop öffnen",
+    "balanceA11y": "Guthaben: {{count}} Münzen"
+  },
+  "items": {
+    "undo": "Ein Rückgängig",
+    "hint": "Ein Tipp",
+    "extraTube": "Ein Extraglas"
+  },
+  "pause": {
+    "title": "Pausiert",
+    "resume": "Weiter",
+    "restart": "Neustart",
+    "home": "Start",
+    "sound": "Sound",
+    "haptics": "Vibration"
+  },
+  "win": {
+    "title": "Level geschafft!",
+    "starsA11y": "{{count}} von 3 Sternen",
+    "coinsA11y": "{{count}} Münzen verdient",
+    "next": "Weiter",
+    "nextA11y": "Nächstes Level spielen",
+    "double": "Verdoppeln",
+    "doubleA11y": "Verdopple deine Münzen mit einem Werbevideo",
+    "home": "Start",
+    "dailyTitle": "Tagesrätsel geschafft!",
+    "streak_one": "{{value}} Tag in Folge",
+    "streak_other": "{{value}} Tage in Folge",
+    "dailyReplay": "Heute schon geschafft. Wiederholungen sind nur zum Spaß."
+  },
+  "stuck": {
+    "title": "Keine Züge mehr",
+    "message": "Mach einen Zug rückgängig, füge ein Glas hinzu, starte neu oder überspringe das Level.",
+    "messageNoSkip": "Mach einen Zug rückgängig, füge ein Glas hinzu oder starte neu.",
+    "undo": "Zurück",
+    "addTube": "+Glas",
+    "restart": "Neustart",
+    "skip": "Überspringen",
+    "skipA11y": "Dieses Level mit einem Werbevideo überspringen",
+    "keepLooking": "Weitersuchen"
+  },
+  "notEnough": {
+    "title": "Nicht genug Münzen",
+    "message": "{{item}} kostet {{cost}} Münzen. Du hast {{coins}}.",
+    "watchAd": "Video ansehen",
+    "watchAdA11y": "Sieh dir ein Werbevideo an für: {{item}}",
+    "shop": "Shop"
+  },
+  "restartConfirm": {
+    "title": "Level neu starten?",
+    "message": "Du hast in diesem Versuch ein bezahltes Item benutzt. Beim Neustart geht es verloren.",
+    "confirm": "Trotzdem neu",
+    "cancel": "Weiterspielen"
+  },
+  "reward": {
+    "title": "Belohnung",
+    "skippedTitle": "Level übersprungen",
+    "skippedMessage": "Level {{n}} zählt als geschafft mit 1 Stern.",
+    "coins": "+{{count}} Münzen",
+    "hints": "+{{count}} Tipps",
+    "undos": "+{{count}} Rückgängig",
+    "extraTubes": "+{{count}} Gläser"
+  },
+  "tutorial": {
+    "level1": "Tippe auf ein Glas, dann auf das Ziel",
+    "level2": "Gieße nur auf dieselbe Farbe oder in ein leeres Glas",
+    "level3": "Sortiere jede Farbe in ein eigenes Glas"
+  },
+  "ads": {
+    "notReady": "Werbung noch nicht bereit, versuch es gleich nochmal",
+    "mockTitle": "TESTWERBUNG (simuliert)",
+    "mockRewarded": "Belohnungswerbung: {{placement}}",
+    "mockInterstitial": "Interstitial-Werbung",
+    "mockCountdown": "Belohnung in {{count}} s",
+    "mockEarned": "Belohnung erhalten",
+    "mockClose": "Werbung schließen",
+    "mockCloseEarly": "Werbung ohne Belohnung schließen"
+  },
+  "daily": {
+    "title": "Tagesrätsel",
+    "prevMonth": "Vorheriger Monat",
+    "nextMonth": "Nächster Monat",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}, geschafft",
+    "todayA11y": "{{date}}, heute",
+    "todayDoneA11y": "{{date}}, heute, geschafft",
+    "currentStreak": "Aktuelle Serie",
+    "bestStreak": "Längste Serie",
+    "days_one": "{{value}} Tag",
+    "days_other": "{{value}} Tage",
+    "streakA11y_one": "{{label}}: {{value}} Tag",
+    "streakA11y_other": "{{label}}: {{value}} Tage",
+    "play": "Heutiges Rätsel spielen",
+    "done": "Fertig ✓",
+    "doneMessage": "Das heutige Rätsel ist geschafft. Komm morgen wieder!",
+    "playAgain": "Nochmal spielen",
+    "playAgainA11y": "Heutiges Rätsel zum Spaß wiederholen (ohne Belohnung)",
+    "chestTitle": "Truhe an Tag 7",
+    "chestProgress": "{{day}} von 7 Geschenken abgeholt",
+    "chestA11y": "Fortschritt der Geschenke: {{day}} von 7 abgeholt. An Tag 7 gibt es die Truhe"
+  },
+  "shop": {
+    "title": "Shop",
+    "names": {
+      "coins_500": "Handvoll Münzen",
+      "coins_1500": "Münzbeutel",
+      "coins_4000": "Münztruhe",
+      "remove_ads": "Werbung entfernen",
+      "starter_pack": "Starterpaket",
+      "vip_weekly": "VIP Woche",
+      "vip_monthly": "VIP Monat"
+    },
+    "sections": {
+      "coins": "Münzen",
+      "removeAds": "Werbefrei",
+      "vip": "VIP",
+      "purchases": "Deine Käufe"
+    },
+    "coinsAmount_one": "{{value}} Münze",
+    "coinsAmount_other": "{{value}} Münzen",
+    "loading": "Preise werden geladen…",
+    "unavailableTitle": "Shop nicht verfügbar",
+    "unavailableMessage": "Käufe sind gerade nicht möglich. Bitte versuch es später erneut.",
+    "loadFailed": "Shop konnte nicht geladen werden. Prüfe deine Verbindung.",
+    "retry": "Nochmal",
+    "buyA11y": "{{name}} für {{price}} kaufen",
+    "owned": "Gekauft",
+    "ownedA11y": "{{name}}: gekauft",
+    "notOffered": "Nicht verfügbar",
+    "notOfferedA11y": "{{name}} ist gerade nicht verfügbar",
+    "freeCoins": {
+      "title": "Gratis-Münzen",
+      "button": "Gratis-Münzen",
+      "a11y_one": "Sieh dir ein Werbevideo an für {{value}} Gratis-Münze",
+      "a11y_other": "Sieh dir ein Werbevideo an für {{value}} Gratis-Münzen",
+      "reward_one": "+{{value}} Münze für ein kurzes Video",
+      "reward_other": "+{{value}} Münzen für ein kurzes Video",
+      "left_one": "Heute noch {{count}}",
+      "left_other": "Heute noch {{count}}",
+      "cooldown": "Nächste in {{time}}",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "Gratis-Münzen wieder verfügbar in {{minutes}} Min. {{seconds}} Sek.",
+      "capped": "Das war's für heute. Komm morgen wieder!",
+      "granted_one": "+{{value}} Münze",
+      "granted_other": "+{{value}} Münzen"
+    },
+    "removeAds": {
+      "description": "Keine Werbung mehr zwischen den Levels. Belohnungsvideos bleiben freiwillig für Boni."
+    },
+    "starterPack": {
+      "description": "{{coins}} Münzen, {{hints}} Tipps, {{undos}}× Rückgängig und das Design Aurora",
+      "oneTime": "Einmaliges Angebot"
+    },
+    "vip": {
+      "subtitle": "Die beste Art, Pourly zu spielen",
+      "benefits": {
+        "noInterstitials": "Keine Werbung zwischen Levels",
+        "giftX2": "Doppeltes Tagesgeschenk",
+        "dailyBonus": "Jeden Tag +{{coins}} Münzen und +{{hints}} Tipps",
+        "gold": "Exklusives Design Gold",
+        "badge": "VIP-Abzeichen",
+        "freeze": "Ein Serienschutz pro Woche"
+      },
+      "active": "Aktiv",
+      "activeA11y": "Dein VIP-Abo ist aktiv",
+      "period": {
+        "day_one": "pro Tag",
+        "day_other": "alle {{count}} Tage",
+        "week_one": "pro Woche",
+        "week_other": "alle {{count}} Wochen",
+        "month_one": "pro Monat",
+        "month_other": "alle {{count}} Monate",
+        "year_one": "pro Jahr",
+        "year_other": "alle {{count}} Jahre"
+      },
+      "planPrice": "{{price}} {{period}}",
+      "subscribe": "Abonnieren",
+      "subscribeA11y": "{{name}} abonnieren: {{price}} {{period}}, verlängert sich automatisch",
+      "renewNote": "Abos verlängern sich automatisch zum angezeigten Preis, bis du kündigst. Kündige jederzeit bei Google Play, spätestens 24 Stunden vor der nächsten Verlängerung. Die Zahlung wird deinem Google Play-Konto belastet."
+    },
+    "restore": "Käufe wiederherstellen",
+    "restoreNote": "Stellt Werbung entfernen, VIP und das Design aus dem Starterpaket wieder her. Münzen, Tipps und Rückgängig können nicht wiederhergestellt werden.",
+    "manage": "Abo verwalten",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutzerklärung",
+    "thanksTitle": "Danke!",
+    "thanksMessage": "Dein Kauf wurde hinzugefügt.",
+    "alreadyOwnedTitle": "Bereits gekauft",
+    "alreadyOwnedMessage": "Dieses Google Play-Konto besitzt es bereits. Stelle deine Käufe wieder her, um es zurückzubekommen.",
+    "restoreAction": "Käufe wiederherstellen"
+  },
+  "themes": {
+    "title": "Designs",
+    "names": {
+      "classic": "Klassisch",
+      "ember": "Glut",
+      "sunset": "Sonnenuntergang",
+      "forest": "Wald",
+      "candy": "Bonbon",
+      "neon": "Neon",
+      "aurora": "Aurora",
+      "gold": "Gold"
+    },
+    "inUse": "Aktiv",
+    "inUseA11y": "Design {{name}}, aktiv",
+    "apply": "Anwenden",
+    "applyA11y": "Design {{name}} anwenden",
+    "unlockA11y": "Design {{name}} für {{price}} Münzen freischalten",
+    "starterPack": "Starterpaket",
+    "starterPackA11y": "{{name}} ist im Starterpaket enthalten. Shop öffnen",
+    "vip": "VIP",
+    "vipA11y": "{{name}} ist in VIP enthalten. Shop öffnen",
+    "previewA11y": "Vorschau des Designs {{name}}",
+    "confirmTitle": "{{name}} freischalten?",
+    "confirmMessage": "Gib {{price}} Münzen für das Design {{name}} aus. Du hast {{coins}}.",
+    "confirm": "Freischalten",
+    "item": "Das Design {{name}}",
+    "unlocked": "{{name}} freigeschaltet"
+  },
+  "settings": {
+    "title": "Optionen",
+    "sections": {
+      "sound": "Sound und Gefühl",
+      "display": "Anzeige",
+      "language": "Sprache",
+      "about": "Info",
+      "progress": "Fortschritt",
+      "purchases": "Käufe",
+      "notifications": "Benachrichtigungen",
+      "account": "Konto"
+    },
+    "sound": "Sound",
+    "haptics": "Vibration",
+    "colorBlind": "Farbenblind-Symbole",
+    "colorBlindHint": "Fügt jeder Farbe eine Form hinzu",
+    "reducedMotion": "Weniger Bewegung",
+    "motion": {
+      "system": "System",
+      "on": "An",
+      "off": "Aus"
+    },
+    "quality": "Leistungsmodus",
+    "qualityOptions": {
+      "auto": "Auto",
+      "high": "Hoch",
+      "low": "Niedrig"
+    },
+    "qualityLowered": "Auto hat die Effekte reduziert, damit das Spiel auf diesem Gerät flüssig läuft",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "Sprache",
+    "languageSystem": "Systemsprache",
+    "languageA11y": "Sprache: {{name}}. Ändern",
+    "rtlRestart": "Starte die App neu, um die Leserichtung zu ändern",
+    "privacy": "Datenschutzerklärung",
+    "terms": "Nutzungsbedingungen",
+    "support": "Support kontaktieren",
+    "linkFailed": "Link konnte nicht geöffnet werden",
+    "reset": "Fortschritt löschen",
+    "resetHint": "Wieder bei Level 1 anfangen",
+    "resetTitle": "Fortschritt löschen?",
+    "resetMessage": "Level, Sterne, Münzen, Items, Serien und mit Münzen gekaufte Designs werden gelöscht. Käufe bleiben erhalten.",
+    "resetContinue": "Weiter",
+    "resetConfirmTitle": "Bist du sicher?",
+    "resetConfirmMessage": "Das kann nicht rückgängig gemacht werden.",
+    "resetConfirm": "Alles löschen",
+    "version": "Version {{version}} (Build {{build}})",
+    "restorePurchases": "Käufe wiederherstellen",
+    "restoreHint": "Münzen, Tipps und Rückgängig können nicht wiederhergestellt werden",
+    "manageSubscription": "Abo verwalten",
+    "adPrivacy": "Werbe-Datenschutz",
+    "adPrivacyHint": "Prüfe deine Einwilligungen für Werbung",
+    "adPrivacyFailed": "Werbe-Datenschutzoptionen konnten nicht geöffnet werden",
+    "dailyReminders": "Tägliche Erinnerungen",
+    "dailyRemindersHint": "Tagesrätsel, tägliches Geschenk und Comeback-Erinnerungen",
+    "streakReminders": "Serien-Erinnerungen",
+    "streakRemindersHint": "Ein Hinweis am Abend, bevor deine Serie reißt",
+    "notificationsOff": "Benachrichtigungen für Pourly sind aus. Aktiviere eine Erinnerung, um sie zu erlauben.",
+    "notificationsBlocked": "Benachrichtigungen sind in den Android-Einstellungen blockiert. Aktiviere eine Erinnerung, um die Einstellungen zu öffnen.",
+    "openSettingsFailed": "App-Einstellungen konnten nicht geöffnet werden"
+  },
+  "account": {
+    "signIn": "Mit Google anmelden",
+    "signInHint": "Speichere Fortschritt und Käufe in deinem Google-Konto und spiele auf jedem Gerät weiter",
+    "signedInAs": "Angemeldet als {{email}}",
+    "signedIn": "Mit Google angemeldet",
+    "signOut": "Abmelden",
+    "signOutHint": "Dein Fortschritt bleibt auf diesem Gerät",
+    "delete": "Konto und Daten löschen",
+    "deleteHint": "Entfernt deinen Cloud-Spielstand und dein Pourly-Konto",
+    "unavailable": "Anmeldung in diesem Build nicht verfügbar",
+    "working": "Bitte warten…",
+    "deleteTitle": "Konto löschen?",
+    "deleteMessage": "Dein Pourly-Konto und sein Cloud-Spielstand werden endgültig gelöscht: Level, Sterne, Münzen, Tipps, Rückgängig, Serien und Designs. Der Fortschritt auf diesem Gerät wird ebenfalls zurückgesetzt. Werbung entfernen, VIP und Käufe bleiben in deinem Google Play-Konto und können wiederhergestellt werden.",
+    "deleteContinue": "Weiter",
+    "deleteConfirmTitle": "Alles löschen?",
+    "deleteConfirmMessage": "Wähle zur Bestätigung erneut dein Google-Konto. Das kann nicht rückgängig gemacht werden.",
+    "deleteConfirm": "Mein Konto löschen",
+    "toast": {
+      "signedIn": "Angemeldet. Dein Fortschritt wird jetzt in deinem Konto gespeichert.",
+      "signedOut": "Abgemeldet. Dein Fortschritt bleibt auf diesem Gerät.",
+      "deleted": "Dein Konto und deine Cloud-Daten wurden gelöscht.",
+      "deleteFailed": "Konto konnte nicht gelöscht werden. Bitte versuch es erneut.",
+      "wrongAccount": "Wähle das Google-Konto, mit dem du angemeldet bist.",
+      "playServices": "Google Play-Dienste fehlen oder sind veraltet. Aktualisiere sie und versuch es erneut.",
+      "network": "Keine Verbindung. Prüfe dein Internet und versuch es erneut.",
+      "inProgress": "Die Anmeldung läuft bereits.",
+      "signInFailed": "Anmeldung fehlgeschlagen. Bitte versuch es erneut.",
+      "unavailable": "Die Anmeldung ist in diesem Build nicht verfügbar."
+    }
+  },
+  "cloud": {
+    "grantArrived": "Dein Kauf ist da!",
+    "grantTitle": "Kauf zugestellt",
+    "grantMessage": "Danke für deine Unterstützung!",
+    "refundApplied": "Ein erstatteter Kauf wurde von deinem Guthaben abgezogen."
+  },
+  "iap": {
+    "pending": "Kauf ausstehend. Er wird hinzugefügt, sobald die Zahlung bestätigt ist.",
+    "pendingComplete": "Dein ausstehender Kauf ist abgeschlossen!",
+    "networkError": "Keine Verbindung. Prüfe dein Internet und versuch es erneut.",
+    "storeError": "Der Store konnte den Kauf nicht abschließen. Bitte versuch es später erneut.",
+    "unknownError": "Beim Kauf ist etwas schiefgelaufen. Bitte versuch es erneut.",
+    "adsRemoved": "Werbung entfernt. Danke für deine Unterstützung!",
+    "vipActive": "Willkommen bei VIP!",
+    "awaitingServer": "Kauf abgeschlossen. Deine Items kommen gleich an.",
+    "restored": "Käufe wiederhergestellt",
+    "nothingToRestore": "Keine Käufe zum Wiederherstellen in diesem Konto",
+    "restoreFailed": "Käufe konnten nicht wiederhergestellt werden. Bitte versuch es später erneut."
+  },
+  "mockPurchase": {
+    "title": "TESTKAUF",
+    "message": "Simulierter Store: Es wird nichts berechnet. Wähle, wie dieser Testkauf endet.",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "Erfolg",
+      "pending": "Zahlung ausstehend",
+      "cancel": "Abbrechen",
+      "networkError": "Fehler: Netzwerk",
+      "storeError": "Fehler: Store"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "VIP-Mitglied"
+  },
+  "notificationPrompt": {
+    "title": "Verpasse kein Rätsel",
+    "message": "Erhalte eine Erinnerung, wenn das Tagesrätsel bereit ist und bevor deine Serie endet. Höchstens eine Erinnerung pro Tag.",
+    "allow": "Erlauben",
+    "allowA11y": "Erinnerungen erlauben",
+    "notNow": "Später",
+    "notNowA11y": "Später, keine Erinnerungen"
+  },
+  "notifications": {
+    "channelName": "Erinnerungen",
+    "channelDescription": "Erinnerungen an Tagesrätsel, Serie und Geschenke",
+    "streakRiskTitle": "Deine Serie von {{n}} Tagen ist in Gefahr!",
+    "streakRiskBody": "Löse das heutige Tagesrätsel vor Mitternacht, um sie zu halten.",
+    "dailyReadyTitle": "Das heutige Tagesrätsel ist da",
+    "dailyReadyBody": "Ein frisches Rätsel wartet. Schaffst du es mit wenigen Zügen?",
+    "giftReadyTitle": "Dein tägliches Geschenk wartet",
+    "giftReadyBody": "Tag {{n}} von 7 ist bereit. Öffne Pourly und hol es dir.",
+    "comeback1Title": "Ein neues Tagesrätsel ist da",
+    "comeback1Body": "Gieß ein paar Gläser um und bleib geistig fit. Level {{n}} wartet.",
+    "comeback2Title": "Deine Gläser vermissen dich",
+    "comeback2Body": "Level {{n}} wartet noch auf dich. Komm zurück für eine schnelle Runde.",
+    "comeback3Title": "Schon eine Woche her!",
+    "comeback3Body": "Steig wieder ein: Level {{n}} wartet, wann immer du bereit bist.",
+    "comeback4Title": "Eine letzte Runde?",
+    "comeback4Body": "Das ist unsere letzte Erinnerung. Level {{n}} ist gespeichert und wartet, wann immer du willst."
+  }
+}

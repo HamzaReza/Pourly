@@ -1,0 +1,452 @@
+{
+  "meta": {
+    "nativeName": "한국어"
+  },
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "확인",
+    "cancel": "취소",
+    "close": "닫기",
+    "back": "뒤로",
+    "continue": "계속",
+    "on": "켜기",
+    "off": "끄기",
+    "notNow": "나중에"
+  },
+  "home": {
+    "play": "레벨 {{n}}",
+    "playA11y": "레벨 {{n}} 플레이",
+    "resume": "레벨 {{n}} 이어하기",
+    "resumeA11y": "중단한 곳부터 레벨 {{n}} 이어하기",
+    "shop": "상점",
+    "themes": "테마",
+    "settings": "설정",
+    "playHardA11y": "레벨 {{n}} 플레이, 어려운 레벨",
+    "signInCard": {
+      "title": "로그인하고 진행 상황 저장하기",
+      "body": "레벨, 코인, 구매 내역을 안전하게 보관하고 어느 기기에서나 플레이하세요.",
+      "button": "로그인",
+      "dismissA11y": "로그인 추천 숨기기"
+    }
+  },
+  "dailyCard": {
+    "title": "일일 챌린지",
+    "streak_other": "{{value}}일 연속",
+    "noStreak": "오늘 연속 기록을 시작하세요",
+    "openA11y": "일일 챌린지. {{streak}}. 캘린더 열기",
+    "play": "플레이",
+    "playA11y": "오늘의 일일 챌린지 플레이",
+    "done": "완료 ✓",
+    "doneA11y": "오늘의 일일 챌린지를 완료했어요. 캘린더 열기"
+  },
+  "gift": {
+    "button": "선물",
+    "readyA11y": "일일 선물 받기",
+    "waitA11y": "일일 선물을 받았어요. 다음 선물은 내일 준비돼요",
+    "title": "일일 선물",
+    "day": "{{day}}/7일차",
+    "chest": "7일차 보물상자!",
+    "double": "2배 받기",
+    "doubleA11y": "광고를 보고 이 선물을 2배로 받기",
+    "doubled": "선물 2배 획득!",
+    "comeBack": "다음 선물은 내일 준비돼요"
+  },
+  "vipBonus": {
+    "button": "VIP 보너스",
+    "a11y": "VIP 일일 보너스 받기",
+    "title": "VIP 일일 보너스",
+    "message": "VIP가 되어 주셔서 감사해요!"
+  },
+  "starterPack": {
+    "title": "스타터 팩",
+    "subtitle": "코인, 힌트, 되돌리기, 오로라 테마",
+    "endsIn": "{{time}} 후 종료",
+    "endsInA11y": "스타터 팩 특가. {{hours}}시간 {{minutes}}분 후 종료",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "보기",
+    "viewA11y": "상점에서 스타터 팩 보기"
+  },
+  "game": {
+    "title": "레벨 {{n}}",
+    "hardTitleA11y": "레벨 {{n}}, 어려운 레벨",
+    "pause": "일시정지",
+    "undo": "되돌리기",
+    "hint": "힌트",
+    "restart": "재시작",
+    "addTube": "+튜브",
+    "skip": "건너뛰기",
+    "skipA11y": "광고를 보고 이 레벨 건너뛰기",
+    "actionA11y": "{{action}}, {{detail}}",
+    "noHint": "이 보드에 맞는 힌트를 찾지 못했어요",
+    "rewardSaved": "보드가 바뀌어서 보상은 나중을 위해 저장했어요",
+    "costFree": "무료 {{count}}회 남음",
+    "costOwned": "{{count}}개 남음",
+    "costCoins": "{{count}}코인",
+    "costAd": "광고 보기",
+    "costUsed": "이미 사용함",
+    "dailyTitle": "일일 · {{date}}",
+    "dailyTitleA11y": "일일 챌린지, {{date}}"
+  },
+  "coins": {
+    "badgeA11y": "{{count}}코인. 상점 열기",
+    "balanceA11y": "잔액: {{count}}코인"
+  },
+  "items": {
+    "undo": "되돌리기",
+    "hint": "힌트",
+    "extraTube": "추가 튜브"
+  },
+  "pause": {
+    "title": "일시정지",
+    "resume": "계속하기",
+    "restart": "재시작",
+    "home": "홈",
+    "sound": "사운드",
+    "haptics": "진동"
+  },
+  "win": {
+    "title": "레벨 완료!",
+    "starsA11y": "별 3개 중 {{count}}개",
+    "coinsA11y": "{{count}}코인 획득",
+    "next": "다음",
+    "nextA11y": "다음 레벨 플레이",
+    "double": "코인 2배",
+    "doubleA11y": "광고를 보고 코인 2배 받기",
+    "home": "홈",
+    "dailyTitle": "일일 챌린지 완료!",
+    "streak_other": "{{value}}일 연속",
+    "dailyReplay": "오늘은 이미 완료했어요. 다시 하기는 재미로만 즐겨 주세요."
+  },
+  "stuck": {
+    "title": "더 이상 움직일 수 없어요",
+    "message": "한 수 되돌리기, 튜브 추가, 재시작 또는 이 레벨을 건너뛰세요.",
+    "messageNoSkip": "한 수 되돌리기, 튜브 추가 또는 재시작하세요.",
+    "undo": "되돌리기",
+    "addTube": "+튜브",
+    "restart": "재시작",
+    "skip": "레벨 건너뛰기",
+    "skipA11y": "광고를 보고 이 레벨 건너뛰기",
+    "keepLooking": "더 찾아보기"
+  },
+  "notEnough": {
+    "title": "코인이 부족해요",
+    "message": "{{item}}에는 {{cost}}코인이 필요해요. 보유 코인: {{coins}}",
+    "watchAd": "광고 보기",
+    "watchAdA11y": "광고를 보고 {{item}} 받기",
+    "shop": "상점"
+  },
+  "restartConfirm": {
+    "title": "레벨을 재시작할까요?",
+    "message": "이번 시도에서 유료 아이템을 사용했어요. 재시작하면 사라져요.",
+    "confirm": "그래도 재시작",
+    "cancel": "계속 플레이"
+  },
+  "reward": {
+    "title": "보상",
+    "skippedTitle": "레벨 건너뜀",
+    "skippedMessage": "레벨 {{n}}은(는) 별 1개로 완료 처리돼요.",
+    "coins": "+{{count}}코인",
+    "hints": "힌트 +{{count}}",
+    "undos": "되돌리기 +{{count}}",
+    "extraTubes": "튜브 +{{count}}"
+  },
+  "tutorial": {
+    "level1": "튜브를 탭한 다음, 부을 곳을 탭하세요",
+    "level2": "같은 색 위나 빈 튜브에만 부을 수 있어요",
+    "level3": "모든 색을 각각의 튜브로 정리하세요"
+  },
+  "ads": {
+    "notReady": "광고가 아직 준비되지 않았어요. 잠시 후 다시 시도하세요",
+    "mockTitle": "테스트 광고 (모의)",
+    "mockRewarded": "보상형 광고: {{placement}}",
+    "mockInterstitial": "전면 광고",
+    "mockCountdown": "{{count}}초 후 보상",
+    "mockEarned": "보상 획득",
+    "mockClose": "광고 닫기",
+    "mockCloseEarly": "보상 없이 광고 닫기"
+  },
+  "daily": {
+    "title": "일일 챌린지",
+    "prevMonth": "이전 달",
+    "nextMonth": "다음 달",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}, 완료",
+    "todayA11y": "{{date}}, 오늘",
+    "todayDoneA11y": "{{date}}, 오늘, 완료",
+    "currentStreak": "현재 연속 기록",
+    "bestStreak": "최장 연속 기록",
+    "days_other": "{{value}}일",
+    "streakA11y_other": "{{label}}: {{value}}일",
+    "play": "오늘의 챌린지 플레이",
+    "done": "완료 ✓",
+    "doneMessage": "오늘의 챌린지를 완료했어요. 내일 또 만나요!",
+    "playAgain": "다시 하기",
+    "playAgainA11y": "재미로 오늘의 챌린지 다시 하기 (보상 없음)",
+    "chestTitle": "7일차 보물상자",
+    "chestProgress": "선물 {{day}}/7개 받음",
+    "chestA11y": "일일 선물 진행: 7개 중 {{day}}개 받음. 7일차는 보물상자예요"
+  },
+  "shop": {
+    "title": "상점",
+    "names": {
+      "coins_500": "코인 한 줌",
+      "coins_1500": "코인 주머니",
+      "coins_4000": "코인 상자",
+      "remove_ads": "광고 제거",
+      "starter_pack": "스타터 팩",
+      "vip_weekly": "VIP 주간",
+      "vip_monthly": "VIP 월간"
+    },
+    "sections": {
+      "coins": "코인",
+      "removeAds": "광고 없음",
+      "vip": "VIP",
+      "purchases": "내 구매"
+    },
+    "coinsAmount_other": "{{value}}코인",
+    "loading": "가격 불러오는 중…",
+    "unavailableTitle": "상점을 이용할 수 없음",
+    "unavailableMessage": "지금은 구매할 수 없어요. 나중에 다시 시도해 주세요.",
+    "loadFailed": "상점을 불러오지 못했어요. 연결을 확인하세요.",
+    "retry": "다시 시도",
+    "buyA11y": "{{name}}을(를) {{price}}에 구매",
+    "owned": "보유 중",
+    "ownedA11y": "{{name}}: 보유 중",
+    "notOffered": "구매 불가",
+    "notOfferedA11y": "{{name}}은(는) 지금 구매할 수 없어요",
+    "freeCoins": {
+      "title": "무료 코인",
+      "button": "무료 코인",
+      "a11y_other": "광고를 보고 무료 코인 {{value}}개 받기",
+      "reward_other": "짧은 광고 보고 +{{value}}코인",
+      "left_other": "오늘 {{count}}회 남음",
+      "cooldown": "{{time}} 후 다시",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "{{minutes}}분 {{seconds}}초 후 무료 코인을 다시 받을 수 있어요",
+      "capped": "오늘은 여기까지예요. 내일 또 오세요!",
+      "granted_other": "+{{value}}코인"
+    },
+    "removeAds": {
+      "description": "레벨 사이 광고가 더 이상 나오지 않아요. 보너스용 보상형 광고는 원할 때만 볼 수 있어요."
+    },
+    "starterPack": {
+      "description": "{{coins}}코인, 힌트 {{hints}}개, 되돌리기 {{undos}}개, 오로라 테마",
+      "oneTime": "1회 한정 특가"
+    },
+    "vip": {
+      "subtitle": "Pourly를 가장 즐겁게 플레이하는 방법",
+      "benefits": {
+        "noInterstitials": "레벨 사이 광고 없음",
+        "giftX2": "일일 선물 2배",
+        "dailyBonus": "매일 +{{coins}}코인, 힌트 +{{hints}}개",
+        "gold": "전용 골드 테마",
+        "badge": "VIP 배지",
+        "freeze": "매주 연속 기록 보호 1회"
+      },
+      "active": "활성",
+      "activeA11y": "VIP 구독이 활성화되어 있어요",
+      "period": {
+        "day_other": "{{count}}일",
+        "week_other": "{{count}}주",
+        "month_other": "{{count}}개월",
+        "year_other": "{{count}}년"
+      },
+      "planPrice": "{{price}} / {{period}}",
+      "subscribe": "구독하기",
+      "subscribeA11y": "{{name}} 구독: {{price}} / {{period}}, 자동 갱신",
+      "renewNote": "구독은 취소할 때까지 표시된 가격으로 자동 갱신됩니다. 다음 갱신 최소 24시간 전까지 Google Play에서 언제든지 취소할 수 있습니다. 결제 금액은 Google Play 계정으로 청구됩니다."
+    },
+    "restore": "구매 복원",
+    "restoreNote": "광고 제거, VIP, 스타터 팩 테마가 복원돼요. 코인, 힌트, 되돌리기는 복원할 수 없어요.",
+    "manage": "구독 관리",
+    "terms": "서비스 약관",
+    "privacy": "개인정보처리방침",
+    "thanksTitle": "감사합니다!",
+    "thanksMessage": "구매한 상품이 추가되었어요.",
+    "alreadyOwnedTitle": "이미 구매함",
+    "alreadyOwnedMessage": "이 Google Play 계정은 이미 이 상품을 보유하고 있어요. 구매를 복원해서 다시 받으세요.",
+    "restoreAction": "구매 복원"
+  },
+  "themes": {
+    "title": "테마",
+    "names": {
+      "classic": "클래식",
+      "ember": "엠버",
+      "sunset": "선셋",
+      "forest": "포레스트",
+      "candy": "캔디",
+      "neon": "네온",
+      "aurora": "오로라",
+      "gold": "골드"
+    },
+    "inUse": "사용 중",
+    "inUseA11y": "{{name}} 테마, 사용 중",
+    "apply": "적용",
+    "applyA11y": "{{name}} 테마 적용",
+    "unlockA11y": "{{price}}코인으로 {{name}} 테마 잠금 해제",
+    "starterPack": "스타터 팩",
+    "starterPackA11y": "{{name}}은(는) 스타터 팩에 포함돼요. 상점 열기",
+    "vip": "VIP",
+    "vipA11y": "{{name}}은(는) VIP에 포함돼요. 상점 열기",
+    "previewA11y": "{{name}} 테마 미리보기",
+    "confirmTitle": "{{name}} 잠금 해제할까요?",
+    "confirmMessage": "{{price}}코인을 써서 {{name}} 테마를 잠금 해제해요. 보유 코인: {{coins}}",
+    "confirm": "잠금 해제",
+    "item": "{{name}} 테마",
+    "unlocked": "{{name}} 잠금 해제됨"
+  },
+  "settings": {
+    "title": "설정",
+    "sections": {
+      "sound": "사운드 및 진동",
+      "display": "화면",
+      "language": "언어",
+      "about": "정보",
+      "progress": "진행 상황",
+      "purchases": "구매",
+      "notifications": "알림",
+      "account": "계정"
+    },
+    "sound": "사운드",
+    "haptics": "진동",
+    "colorBlind": "색각 이상 기호",
+    "colorBlindHint": "모든 색에 모양을 추가해요",
+    "reducedMotion": "동작 줄이기",
+    "motion": {
+      "system": "시스템",
+      "on": "켜기",
+      "off": "끄기"
+    },
+    "quality": "성능 모드",
+    "qualityOptions": {
+      "auto": "자동",
+      "high": "높음",
+      "low": "낮음"
+    },
+    "qualityLowered": "이 기기에서 부드럽게 플레이할 수 있도록 효과를 자동으로 낮췄어요",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "언어",
+    "languageSystem": "시스템 기본값",
+    "languageA11y": "언어: {{name}}. 변경",
+    "rtlRestart": "레이아웃 방향을 바꾸려면 앱을 다시 시작하세요",
+    "privacy": "개인정보처리방침",
+    "terms": "서비스 약관",
+    "support": "고객 지원 문의",
+    "linkFailed": "링크를 열 수 없어요",
+    "reset": "진행 상황 초기화",
+    "resetHint": "레벨 1부터 다시 시작",
+    "resetTitle": "진행 상황을 초기화할까요?",
+    "resetMessage": "레벨, 별, 코인, 아이템, 연속 기록, 코인으로 얻은 테마가 삭제돼요. 구매 항목은 유지돼요.",
+    "resetContinue": "계속",
+    "resetConfirmTitle": "정말 초기화할까요?",
+    "resetConfirmMessage": "이 작업은 되돌릴 수 없어요.",
+    "resetConfirm": "모두 초기화",
+    "version": "버전 {{version}} (빌드 {{build}})",
+    "restorePurchases": "구매 복원",
+    "restoreHint": "코인, 힌트, 되돌리기는 복원할 수 없어요",
+    "manageSubscription": "구독 관리",
+    "adPrivacy": "광고 개인정보 옵션",
+    "adPrivacyHint": "광고 동의 선택 사항 검토",
+    "adPrivacyFailed": "광고 개인정보 옵션을 열 수 없어요",
+    "dailyReminders": "일일 알림",
+    "dailyRemindersHint": "일일 챌린지, 일일 선물, 복귀 알림",
+    "streakReminders": "연속 기록 알림",
+    "streakRemindersHint": "연속 기록이 끊기기 전 저녁에 알려 드려요",
+    "notificationsOff": "Pourly 알림이 꺼져 있어요. 알림을 켜면 허용할 수 있어요.",
+    "notificationsBlocked": "Android 설정에서 알림이 차단되어 있어요. 알림을 켜면 설정이 열려요.",
+    "openSettingsFailed": "앱 설정을 열 수 없어요"
+  },
+  "account": {
+    "signIn": "Google로 로그인",
+    "signInHint": "진행 상황과 구매 내역을 Google 계정에 저장하고 어느 기기에서나 이어서 플레이하세요",
+    "signedInAs": "{{email}}(으)로 로그인됨",
+    "signedIn": "Google로 로그인됨",
+    "signOut": "로그아웃",
+    "signOutHint": "진행 상황은 이 기기에 남아 있어요",
+    "delete": "계정 및 데이터 삭제",
+    "deleteHint": "클라우드 저장 데이터와 Pourly 계정을 삭제해요",
+    "unavailable": "이 빌드에서는 로그인할 수 없어요",
+    "working": "잠시만 기다려 주세요…",
+    "deleteTitle": "계정을 삭제할까요?",
+    "deleteMessage": "Pourly 계정과 클라우드 저장 데이터(레벨, 별, 코인, 힌트, 되돌리기, 연속 기록, 테마)가 영구 삭제돼요. 이 기기의 진행 상황도 초기화돼요. 광고 제거, VIP 및 구매 항목은 Google Play 계정에 남아 있어 복원할 수 있어요.",
+    "deleteContinue": "계속",
+    "deleteConfirmTitle": "모두 삭제할까요?",
+    "deleteConfirmMessage": "확인을 위해 Google 계정을 다시 선택하세요. 이 작업은 되돌릴 수 없어요.",
+    "deleteConfirm": "계정 삭제",
+    "toast": {
+      "signedIn": "로그인했어요. 이제 진행 상황이 계정에 저장돼요.",
+      "signedOut": "로그아웃했어요. 진행 상황은 이 기기에 남아 있어요.",
+      "deleted": "계정과 클라우드 데이터를 삭제했어요.",
+      "deleteFailed": "계정을 삭제하지 못했어요. 다시 시도해 주세요.",
+      "wrongAccount": "로그인한 Google 계정을 선택하세요.",
+      "playServices": "Google Play 서비스가 없거나 오래된 버전이에요. 업데이트 후 다시 시도하세요.",
+      "network": "연결되지 않았어요. 인터넷을 확인하고 다시 시도하세요.",
+      "inProgress": "이미 로그인 중이에요.",
+      "signInFailed": "로그인하지 못했어요. 다시 시도해 주세요.",
+      "unavailable": "이 빌드에서는 로그인할 수 없어요."
+    }
+  },
+  "cloud": {
+    "grantArrived": "구매한 상품이 도착했어요!",
+    "grantTitle": "구매 상품 지급 완료",
+    "grantMessage": "응원해 주셔서 감사해요!",
+    "refundApplied": "환불된 구매 항목을 잔액에서 차감했어요."
+  },
+  "iap": {
+    "pending": "구매 대기 중이에요. 결제가 완료되면 추가돼요.",
+    "pendingComplete": "대기 중이던 구매가 완료되었어요!",
+    "networkError": "연결되지 않았어요. 인터넷을 확인하고 다시 시도하세요.",
+    "storeError": "스토어에서 구매를 완료하지 못했어요. 나중에 다시 시도해 주세요.",
+    "unknownError": "구매 중 문제가 발생했어요. 다시 시도해 주세요.",
+    "adsRemoved": "광고가 제거되었어요. 응원해 주셔서 감사해요!",
+    "vipActive": "VIP가 되신 걸 환영해요!",
+    "awaitingServer": "구매 완료! 아이템이 곧 도착해요.",
+    "restored": "구매를 복원했어요",
+    "nothingToRestore": "이 계정에는 복원할 구매 내역이 없어요",
+    "restoreFailed": "구매를 복원하지 못했어요. 나중에 다시 시도해 주세요."
+  },
+  "mockPurchase": {
+    "title": "테스트 구매",
+    "message": "모의 스토어: 요금이 청구되지 않아요. 이 테스트 구매의 결과를 선택하세요.",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "성공",
+      "pending": "결제 대기",
+      "cancel": "취소",
+      "networkError": "실패: 네트워크 오류",
+      "storeError": "실패: 스토어 오류"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "VIP 회원"
+  },
+  "notificationPrompt": {
+    "title": "퍼즐을 놓치지 마세요",
+    "message": "일일 챌린지가 준비되면, 그리고 연속 기록이 끊기기 전에 알려 드려요. 알림은 하루 최대 1회예요.",
+    "allow": "허용",
+    "allowA11y": "알림 허용",
+    "notNow": "나중에",
+    "notNowA11y": "나중에, 알림 받지 않기"
+  },
+  "notifications": {
+    "channelName": "알림",
+    "channelDescription": "일일 챌린지, 연속 기록, 선물 알림",
+    "streakRiskTitle": "{{n}}일 연속 기록이 끊기기 직전이에요!",
+    "streakRiskBody": "자정 전에 오늘의 일일 챌린지를 풀고 기록을 이어가세요.",
+    "dailyReadyTitle": "오늘의 일일 챌린지가 준비됐어요",
+    "dailyReadyBody": "새 퍼즐이 기다리고 있어요. 몇 번 만에 정리할 수 있을까요?",
+    "giftReadyTitle": "일일 선물이 기다리고 있어요",
+    "giftReadyBody": "{{n}}/7일차 선물을 받을 수 있어요. Pourly를 열고 받아 가세요.",
+    "comeback1Title": "새 일일 퍼즐이 준비됐어요",
+    "comeback1Body": "튜브 몇 개 부으면서 머리를 말랑하게! 레벨 {{n}}이(가) 기다리고 있어요.",
+    "comeback2Title": "튜브들이 보고 싶어 해요",
+    "comeback2Body": "레벨 {{n}}이(가) 아직 기다리고 있어요. 잠깐 한 판 어때요?",
+    "comeback3Title": "벌써 일주일이 지났어요!",
+    "comeback3Body": "다시 시작해 볼까요? 레벨 {{n}}이(가) 준비되어 있어요.",
+    "comeback4Title": "마지막으로 한 번 더?",
+    "comeback4Body": "마지막 알림이에요. 레벨 {{n}}은(는) 저장되어 있으니 언제든 돌아오세요."
+  }
+}

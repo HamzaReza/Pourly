@@ -84,15 +84,18 @@
     "rewardSaved": "The board changed, so your reward was saved for later",
     "costFree": "{{count}} free left",
     "costOwned": "{{count}} left",
-    "costCoins": "{{count}} coins",
+    "costCoins_one": "{{count}} coin",
+    "costCoins_other": "{{count}} coins",
     "costAd": "watch an ad",
     "costUsed": "already used",
     "dailyTitle": "Daily · {{date}}",
     "dailyTitleA11y": "Daily challenge, {{date}}"
   },
   "coins": {
-    "badgeA11y": "{{count}} coins. Open the shop",
-    "balanceA11y": "Balance: {{count}} coins"
+    "badgeA11y_one": "{{count}} coin. Open the shop",
+    "badgeA11y_other": "{{count}} coins. Open the shop",
+    "balanceA11y_one": "Balance: {{count}} coin",
+    "balanceA11y_other": "Balance: {{count}} coins"
   },
   "items": {
     "undo": "An undo",
@@ -110,7 +113,8 @@
   "win": {
     "title": "Level complete!",
     "starsA11y": "{{count}} of 3 stars",
-    "coinsA11y": "{{count}} coins earned",
+    "coinsA11y_one": "{{count}} coin earned",
+    "coinsA11y_other": "{{count}} coins earned",
     "next": "Next",
     "nextA11y": "Play the next level",
     "double": "Double coins",
@@ -149,10 +153,14 @@
     "title": "Reward",
     "skippedTitle": "Level skipped",
     "skippedMessage": "Level {{n}} counts as done with 1 star.",
-    "coins": "+{{count}} coins",
-    "hints": "+{{count}} hints",
-    "undos": "+{{count}} undos",
-    "extraTubes": "+{{count}} tubes"
+    "coins_one": "+{{count}} coin",
+    "coins_other": "+{{count}} coins",
+    "hints_one": "+{{count}} hint",
+    "hints_other": "+{{count}} hints",
+    "undos_one": "+{{count}} undo",
+    "undos_other": "+{{count}} undos",
+    "extraTubes_one": "+{{count}} tube",
+    "extraTubes_other": "+{{count}} tubes"
   },
   "tutorial": {
     "level1": "Tap a tube, then tap where to pour",

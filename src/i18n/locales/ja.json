@@ -1,0 +1,452 @@
+{
+  "meta": {
+    "nativeName": "日本語"
+  },
+  "app": {
+    "name": "Pourly"
+  },
+  "common": {
+    "ok": "OK",
+    "cancel": "キャンセル",
+    "close": "閉じる",
+    "back": "戻る",
+    "continue": "続ける",
+    "on": "オン",
+    "off": "オフ",
+    "notNow": "あとで"
+  },
+  "home": {
+    "play": "レベル {{n}}",
+    "playA11y": "レベル {{n}} をプレイ",
+    "resume": "レベル {{n}} を再開",
+    "resumeA11y": "中断したところからレベル {{n}} を再開",
+    "shop": "ショップ",
+    "themes": "テーマ",
+    "settings": "設定",
+    "playHardA11y": "レベル {{n}} をプレイ、ハードレベル",
+    "signInCard": {
+      "title": "ログインして進行状況を保存",
+      "body": "レベル・コイン・購入アイテムを安全に保存して、どの端末でも遊べます。",
+      "button": "ログイン",
+      "dismissA11y": "ログインのおすすめを非表示"
+    }
+  },
+  "dailyCard": {
+    "title": "デイリーチャレンジ",
+    "streak_other": "{{value}}日連続",
+    "noStreak": "今日から連続記録を始めよう",
+    "openA11y": "デイリーチャレンジ。{{streak}}。カレンダーを開く",
+    "play": "プレイ",
+    "playA11y": "今日のデイリーチャレンジをプレイ",
+    "done": "クリア ✓",
+    "doneA11y": "今日のデイリーチャレンジはクリア済み。カレンダーを開く"
+  },
+  "gift": {
+    "button": "ギフト",
+    "readyA11y": "デイリーギフトを受け取る",
+    "waitA11y": "デイリーギフトは受け取り済み。次は明日受け取れます",
+    "title": "デイリーギフト",
+    "day": "{{day}}/7日目",
+    "chest": "7日目の宝箱！",
+    "double": "2倍にする",
+    "doubleA11y": "広告を見てこのギフトを2倍にする",
+    "doubled": "ギフトが2倍に！",
+    "comeBack": "次のギフトは明日受け取れます"
+  },
+  "vipBonus": {
+    "button": "VIPボーナス",
+    "a11y": "VIPデイリーボーナスを受け取る",
+    "title": "VIPデイリーボーナス",
+    "message": "VIPになってくれてありがとう！"
+  },
+  "starterPack": {
+    "title": "スターターパック",
+    "subtitle": "コイン、ヒント、元に戻す、オーロラテーマ",
+    "endsIn": "残り {{time}}",
+    "endsInA11y": "スターターパックのオファー。残り{{hours}}時間{{minutes}}分",
+    "countdown": "{{h}}:{{m}}:{{s}}",
+    "view": "見る",
+    "viewA11y": "ショップでスターターパックを見る"
+  },
+  "game": {
+    "title": "レベル {{n}}",
+    "hardTitleA11y": "レベル {{n}}、ハードレベル",
+    "pause": "一時停止",
+    "undo": "戻す",
+    "hint": "ヒント",
+    "restart": "やり直す",
+    "addTube": "+チューブ",
+    "skip": "スキップ",
+    "skipA11y": "広告を見てこのレベルをスキップ",
+    "actionA11y": "{{action}}、{{detail}}",
+    "noHint": "この盤面のヒントは見つかりませんでした",
+    "rewardSaved": "盤面が変わったため、報酬は後で使えるよう保存されました",
+    "costFree": "無料あと{{count}}回",
+    "costOwned": "あと{{count}}個",
+    "costCoins": "{{count}}コイン",
+    "costAd": "広告を見る",
+    "costUsed": "使用済み",
+    "dailyTitle": "デイリー · {{date}}",
+    "dailyTitleA11y": "デイリーチャレンジ、{{date}}"
+  },
+  "coins": {
+    "badgeA11y": "{{count}}コイン。ショップを開く",
+    "balanceA11y": "所持コイン: {{count}}"
+  },
+  "items": {
+    "undo": "元に戻す",
+    "hint": "ヒント",
+    "extraTube": "追加チューブ"
+  },
+  "pause": {
+    "title": "一時停止中",
+    "resume": "再開",
+    "restart": "やり直す",
+    "home": "ホーム",
+    "sound": "サウンド",
+    "haptics": "振動"
+  },
+  "win": {
+    "title": "レベルクリア！",
+    "starsA11y": "星3つ中{{count}}つ",
+    "coinsA11y": "{{count}}コイン獲得",
+    "next": "次へ",
+    "nextA11y": "次のレベルをプレイ",
+    "double": "コイン2倍",
+    "doubleA11y": "広告を見てコインを2倍にする",
+    "home": "ホーム",
+    "dailyTitle": "デイリークリア！",
+    "streak_other": "{{value}}日連続",
+    "dailyReplay": "今日はクリア済みです。リプレイは報酬なしで楽しめます。"
+  },
+  "stuck": {
+    "title": "もう動かせません",
+    "message": "1手戻す、チューブを追加、やり直す、またはこのレベルをスキップしましょう。",
+    "messageNoSkip": "1手戻す、チューブを追加、またはやり直しましょう。",
+    "undo": "戻す",
+    "addTube": "+チューブ",
+    "restart": "やり直す",
+    "skip": "スキップ",
+    "skipA11y": "広告を見てこのレベルをスキップ",
+    "keepLooking": "まだ探す"
+  },
+  "notEnough": {
+    "title": "コインが足りません",
+    "message": "{{item}}には{{cost}}コイン必要です。所持コインは{{coins}}です。",
+    "watchAd": "広告を見る",
+    "watchAdA11y": "広告を見て{{item}}を手に入れる",
+    "shop": "ショップ"
+  },
+  "restartConfirm": {
+    "title": "やり直しますか？",
+    "message": "このプレイで有料アイテムを使いました。やり直すとそのアイテムは失われます。",
+    "confirm": "やり直す",
+    "cancel": "続ける"
+  },
+  "reward": {
+    "title": "報酬",
+    "skippedTitle": "レベルをスキップしました",
+    "skippedMessage": "レベル {{n}} は星1つでクリア扱いになります。",
+    "coins": "+{{count}}コイン",
+    "hints": "ヒント+{{count}}",
+    "undos": "元に戻す+{{count}}",
+    "extraTubes": "チューブ+{{count}}"
+  },
+  "tutorial": {
+    "level1": "チューブをタップして、注ぎたい場所をタップ",
+    "level2": "注げるのは同じ色の上か空のチューブだけ",
+    "level3": "すべての色をそれぞれのチューブに分けよう"
+  },
+  "ads": {
+    "notReady": "広告の準備ができていません。少し待ってからお試しください",
+    "mockTitle": "テスト広告（モック）",
+    "mockRewarded": "リワード広告: {{placement}}",
+    "mockInterstitial": "インタースティシャル広告",
+    "mockCountdown": "報酬まで{{count}}秒",
+    "mockEarned": "報酬を獲得しました",
+    "mockClose": "広告を閉じる",
+    "mockCloseEarly": "報酬を受け取らずに広告を閉じる"
+  },
+  "daily": {
+    "title": "デイリーチャレンジ",
+    "prevMonth": "前の月",
+    "nextMonth": "次の月",
+    "dayA11y": "{{date}}",
+    "dayDoneA11y": "{{date}}、クリア済み",
+    "todayA11y": "{{date}}、今日",
+    "todayDoneA11y": "{{date}}、今日、クリア済み",
+    "currentStreak": "現在の連続記録",
+    "bestStreak": "最長連続記録",
+    "days_other": "{{value}}日",
+    "streakA11y_other": "{{label}}: {{value}}日",
+    "play": "今日のチャレンジをプレイ",
+    "done": "クリア ✓",
+    "doneMessage": "今日のチャレンジはクリアしました。また明日！",
+    "playAgain": "もう一度",
+    "playAgainA11y": "今日のチャレンジをもう一度プレイ（報酬なし）",
+    "chestTitle": "7日目の宝箱",
+    "chestProgress": "ギフト受け取り {{day}}/7",
+    "chestA11y": "デイリーギフトの進行状況: 7つ中{{day}}つ受け取り済み。7日目は宝箱です"
+  },
+  "shop": {
+    "title": "ショップ",
+    "names": {
+      "coins_500": "ひとつかみのコイン",
+      "coins_1500": "コインの袋",
+      "coins_4000": "コインの宝箱",
+      "remove_ads": "広告削除",
+      "starter_pack": "スターターパック",
+      "vip_weekly": "VIP週間プラン",
+      "vip_monthly": "VIP月間プラン"
+    },
+    "sections": {
+      "coins": "コイン",
+      "removeAds": "広告なし",
+      "vip": "VIP",
+      "purchases": "購入履歴"
+    },
+    "coinsAmount_other": "{{value}}コイン",
+    "loading": "価格を読み込み中…",
+    "unavailableTitle": "ストアを利用できません",
+    "unavailableMessage": "現在購入できません。しばらくしてからもう一度お試しください。",
+    "loadFailed": "ストアを読み込めませんでした。接続を確認してください。",
+    "retry": "再試行",
+    "buyA11y": "{{name}}を{{price}}で購入",
+    "owned": "購入済み",
+    "ownedA11y": "{{name}}: 購入済み",
+    "notOffered": "利用不可",
+    "notOfferedA11y": "{{name}}は現在利用できません",
+    "freeCoins": {
+      "title": "無料コイン",
+      "button": "無料コイン",
+      "a11y_other": "広告を見て無料コインを{{value}}枚もらう",
+      "reward_other": "短い広告で+{{value}}コイン",
+      "left_other": "今日はあと{{count}}回",
+      "cooldown": "次まで {{time}}",
+      "time": "{{m}}:{{s}}",
+      "cooldownA11y": "無料コインはあと{{minutes}}分{{seconds}}秒でもらえます",
+      "capped": "今日の分は終わりです。また明日！",
+      "granted_other": "+{{value}}コイン"
+    },
+    "removeAds": {
+      "description": "レベル間の広告がなくなります。ボーナス用のリワード広告は任意で見られます。"
+    },
+    "starterPack": {
+      "description": "{{coins}}コイン、ヒント{{hints}}回、元に戻す{{undos}}回、オーロラテーマ",
+      "oneTime": "1回限りのオファー"
+    },
+    "vip": {
+      "subtitle": "Pourlyを最高に楽しむならこれ",
+      "benefits": {
+        "noInterstitials": "レベル間の広告なし",
+        "giftX2": "デイリーギフト2倍",
+        "dailyBonus": "毎日+{{coins}}コインと+{{hints}}ヒント",
+        "gold": "限定ゴールドテーマ",
+        "badge": "VIPバッジ",
+        "freeze": "毎週1回の連続記録フリーズ"
+      },
+      "active": "有効",
+      "activeA11y": "VIPサブスクリプションは有効です",
+      "period": {
+        "day_other": "{{count}}日",
+        "week_other": "{{count}}週間",
+        "month_other": "{{count}}か月",
+        "year_other": "{{count}}年"
+      },
+      "planPrice": "{{price}} / {{period}}",
+      "subscribe": "登録する",
+      "subscribeA11y": "{{name}}に登録: {{price}} / {{period}}、自動更新",
+      "renewNote": "定期購入は解約するまで表示価格で自動更新されます。次回更新の24時間前までに、Google Playでいつでも解約できます。お支払いはGoogle Playアカウントに請求されます。"
+    },
+    "restore": "購入を復元",
+    "restoreNote": "広告削除、VIP、スターターパックのテーマが復元されます。コイン、ヒント、元に戻すは復元できません。",
+    "manage": "定期購入を管理",
+    "terms": "利用規約",
+    "privacy": "プライバシーポリシー",
+    "thanksTitle": "ありがとうございます！",
+    "thanksMessage": "購入したアイテムが追加されました。",
+    "alreadyOwnedTitle": "購入済みです",
+    "alreadyOwnedMessage": "このGoogle Playアカウントはすでに購入済みです。購入を復元すると取り戻せます。",
+    "restoreAction": "購入を復元"
+  },
+  "themes": {
+    "title": "テーマ",
+    "names": {
+      "classic": "クラシック",
+      "ember": "エンバー",
+      "sunset": "サンセット",
+      "forest": "フォレスト",
+      "candy": "キャンディ",
+      "neon": "ネオン",
+      "aurora": "オーロラ",
+      "gold": "ゴールド"
+    },
+    "inUse": "使用中",
+    "inUseA11y": "{{name}}テーマ、使用中",
+    "apply": "使う",
+    "applyA11y": "{{name}}テーマを使う",
+    "unlockA11y": "{{price}}コインで{{name}}テーマを解放",
+    "starterPack": "スターターパック",
+    "starterPackA11y": "{{name}}はスターターパックに含まれています。ショップを開く",
+    "vip": "VIP",
+    "vipA11y": "{{name}}はVIPに含まれています。ショップを開く",
+    "previewA11y": "{{name}}テーマのプレビュー",
+    "confirmTitle": "{{name}}を解放しますか？",
+    "confirmMessage": "{{price}}コインで{{name}}テーマを解放します。所持コインは{{coins}}です。",
+    "confirm": "解放する",
+    "item": "{{name}}テーマ",
+    "unlocked": "{{name}}を解放しました"
+  },
+  "settings": {
+    "title": "設定",
+    "sections": {
+      "sound": "サウンドと操作感",
+      "display": "表示",
+      "language": "言語",
+      "about": "アプリ情報",
+      "progress": "進行状況",
+      "purchases": "購入",
+      "notifications": "通知",
+      "account": "アカウント"
+    },
+    "sound": "サウンド",
+    "haptics": "振動",
+    "colorBlind": "色覚サポート記号",
+    "colorBlindHint": "各色に記号を表示します",
+    "reducedMotion": "動きを減らす",
+    "motion": {
+      "system": "システム",
+      "on": "オン",
+      "off": "オフ"
+    },
+    "quality": "パフォーマンスモード",
+    "qualityOptions": {
+      "auto": "自動",
+      "high": "高",
+      "low": "低"
+    },
+    "qualityLowered": "この端末で快適に遊べるよう、エフェクトを自動で下げました",
+    "optionA11y": "{{setting}}: {{option}}",
+    "language": "言語",
+    "languageSystem": "端末の設定",
+    "languageA11y": "言語: {{name}}。変更",
+    "rtlRestart": "レイアウトの向きを切り替えるにはアプリを再起動してください",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "support": "サポートに連絡",
+    "linkFailed": "リンクを開けませんでした",
+    "reset": "進行状況をリセット",
+    "resetHint": "レベル1からやり直します",
+    "resetTitle": "進行状況をリセットしますか？",
+    "resetMessage": "レベル、星、コイン、アイテム、連続記録、コインで解放したテーマが消去されます。購入したものは残ります。",
+    "resetContinue": "続ける",
+    "resetConfirmTitle": "本当によろしいですか？",
+    "resetConfirmMessage": "この操作は取り消せません。",
+    "resetConfirm": "すべてリセット",
+    "version": "バージョン {{version}}（ビルド {{build}}）",
+    "restorePurchases": "購入を復元",
+    "restoreHint": "コイン、ヒント、元に戻すは復元できません",
+    "manageSubscription": "定期購入を管理",
+    "adPrivacy": "広告のプライバシー設定",
+    "adPrivacyHint": "広告に関する同意内容を確認します",
+    "adPrivacyFailed": "広告のプライバシー設定を開けませんでした",
+    "dailyReminders": "デイリーリマインダー",
+    "dailyRemindersHint": "デイリーチャレンジ、デイリーギフト、おかえりのお知らせ",
+    "streakReminders": "連続記録リマインダー",
+    "streakRemindersHint": "連続記録が途切れる前に夜にお知らせします",
+    "notificationsOff": "Pourlyの通知はオフです。リマインダーをオンにすると許可できます。",
+    "notificationsBlocked": "Androidの設定で通知がブロックされています。リマインダーをオンにすると設定が開きます。",
+    "openSettingsFailed": "アプリの設定を開けませんでした"
+  },
+  "account": {
+    "signIn": "Googleでログイン",
+    "signInHint": "進行状況と購入をGoogleアカウントに保存して、どの端末でも続きから遊べます",
+    "signedInAs": "{{email}}でログイン中",
+    "signedIn": "Googleでログイン中",
+    "signOut": "ログアウト",
+    "signOutHint": "進行状況はこの端末に残ります",
+    "delete": "アカウントとデータを削除",
+    "deleteHint": "クラウドセーブとPourlyアカウントを削除します",
+    "unavailable": "このビルドではログインできません",
+    "working": "お待ちください…",
+    "deleteTitle": "アカウントを削除しますか？",
+    "deleteMessage": "Pourlyアカウントとそのクラウドセーブ（レベル、星、コイン、ヒント、元に戻す、連続記録、テーマ）が完全に削除されます。この端末の進行状況もリセットされます。広告削除、VIP、購入したものはGoogle Playアカウントに残り、復元できます。",
+    "deleteContinue": "続ける",
+    "deleteConfirmTitle": "すべて削除しますか？",
+    "deleteConfirmMessage": "確認のため、もう一度Googleアカウントを選んでください。この操作は取り消せません。",
+    "deleteConfirm": "アカウントを削除",
+    "toast": {
+      "signedIn": "ログインしました。進行状況はアカウントに保存されます。",
+      "signedOut": "ログアウトしました。進行状況はこの端末に残ります。",
+      "deleted": "アカウントとクラウドデータを削除しました。",
+      "deleteFailed": "アカウントを削除できませんでした。もう一度お試しください。",
+      "wrongAccount": "ログイン中のGoogleアカウントを選んでください。",
+      "playServices": "Google Play開発者サービスがないか、古くなっています。更新してからもう一度お試しください。",
+      "network": "接続できません。インターネット接続を確認して、もう一度お試しください。",
+      "inProgress": "すでにログイン処理中です。",
+      "signInFailed": "ログインできませんでした。もう一度お試しください。",
+      "unavailable": "このビルドではログインできません。"
+    }
+  },
+  "cloud": {
+    "grantArrived": "購入したアイテムが届きました！",
+    "grantTitle": "購入アイテムをお届けしました",
+    "grantMessage": "応援ありがとうございます！",
+    "refundApplied": "払い戻しされた購入分を残高から差し引きました。"
+  },
+  "iap": {
+    "pending": "購入は保留中です。支払いが完了すると追加されます。",
+    "pendingComplete": "保留中の購入が完了しました！",
+    "networkError": "接続できません。インターネット接続を確認して、もう一度お試しください。",
+    "storeError": "ストアで購入を完了できませんでした。しばらくしてからもう一度お試しください。",
+    "unknownError": "購入中に問題が発生しました。もう一度お試しください。",
+    "adsRemoved": "広告を削除しました。応援ありがとうございます！",
+    "vipActive": "VIPへようこそ！",
+    "awaitingServer": "購入が完了しました。アイテムはまもなく届きます。",
+    "restored": "購入を復元しました",
+    "nothingToRestore": "このアカウントには復元できる購入がありません",
+    "restoreFailed": "購入を復元できませんでした。しばらくしてからもう一度お試しください。"
+  },
+  "mockPurchase": {
+    "title": "テスト購入",
+    "message": "モックストア: 料金はかかりません。このテスト購入の結果を選んでください。",
+    "product": "{{name}} · {{price}}",
+    "choices": {
+      "succeed": "成功",
+      "pending": "支払い保留",
+      "cancel": "キャンセル",
+      "networkError": "失敗: ネットワークエラー",
+      "storeError": "失敗: ストアエラー"
+    }
+  },
+  "vipBadge": {
+    "label": "VIP",
+    "a11y": "VIPメンバー"
+  },
+  "notificationPrompt": {
+    "title": "パズルを見逃さない",
+    "message": "デイリーチャレンジの準備ができたときと、連続記録が途切れそうなときにお知らせします。通知は1日1回まで。",
+    "allow": "許可する",
+    "allowA11y": "リマインダーを許可",
+    "notNow": "あとで",
+    "notNowA11y": "あとで、リマインダーなし"
+  },
+  "notifications": {
+    "channelName": "リマインダー",
+    "channelDescription": "デイリーチャレンジ、連続記録、ギフトのお知らせ",
+    "streakRiskTitle": "{{n}}日連続記録が途切れそう！",
+    "streakRiskBody": "夜12時までに今日のデイリーチャレンジをクリアして記録をキープしよう。",
+    "dailyReadyTitle": "今日のデイリーチャレンジが登場",
+    "dailyReadyBody": "新しいパズルが待っています。少ない手数で解けるかな？",
+    "giftReadyTitle": "デイリーギフトが届いています",
+    "giftReadyBody": "{{n}}/7日目のギフトを受け取れます。Pourlyを開いて受け取ろう。",
+    "comeback1Title": "新しいデイリーパズルが登場",
+    "comeback1Body": "チューブを注いで頭をすっきり。レベル {{n}} が待っています。",
+    "comeback2Title": "チューブがさみしがっています",
+    "comeback2Body": "レベル {{n}} がまだ待っています。ちょっとだけ遊びに来ませんか？",
+    "comeback3Title": "1週間ぶりです！",
+    "comeback3Body": "おかえりなさい。レベル {{n}} がいつでも待っています。",
+    "comeback4Title": "最後にもう一杯？",
+    "comeback4Body": "これが最後のお知らせです。レベル {{n}} は保存済み。いつでも戻ってきてくださいね。"
+  }
+}
