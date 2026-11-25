@@ -3,12 +3,14 @@ import { isThemeAvailable } from '@/game/themeUnlocks';
 import {
   createDefaultProgress,
   DEFAULT_THEME_ID,
+  MAX_PENDING_PURCHASES,
   MAX_PROCESSED_TRANSACTIONS,
   PROGRESS_VERSION,
   type AdsProgress,
   type Balances,
   type DailyResult,
   type NotificationsProgress,
+  type PendingPurchase,
   type ProgressState,
   type ReviewProgress,
   type StarCount,
@@ -93,6 +95,20 @@ const sanitizeBalances = (value: unknown): Balances | null => {
   };
 };
 
+const sanitizePendingPurchases = (value: unknown): PendingPurchase[] => {
+  if (!Array.isArray(value)) return [];
+  const out: PendingPurchase[] = [];
+  for (const item of value) {
+    if (!isRecord(item)) continue;
+    const { productId, since } = item;
+    if (typeof productId !== 'string' || productId.length === 0) continue;
+    if (typeof since !== 'number' || !Number.isFinite(since)) continue;
+    if (out.some((entry) => entry.productId === productId)) continue;
+    out.push({ productId, since });
+  }
+  return out.slice(-MAX_PENDING_PURCHASES);
+};
+
 const sanitizeAds = (value: unknown, d: AdsProgress): AdsProgress => {
   const v = asRecord(value);
   return {
@@ -149,6 +165,7 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
     lastOpenAt: num(v.lastOpenAt, d.lastOpenAt),
     lastSeenAt: num(v.lastSeenAt, d.lastSeenAt),
     sessionCount: count(v.sessionCount, d.sessionCount),
+    firstSessionStartedAt: num(v.firstSessionStartedAt, d.firstSessionStartedAt),
     level: level >= 1 ? level : d.level,
     stars: sanitizeStars(v.stars),
     coins: count(v.coins, d.coins),
@@ -172,6 +189,7 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
     processedTransactions: uniqueStrings(v.processedTransactions).slice(
       -MAX_PROCESSED_TRANSACTIONS,
     ),
+    pendingPurchases: sanitizePendingPurchases(v.pendingPurchases),
     starterPackExpiresAt: numOrNull(v.starterPackExpiresAt, d.starterPackExpiresAt),
     starterPackPurchased,
     ads: sanitizeAds(v.ads, d.ads),
@@ -187,10 +205,17 @@ type MigrationStep = (state: UnknownRecord) => UnknownRecord;
 
 /**
  * Structural migrations keyed by the version they upgrade FROM. Version 0 (unversioned data) and
- * version 1 share the same shape, so no step is needed yet; add `n: (s) => ...` when version n+1
- * changes the shape.
+ * version 1 share the same shape. Version 2 adds `firstSessionStartedAt` (the first session's
+ * start, taken from the last open, which is exact while the player is still in session 1 and
+ * irrelevant afterwards) and `pendingPurchases` (empty).
  */
-const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {};
+const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {
+  1: (state) => ({
+    ...state,
+    firstSessionStartedAt: state.firstSessionStartedAt ?? state.lastOpenAt,
+    pendingPurchases: state.pendingPurchases ?? [],
+  }),
+};
 
 /**
  * Upgrades persisted progress from `fromVersion` to `PROGRESS_VERSION`, then validates every

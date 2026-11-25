@@ -6,6 +6,7 @@
 import type { RewardBundle } from '@/config/economy';
 import { applyDailyCompletion, type DailyCompletionOutcome } from '@/game/daily';
 import { dailyChallengeReward } from '@/game/economy';
+import { claimFreeCoins } from '@/game/freeCoins';
 import { claimGift, claimVipBonus, type GiftClaim, type VipBonusClaim } from '@/game/gifts';
 import { starterPackWindowToOpen } from '@/game/starterPack';
 import { effectiveThemeId, themeStatus } from '@/game/themeUnlocks';
@@ -109,6 +110,39 @@ export const applyRewardedShown = (state: ProgressState, now: number): ProgressS
   ads: { ...state.ads, lastRewardedAt: now },
   updatedAt: now,
 });
+
+/** An interstitial was shown: the cadence counter restarts and the spacing clock is stamped. */
+export const applyInterstitialShown = (state: ProgressState, now: number): ProgressState => ({
+  ...state,
+  ads: { ...state.ads, lastInterstitialAt: now, levelsSinceInterstitial: 0 },
+  updatedAt: now,
+});
+
+export interface FreeCoinsResult {
+  readonly state: ProgressState;
+  /** Coins granted (0 when no claim was allowed). */
+  readonly coins: number;
+}
+
+/** Grants the FREE_COINS reward after an earned ad, within the cooldown and daily cap. */
+export const applyClaimFreeCoins = (
+  state: ProgressState,
+  today: string,
+  now: number,
+): FreeCoinsResult => {
+  const claim = claimFreeCoins(state, today, now);
+  if (claim === null) return { state, coins: 0 };
+  return {
+    state: {
+      ...state,
+      coins: state.coins + claim.coins,
+      ads: { ...state.ads, ...claim.ads },
+      lastSeenAt: claim.lastSeenAt,
+      updatedAt: now,
+    },
+    coins: claim.coins,
+  };
+};
 
 /** Latest trusted time: a rolled-back clock never moves `lastSeenAt` backwards. */
 const seen = (state: ProgressState, now: number): number => Math.max(state.lastSeenAt, now);
@@ -261,8 +295,8 @@ export const applyThemeFallback = (state: ProgressState, now: number): ProgressS
 /**
  * "Reset progress": everything earned by playing goes back to a new player's state (level 1,
  * stars, balances, streaks, daily history, gift cycle, bought coin themes, tutorial). Kept:
- * purchases (`entitlements`, `processedTransactions`, `starterPackPurchased` and the Aurora theme
- * it unlocks), the Starter Pack window (a reset must not reopen the offer), the install date,
+ * purchases (`entitlements`, `processedTransactions`, `pendingPurchases`, `starterPackPurchased`
+ * and the Aurora theme it unlocks), the Starter Pack window (a reset must not reopen the offer), the install date,
  * session and clock stamps (rollback guard), ad pacing counters, notification permission state,
  * review-prompt history and the cloud-sync baseline. The active theme stays when it is still
  * available (Aurora, Gold), otherwise it returns to Classic.
@@ -284,9 +318,11 @@ export const applyResetProgress = (state: ProgressState, now: number): ProgressS
     lastOpenAt: state.lastOpenAt,
     lastSeenAt: seen(state, now),
     sessionCount: state.sessionCount,
+    firstSessionStartedAt: state.firstSessionStartedAt,
     ownedThemes,
     entitlements: { ...state.entitlements },
     processedTransactions: [...state.processedTransactions],
+    pendingPurchases: state.pendingPurchases.map((entry) => ({ ...entry })),
     starterPackExpiresAt: state.starterPackExpiresAt,
     starterPackPurchased: state.starterPackPurchased,
     ads: { ...state.ads },

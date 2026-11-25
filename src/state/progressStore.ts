@@ -3,17 +3,29 @@ import { persist } from 'zustand/middleware';
 
 import { STORAGE_KEYS } from '@/config/constants';
 import type { RewardBundle } from '@/config/economy';
+import type { ProductId } from '@/config/products';
 import type { GiftClaim, VipBonusClaim } from '@/game/gifts';
+import {
+  applyEntitlements,
+  applyPendingPurchase,
+  applyPrunePending,
+  applyRestoredProducts,
+  applyStoreTransaction,
+  type GrantResult,
+} from '@/services/fulfillmentCore';
+import type { StoreEntitlements, StoreTransaction } from '@/services/iapTypes';
 
 import { migrateProgress } from './migrations';
 import { createDefaultProgress, PROGRESS_VERSION, type ProgressState } from './progressModel';
 import {
+  applyClaimFreeCoins,
   applyClaimGift,
   applyClaimVipBonus,
   applyCompleteLevel,
   applyConsume,
   applyDailyComplete,
   applyGrant,
+  applyInterstitialShown,
   applyMarkTutorialDone,
   applyOpenStarterPackWindow,
   applyResetProgress,
@@ -75,6 +87,20 @@ export interface ProgressActions {
   enforceThemeEntitlements: (now?: number) => void;
   /** Clears play progress; purchases survive (see `applyResetProgress`). */
   resetProgress: (now?: number) => void;
+  /** Stamps an interstitial that was shown (cadence and spacing, spec §13). */
+  recordInterstitial: (now?: number) => void;
+  /** Grants the FREE_COINS ad reward; returns the coins granted (0 when not allowed). */
+  claimFreeCoins: (today: string, now?: number) => number;
+  /** Grants a store transaction on the device, exactly once per transaction id. */
+  fulfillTransaction: (transaction: StoreTransaction, now?: number) => GrantResult;
+  /** Writes the store's entitlements (`no_ads`, `vip`). */
+  setEntitlements: (entitlements: StoreEntitlements, now?: number) => void;
+  /** Applies what Restore Purchases brings back (the Starter Pack's theme). */
+  restoreProducts: (productIds: readonly ProductId[], now?: number) => void;
+  /** Remembers a purchase whose payment is pending, started at `since`. */
+  markPurchasePending: (productId: ProductId, since: number, now?: number) => void;
+  /** Forgets pending purchases that are too old to complete. */
+  prunePendingPurchases: (now?: number) => void;
 }
 
 export type ProgressStore = ProgressState & ProgressActions;
@@ -83,6 +109,7 @@ export type ProgressStore = ProgressState & ProgressActions;
 export const applyTouchOpen = (state: ProgressState, now: number): ProgressState => ({
   ...state,
   sessionCount: state.sessionCount + 1,
+  firstSessionStartedAt: state.sessionCount === 0 ? now : state.firstSessionStartedAt,
   lastOpenAt: now,
   lastSeenAt: Math.max(state.lastSeenAt, now),
   updatedAt: Math.max(state.updatedAt, now),
@@ -107,6 +134,13 @@ const pickProgress = (state: ProgressStore): ProgressState => {
     setActiveTheme: _setActiveTheme,
     enforceThemeEntitlements: _enforceThemeEntitlements,
     resetProgress: _resetProgress,
+    recordInterstitial: _recordInterstitial,
+    claimFreeCoins: _claimFreeCoins,
+    fulfillTransaction: _fulfillTransaction,
+    setEntitlements: _setEntitlements,
+    restoreProducts: _restoreProducts,
+    markPurchasePending: _markPurchasePending,
+    prunePendingPurchases: _prunePendingPurchases,
     ...data
   } = state;
   return data;
@@ -179,6 +213,36 @@ export const useProgressStore = create<ProgressStore>()(
         if (next !== current) set(next);
       },
       resetProgress: (now = Date.now()) => set(applyResetProgress(pickProgress(get()), now)),
+      recordInterstitial: (now = Date.now()) =>
+        set((state) => applyInterstitialShown(pickProgress(state), now)),
+      claimFreeCoins: (today, now = Date.now()) => {
+        const result = applyClaimFreeCoins(pickProgress(get()), today, now);
+        if (result.coins > 0) set(result.state);
+        return result.coins;
+      },
+      fulfillTransaction: (transaction, now = Date.now()) => {
+        const current = pickProgress(get());
+        const { state, result } = applyStoreTransaction(current, transaction, now);
+        if (state !== current) set(state);
+        return result;
+      },
+      setEntitlements: (entitlements, now = Date.now()) => {
+        const current = pickProgress(get());
+        const next = applyEntitlements(current, entitlements, now);
+        if (next !== current) set(next);
+      },
+      restoreProducts: (productIds, now = Date.now()) => {
+        const current = pickProgress(get());
+        const next = applyRestoredProducts(current, productIds, now);
+        if (next !== current) set(next);
+      },
+      markPurchasePending: (productId, since, now = Date.now()) =>
+        set((state) => applyPendingPurchase(pickProgress(state), productId, since, now)),
+      prunePendingPurchases: (now = Date.now()) => {
+        const current = pickProgress(get());
+        const next = applyPrunePending(current, now);
+        if (next !== current) set(next);
+      },
     }),
     {
       name: STORAGE_KEYS.progress,

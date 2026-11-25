@@ -1,11 +1,14 @@
 import { ECONOMY } from '@/config/economy';
 import { localDateString } from '@/utils/date';
 
-export const PROGRESS_VERSION = 1;
+export const PROGRESS_VERSION = 2;
 
 export const DEFAULT_THEME_ID = 'classic';
 
 export const MAX_PROCESSED_TRANSACTIONS = 200;
+
+/** Most purchases awaiting a pending payment that are remembered at once. */
+export const MAX_PENDING_PURCHASES = 20;
 
 export type StarCount = 1 | 2 | 3;
 
@@ -30,6 +33,13 @@ export interface AdsProgress {
   lastFreeCoinsAt: number;
 }
 
+/** A purchase the store reported as pending (payment not cleared yet). */
+export interface PendingPurchase {
+  productId: string;
+  /** Epoch ms when the purchase was started. */
+  since: number;
+}
+
 export interface NotificationsProgress {
   asked: boolean;
   askedCount: number;
@@ -50,6 +60,8 @@ export interface ProgressState extends Balances {
   lastOpenAt: number;
   lastSeenAt: number;
   sessionCount: number;
+  /** Epoch ms when the very first session started (interstitial grace period, spec §13). */
+  firstSessionStartedAt: number;
   /** Next level to play. */
   level: number;
   stars: Record<number, StarCount>;
@@ -66,6 +78,8 @@ export interface ProgressState extends Balances {
   entitlements: { noAds: boolean; vip: boolean };
   /** Last 200 store transaction ids already granted. */
   processedTransactions: string[];
+  /** Purchases waiting for a pending payment; granted once the store reports the transaction. */
+  pendingPurchases: PendingPurchase[];
   starterPackExpiresAt: number | null;
   starterPackPurchased: boolean;
   ads: AdsProgress;
@@ -84,6 +98,7 @@ export const createDefaultProgress = (now: number): ProgressState => ({
   lastOpenAt: now,
   lastSeenAt: now,
   sessionCount: 0,
+  firstSessionStartedAt: now,
   level: 1,
   stars: {},
   coins: ECONOMY.startCoins,
@@ -102,6 +117,7 @@ export const createDefaultProgress = (now: number): ProgressState => ({
   activeTheme: DEFAULT_THEME_ID,
   entitlements: { noAds: false, vip: false },
   processedTransactions: [],
+  pendingPurchases: [],
   starterPackExpiresAt: null,
   starterPackPurchased: false,
   ads: {
