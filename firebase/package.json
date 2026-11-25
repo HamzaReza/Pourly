@@ -2,13 +2,14 @@
   "name": "pourly-firebase-rules",
   "version": "1.0.0",
   "private": true,
-  "description": "Firestore security rules tooling: the Firebase CLI (emulator) and @firebase/rules-unit-testing.",
+  "description": "Firestore security rules tests (Vitest + @firebase/rules-unit-testing) and the Firebase CLI for the emulator. Needs Java 21+.",
+  "type": "module",
   "engines": {
     "node": ">=22"
   },
   "scripts": {
-    "emulators": "firebase emulators:start --only firestore --config ../firebase.json",
-    "test:rules": "firebase emulators:exec --only firestore --config ../firebase.json \"vitest run --passWithNoTests\""
+    "emulators": "firebase emulators:start --only firestore --project demo-pourly --config ../firebase.json",
+    "test:rules": "firebase emulators:exec --only firestore --project demo-pourly --config ../firebase.json \"vitest run\""
   },
   "devDependencies": {
     "@firebase/rules-unit-testing": "5.0.2",

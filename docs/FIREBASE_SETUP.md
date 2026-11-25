@@ -203,9 +203,14 @@ The Firestore emulator needs **Java 21 or newer** (`firebase-tools` 15 refuses o
 ```sh
 cd firebase
 yarn install                        # firebase-tools 15.37.0, @firebase/rules-unit-testing 5, vitest
-JAVA_HOME=/path/to/jdk-21 yarn test:rules   # starts the Firestore emulator and runs vitest
+JAVA_HOME=/path/to/jdk-21 yarn test:rules   # starts the emulator, runs test/firestore.rules.test.ts
 JAVA_HOME=/path/to/jdk-21 yarn emulators    # emulator only (port 8080)
 ```
+
+`yarn test:rules` fails fast with "firebase-tools no longer supports Java version before 21" when
+`JAVA_HOME` (or the `java` on `PATH`) is older. The suite covers owner-only access, every field
+check and size cap of the cloud save, the grant claim (`applied`, `appliedAt`, `claimedBy` only),
+the recovery query, and the catch-all deny.
 
 On macOS, `/usr/libexec/java_home -V` lists installed JDKs; Android Studio ships JetBrains Runtime
 21 (`~/Library/Java/JavaVirtualMachines/jbr-21*/Contents/Home` or inside Android Studio's

@@ -111,7 +111,16 @@ setup, deployment and the Blaze billing note: **[docs/FIREBASE_SETUP.md](docs/FI
 | `.firebaserc`              | Placeholder project id `pourly-app`; replace it with yours (`firebase use --add`).                 |
 
 `functions/` scripts (run inside `functions/`): `yarn build` (copies `shared/` into the gitignored
-`src/shared/`, then `tsc`), `yarn test`, `yarn serve` (emulators), `yarn deploy`, `yarn logs`.
+`src/shared/`, then `tsc`), `yarn test` (Vitest: webhook auth, event mapping, idempotency,
+refunds, `deleteMyAccount`), `yarn typecheck`, `yarn serve` (emulators), `yarn deploy`,
+`yarn logs`.
+
+**Tests in three packages.** The root `yarn test:ci` (Jest) covers the app only; its config
+ignores `functions/` and `firebase/`. `cd functions && yarn install && yarn test` runs the
+Functions tests. `cd firebase && yarn install && yarn test:rules` starts the Firestore emulator and
+runs the security-rules tests; it needs **Java 21 or newer** — point `JAVA_HOME` at a 21+ JDK, e.g.
+`JAVA_HOME=$(/usr/libexec/java_home -v 21) yarn test:rules` (see
+[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md#emulators-and-rules-tests)).
 
 ## Scripts
 
