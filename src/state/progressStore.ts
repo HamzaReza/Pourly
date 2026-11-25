@@ -27,18 +27,24 @@ import {
   applyGrant,
   applyInterstitialShown,
   applyMarkTutorialDone,
+  applyNotificationPermission,
+  applyNotificationPromptResult,
+  applyNotificationToggle,
   applyOpenStarterPackWindow,
   applyResetProgress,
+  applyReviewPrompted,
   applyRewardedShown,
   applySetActiveTheme,
   applySkipLevel,
   applySpendCoins,
   applyThemeFallback,
+  applyTouchForeground,
   applyUnlockTheme,
   type CompleteLevelInput,
   type ConsumableItem,
   type DailyCompleteInput,
   type DailyCompleteResult,
+  type NotificationToggle,
 } from './progressReducers';
 import { createPersistStorage } from './storage';
 
@@ -49,6 +55,7 @@ export type {
   DailyCompleteInput,
   DailyCompleteOutcome,
   DailyCompleteResult,
+  NotificationToggle,
 } from './progressReducers';
 
 /** Fields a generic patch may not touch: they are owned by migrations and `touchOpen`. */
@@ -101,6 +108,16 @@ export interface ProgressActions {
   markPurchasePending: (productId: ProductId, since: number, now?: number) => void;
   /** Forgets pending purchases that are too old to complete. */
   prunePendingPurchases: (now?: number) => void;
+  /** The app returned to the foreground: moves `lastOpenAt` (comeback notifications) to now. */
+  touchForeground: (now: number) => void;
+  /** Records an answered notification soft-prompt. */
+  recordNotificationPrompt: (granted: boolean, now?: number) => void;
+  /** Mirrors the OS notification permission. */
+  setNotificationsGranted: (granted: boolean, now?: number) => void;
+  /** Turns the daily or streak reminders on or off. */
+  setNotificationToggle: (toggle: NotificationToggle, enabled: boolean, now?: number) => void;
+  /** Records a store review request (60-day spacing, 3 at most). */
+  recordReviewPrompt: (now?: number) => void;
 }
 
 export type ProgressStore = ProgressState & ProgressActions;
@@ -141,6 +158,11 @@ const pickProgress = (state: ProgressStore): ProgressState => {
     restoreProducts: _restoreProducts,
     markPurchasePending: _markPurchasePending,
     prunePendingPurchases: _prunePendingPurchases,
+    touchForeground: _touchForeground,
+    recordNotificationPrompt: _recordNotificationPrompt,
+    setNotificationsGranted: _setNotificationsGranted,
+    setNotificationToggle: _setNotificationToggle,
+    recordReviewPrompt: _recordReviewPrompt,
     ...data
   } = state;
   return data;
@@ -243,6 +265,21 @@ export const useProgressStore = create<ProgressStore>()(
         const next = applyPrunePending(current, now);
         if (next !== current) set(next);
       },
+      touchForeground: (now) => set((state) => applyTouchForeground(pickProgress(state), now)),
+      recordNotificationPrompt: (granted, now = Date.now()) =>
+        set((state) => applyNotificationPromptResult(pickProgress(state), granted, now)),
+      setNotificationsGranted: (granted, now = Date.now()) => {
+        const current = pickProgress(get());
+        const next = applyNotificationPermission(current, granted, now);
+        if (next !== current) set(next);
+      },
+      setNotificationToggle: (toggle, enabled, now = Date.now()) => {
+        const current = pickProgress(get());
+        const next = applyNotificationToggle(current, toggle, enabled, now);
+        if (next !== current) set(next);
+      },
+      recordReviewPrompt: (now = Date.now()) =>
+        set((state) => applyReviewPrompted(pickProgress(state), now)),
     }),
     {
       name: STORAGE_KEYS.progress,

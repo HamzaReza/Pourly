@@ -312,7 +312,8 @@
       "language": "Language",
       "about": "About",
       "progress": "Progress",
-      "purchases": "Purchases"
+      "purchases": "Purchases",
+      "notifications": "Notifications"
     },
     "sound": "Sound",
     "haptics": "Haptics",
@@ -354,7 +355,14 @@
     "manageSubscription": "Manage subscription",
     "adPrivacy": "Ad privacy options",
     "adPrivacyHint": "Review your ad consent choices",
-    "adPrivacyFailed": "Couldn't open the ad privacy options"
+    "adPrivacyFailed": "Couldn't open the ad privacy options",
+    "dailyReminders": "Daily reminders",
+    "dailyRemindersHint": "Daily challenge, daily gift and come-back reminders",
+    "streakReminders": "Streak reminders",
+    "streakRemindersHint": "A heads-up in the evening before your streak is lost",
+    "notificationsOff": "Notifications are off for Pourly. Turn on a reminder to allow them.",
+    "notificationsBlocked": "Notifications are blocked in Android settings. Turn on a reminder to open the settings.",
+    "openSettingsFailed": "Couldn't open the app settings"
   },
   "iap": {
     "pending": "Purchase pending. It will be added once the payment clears.",
@@ -384,5 +392,31 @@
   "vipBadge": {
     "label": "VIP",
     "a11y": "VIP member"
+  },
+  "notificationPrompt": {
+    "title": "Never miss a puzzle",
+    "message": "Get a reminder when the daily challenge is ready and before your streak runs out. One reminder a day at most.",
+    "allow": "Allow",
+    "allowA11y": "Allow reminders",
+    "notNow": "Not now",
+    "notNowA11y": "Not now, no reminders"
+  },
+  "notifications": {
+    "channelName": "Reminders",
+    "channelDescription": "Daily challenge, streak and gift reminders",
+    "streakRiskTitle": "Your {{n}}-day streak is at risk!",
+    "streakRiskBody": "Solve today's daily challenge before midnight to keep it going.",
+    "dailyReadyTitle": "Today's daily challenge is ready",
+    "dailyReadyBody": "A fresh puzzle is waiting. Can you sort it in a few pours?",
+    "giftReadyTitle": "Your daily gift is waiting",
+    "giftReadyBody": "Day {{n}} of 7 is ready to claim. Open Pourly to collect it.",
+    "comeback1Title": "A new daily puzzle is ready",
+    "comeback1Body": "Pour a few tubes and keep your mind sharp. Level {{n}} is waiting.",
+    "comeback2Title": "Your tubes miss you",
+    "comeback2Body": "Level {{n}} is still waiting for you. Come back for a quick pour.",
+    "comeback3Title": "It's been a week!",
+    "comeback3Body": "Jump back in: level {{n}} is ready when you are.",
+    "comeback4Title": "One last pour?",
+    "comeback4Body": "This is our last reminder. Level {{n}} is saved and waiting whenever you're ready."
   }
 }

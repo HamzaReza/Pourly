@@ -332,3 +332,64 @@ export const applyResetProgress = (state: ProgressState, now: number): ProgressS
     updatedAt: now,
   };
 };
+
+// ---------------------------------------------------------------------------------------------
+// Notifications and review prompt
+// ---------------------------------------------------------------------------------------------
+
+/**
+ * The app came back to the foreground: `lastOpenAt` (the comeback-notification anchor) moves to
+ * now. Unlike `touchOpen` it does not count a new session.
+ */
+export const applyTouchForeground = (state: ProgressState, now: number): ProgressState => ({
+  ...state,
+  lastOpenAt: now,
+  lastSeenAt: seen(state, now),
+  updatedAt: Math.max(state.updatedAt, now),
+});
+
+/** The notification soft-prompt was answered: one more ask, and whether permission was granted. */
+export const applyNotificationPromptResult = (
+  state: ProgressState,
+  granted: boolean,
+  now: number,
+): ProgressState => ({
+  ...state,
+  notifications: {
+    ...state.notifications,
+    asked: true,
+    askedCount: state.notifications.askedCount + 1,
+    granted,
+  },
+  updatedAt: now,
+});
+
+/** Mirrors the OS notification permission (it can be granted or revoked in Android settings). */
+export const applyNotificationPermission = (
+  state: ProgressState,
+  granted: boolean,
+  now: number,
+): ProgressState =>
+  state.notifications.granted === granted
+    ? state
+    : { ...state, notifications: { ...state.notifications, granted }, updatedAt: now };
+
+export type NotificationToggle = 'dailyEnabled' | 'streakEnabled';
+
+/** Settings → Notifications: turns the daily or the streak reminders on or off. */
+export const applyNotificationToggle = (
+  state: ProgressState,
+  toggle: NotificationToggle,
+  enabled: boolean,
+  now: number,
+): ProgressState =>
+  state.notifications[toggle] === enabled
+    ? state
+    : { ...state, notifications: { ...state.notifications, [toggle]: enabled }, updatedAt: now };
+
+/** A store review was requested: stamps the time and counts it. */
+export const applyReviewPrompted = (state: ProgressState, now: number): ProgressState => ({
+  ...state,
+  review: { ...state.review, lastPromptAt: now, promptCount: state.review.promptCount + 1 },
+  updatedAt: now,
+});

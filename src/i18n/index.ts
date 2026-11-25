@@ -61,6 +61,10 @@ const readDeviceLocales = (): DeviceLocale[] => {
   }
 };
 
+/** The language a preference resolves to on this device (settings override, else the device). */
+export const languageForPreference = (preference: LanguagePreference): SupportedLanguage =>
+  resolveLanguage(preference, readDeviceLocales());
+
 export const isRtlLanguage = (language: string): boolean =>
   RTL_LANGUAGES.includes(language.toLowerCase().split('-')[0] ?? '');
 
@@ -83,7 +87,7 @@ export const syncLayoutDirection = (language: string): boolean => {
  * language-setting change.
  */
 export const initI18n = async (preference: LanguagePreference = 'system'): Promise<I18n> => {
-  const language = resolveLanguage(preference, readDeviceLocales());
+  const language = languageForPreference(preference);
   if (i18n.isInitialized) {
     if (i18n.language !== language) await i18n.changeLanguage(language);
     return i18n;
