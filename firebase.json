@@ -16,6 +16,10 @@
     "public": "public",
     "cleanUrls": true,
     "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
+    "rewrites": [
+      { "source": "/privacy", "destination": "/privacy-policy.html" },
+      { "source": "/terms", "destination": "/terms-of-service.html" }
+    ],
     "predeploy": ["node scripts/write-hosting-config.mjs"]
   },
   "emulators": {

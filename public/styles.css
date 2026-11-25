@@ -142,3 +142,34 @@ footer {
   margin-top: 40px;
   font-size: 0.9rem;
 }
+h3 {
+  font-size: 1rem;
+  margin: 20px 0 6px;
+}
+code {
+  font-size: 0.9em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 1px 5px;
+  overflow-wrap: anywhere;
+}
+.table-wrap {
+  overflow-x: auto;
+  margin: 12px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 0.95rem;
+}
+th,
+td {
+  text-align: start;
+  vertical-align: top;
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--border);
+}
+td {
+  color: var(--muted);
+}
