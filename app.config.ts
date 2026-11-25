@@ -82,6 +82,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     admobRewardedAndroid: env(process.env.EXPO_PUBLIC_ADMOB_REWARDED_ANDROID),
     admobInterstitialAndroid: env(process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID),
     adsUseTestIds: env(process.env.EXPO_PUBLIC_ADS_USE_TEST_IDS) === 'true',
+    umpDebugEea: env(process.env.EXPO_PUBLIC_UMP_DEBUG_EEA) === 'true',
     privacyUrl: env(process.env.EXPO_PUBLIC_PRIVACY_URL),
     termsUrl: env(process.env.EXPO_PUBLIC_TERMS_URL),
     supportEmail: env(process.env.EXPO_PUBLIC_SUPPORT_EMAIL),

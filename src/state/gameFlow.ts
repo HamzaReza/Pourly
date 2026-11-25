@@ -20,7 +20,9 @@ import { dailyDateOf, dailyLevelId } from '@/game/daily';
 import { computeStars } from '@/game/stars';
 import { TUTORIAL_LAST_LEVEL } from '@/game/tutorial';
 import type { Board, Level, Move, PourOutcome } from '@/game/types';
+import { isAdShowing } from '@/services/adPresence';
 import { ads } from '@/services/ads';
+import { shouldShowInterstitial, type InterstitialState } from '@/services/adScheduler';
 import { track, type PaymentSource } from '@/services/analytics';
 import { localDateString } from '@/utils/date';
 
@@ -404,14 +406,58 @@ export const doubleWinCoins = async (): Promise<boolean> => {
   return true;
 };
 
+/** The interstitial pacing input for the session the player is leaving with Next. */
+const interstitialState = (): InterstitialState => {
+  const session = game().session;
+  const owner = progress();
+  const won = session !== null && session.status === 'won';
+  return {
+    trigger: 'next',
+    mode: session?.mode ?? 'level',
+    completedLevel: won ? session.levelNumber : 0,
+    skipped: session?.result?.skipped ?? false,
+    entitlements: owner.entitlements,
+    ads: owner.ads,
+    sessionCount: owner.sessionCount,
+    firstSessionStartedAt: owner.firstSessionStartedAt,
+  };
+};
+
+let nextInFlight = false;
+
+const startNextLevel = (now: number): void => {
+  startLevel(levelNow(progress().level), 'level', now);
+};
+
 /**
  * Next on the win (or skip) screen: loads the player's next level, which was prepared during the
- * win animation. Phase 7 extends this function with the interstitial check (`adScheduler`) before
- * the level loads; it is the only place an interstitial may appear (spec §9, §13). Level mode
- * only: the daily win overlay has no Next, so interstitials never follow a daily board.
+ * win animation. This is the only place an interstitial may appear (spec §9, §13): when
+ * `shouldShowInterstitial` allows it and one is loaded, it plays first and the level loads when it
+ * closes; showing one restarts the cadence counter and stamps its time. When no ad is allowed the
+ * level starts synchronously (returns null); otherwise the returned promise settles once the level
+ * has started. Level mode only: the daily win overlay has no Next.
  */
-export const onNextPressed = (now: number = Date.now()): void => {
-  startLevel(levelNow(progress().level), 'level', now);
+export const onNextPressed = (now: number = Date.now()): Promise<void> | null => {
+  if (nextInFlight) return null;
+  const state = interstitialState();
+  if (!shouldShowInterstitial(state, now)) {
+    startNextLevel(now);
+    return null;
+  }
+  nextInFlight = true;
+  const run = async (): Promise<void> => {
+    try {
+      const shown = await ads.showInterstitial();
+      if (shown) {
+        progress().recordInterstitial(Date.now());
+        track('ad_interstitial_shown', { level: state.completedLevel });
+      }
+    } finally {
+      nextInFlight = false;
+      startNextLevel(Date.now());
+    }
+  };
+  return run();
 };
 
 // ---------------------------------------------------------------------------------------------
@@ -420,12 +466,14 @@ export const onNextPressed = (now: number = Date.now()): void => {
 
 /**
  * Pauses the live game and flushes its snapshot whenever the app leaves the foreground, so a
- * kill never loses a move. Returns the unsubscribe function.
+ * kill never loses a move. A full-screen AdMob ad also sends the app to the background; the game
+ * is not paused for it, so a power-up earned from the ad still applies to the live board. Returns
+ * the unsubscribe function.
  */
 export const initGameLifecycle = (): (() => void) => {
   const subscription = AppState.addEventListener('change', (state) => {
     if (state !== 'background') return;
-    game().pause(Date.now());
+    if (!isAdShowing()) game().pause(Date.now());
     void flushGameSnapshot();
   });
   return () => subscription.remove();

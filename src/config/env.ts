@@ -14,6 +14,8 @@ export interface PublicEnv {
   admobRewardedAndroid: string;
   admobInterstitialAndroid: string;
   adsUseTestIds: boolean;
+  /** Development builds only: UMP pretends the device is in the EEA (consent form testing). */
+  umpDebugEea: boolean;
   privacyUrl: string;
   termsUrl: string;
   supportEmail: string;
@@ -41,6 +43,7 @@ export const parsePublicEnv = (extra: unknown): PublicEnv => {
     admobRewardedAndroid: str(source, 'admobRewardedAndroid'),
     admobInterstitialAndroid: str(source, 'admobInterstitialAndroid'),
     adsUseTestIds: source.adsUseTestIds === true,
+    umpDebugEea: source.umpDebugEea === true,
     privacyUrl: str(source, 'privacyUrl'),
     termsUrl: str(source, 'termsUrl'),
     supportEmail: str(source, 'supportEmail'),

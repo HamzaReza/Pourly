@@ -1,6 +1,7 @@
 /**
- * Ad abstraction (spec §13). Game code calls only this module; the provider behind it is the mock
- * (`ads.mock.ts`) until phase 7 installs AdMob with `setAdsProvider`, behind the same interface.
+ * Ad abstraction (spec §13). Game code calls only this module. The provider behind it starts as
+ * the mock (`ads.mock.ts`) in development and as "unavailable" in release builds; `consent.ts`
+ * installs AdMob (`ads.admob.ts`) with `setAdsProvider` once consent allows ads.
  *
  * - Rewards are granted by callers ONLY when `showRewarded` resolves `earned`.
  * - Game sounds are paused while an ad is on screen; `ads.lastRewardedAt` records every rewarded
@@ -12,6 +13,7 @@ import { useProgressStore } from '@/state/progressStore';
 import { showToast } from '@/ui/toastQueue';
 import { logger } from '@/utils/logger';
 
+import { setAdShowing } from './adPresence';
 import { mockAdsProvider } from './ads.mock';
 import { track } from './analytics';
 import { pauseAll, resumeAll } from './audio';
@@ -29,10 +31,22 @@ export interface AdsProvider {
   showInterstitial: () => Promise<boolean>;
 }
 
-let provider: AdsProvider = mockAdsProvider;
+/** No ads in this build or not yet (release builds before consent, missing unit ids). */
+export const unavailableAdsProvider: AdsProvider = {
+  preload: () => undefined,
+  isRewardedReady: () => false,
+  showRewarded: () => Promise.resolve('unavailable'),
+  showInterstitial: () => Promise.resolve(false),
+};
+
+/** The provider used whenever AdMob is not running: the mock in development, none in release. */
+export const fallbackAdsProvider = (isDev: boolean = __DEV__): AdsProvider =>
+  isDev ? mockAdsProvider : unavailableAdsProvider;
+
+let provider: AdsProvider = fallbackAdsProvider();
 let showing = false;
 
-/** Installs the ad backend (phase 7: AdMob after consent). */
+/** Installs the ad backend (AdMob after consent, or the fallback). */
 export const setAdsProvider = (next: AdsProvider): void => {
   provider = next;
 };
@@ -50,6 +64,7 @@ const isRewardedReady = (): boolean => !showing && provider.isRewardedReady();
 /** Runs a full-screen ad with game sounds paused; never two at once. */
 const withAudioPaused = async <T>(show: () => Promise<T>, fallback: T): Promise<T> => {
   showing = true;
+  setAdShowing(true);
   pauseAll();
   try {
     return await show();
@@ -59,6 +74,7 @@ const withAudioPaused = async <T>(show: () => Promise<T>, fallback: T): Promise<
   } finally {
     resumeAll();
     showing = false;
+    setAdShowing(false);
   }
 };
 
