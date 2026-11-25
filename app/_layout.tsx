@@ -10,6 +10,7 @@ import { dailyLevelId } from '@/game/daily';
 import { i18n, initI18n, syncLayoutDirection } from '@/i18n';
 import { ads } from '@/services/ads';
 import { track } from '@/services/analytics';
+import { startAuth } from '@/services/auth';
 import { initAudio, shutdownAudio } from '@/services/audio';
 import { startAdsWhenEligible } from '@/services/consent';
 import { startPurchases } from '@/services/fulfillment';
@@ -20,6 +21,7 @@ import { waitForStoresHydrated } from '@/state/hydration';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
 import { decideAutoStart } from '@/state/startup';
+import { GrantRewardHost } from '@/ui/GrantRewardHost';
 import { MockAdHost } from '@/ui/MockAdHost';
 import { MockPurchaseHost } from '@/ui/MockPurchaseHost';
 import { revealApp } from '@/ui/splash';
@@ -64,9 +66,10 @@ export default function RootLayout() {
   useEffect(() => {
     if (!ready) return;
     const timer = setTimeout(revealApp, SPLASH_SAFETY_MS);
-    // Ads, purchases and notification scheduling start after the first frame, never on the
-    // launch path (spec §12, §13, §14).
+    // Ads, purchases, notification scheduling and the account session start after the first
+    // frame, never on the launch path (spec §12, §13, §14, §26.2).
     let stopPurchases: () => void = () => undefined;
+    let stopAuth: () => void = () => undefined;
     let stopAds: () => void = () => undefined;
     let stopNotifications: () => void = () => undefined;
     const idle = requestIdleCallback(
@@ -75,6 +78,7 @@ export default function RootLayout() {
         stopPurchases = startPurchases();
         stopAds = startAdsWhenEligible();
         stopNotifications = startNotifications();
+        stopAuth = startAuth();
       },
       { timeout: 2000 },
     );
@@ -84,6 +88,7 @@ export default function RootLayout() {
       stopPurchases();
       stopAds();
       stopNotifications();
+      stopAuth();
     };
   }, [ready]);
 
@@ -111,6 +116,7 @@ export default function RootLayout() {
             contentStyle: styles.content,
           }}
         />
+        <GrantRewardHost />
         <ToastHost />
         <MockAdHost />
         <MockPurchaseHost />

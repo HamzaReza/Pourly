@@ -19,6 +19,7 @@ import {
 } from '@/i18n';
 import { languageNativeName } from '@/i18n/format';
 import { track } from '@/services/analytics';
+import { deleteAccount } from '@/services/auth';
 import { isPrivacyOptionsRequired, showPrivacyOptions, subscribeConsent } from '@/services/consent';
 import { restorePurchases } from '@/services/fulfillment';
 import {
@@ -37,6 +38,7 @@ import {
 import { Button } from '@/ui/Button';
 import { Overlay } from '@/ui/Overlay';
 import { Screen } from '@/ui/Screen';
+import { AccountSection } from '@/ui/settings/AccountSection';
 import { ChoiceRow, InfoRow, LinkRow, SettingsSection, ToggleRow } from '@/ui/settings/rows';
 import { Sheet } from '@/ui/Sheet';
 import { useThemeUi } from '@/ui/theme';
@@ -44,7 +46,7 @@ import { showToast } from '@/ui/Toast';
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
 import { logger } from '@/utils/logger';
 
-type Modal = 'language' | 'reset' | 'resetConfirm' | null;
+type Modal = 'language' | 'reset' | 'resetConfirm' | 'delete' | 'deleteConfirm' | null;
 
 const MOTION_OPTIONS: readonly ReducedMotionSetting[] = ['system', 'on', 'off'];
 const QUALITY_OPTIONS: readonly QualitySetting[] = ['auto', 'high', 'low'];
@@ -124,6 +126,13 @@ export default function SettingsScreen() {
   }, []);
 
   const closeModal = useCallback(() => setModal(null), []);
+
+  const openDelete = useCallback(() => setModal('delete'), []);
+
+  const onDeleteAccount = useCallback(() => {
+    setModal(null);
+    void deleteAccount();
+  }, []);
 
   const onRestore = useCallback(() => {
     setRestoring(true);
@@ -225,10 +234,40 @@ export default function SettingsScreen() {
         />
         <Button variant="primary" label={t('common.cancel')} onPress={closeModal} ui={ui} />
       </Overlay>
+    ) : modal === 'delete' ? (
+      <Overlay
+        title={t('account.deleteTitle')}
+        message={t('account.deleteMessage')}
+        onBackdropPress={closeModal}
+        testID="delete-step-1"
+      >
+        <Button
+          label={t('account.deleteContinue')}
+          onPress={() => setModal('deleteConfirm')}
+          ui={ui}
+        />
+        <Button variant="primary" label={t('common.cancel')} onPress={closeModal} ui={ui} />
+      </Overlay>
+    ) : modal === 'deleteConfirm' ? (
+      <Overlay
+        title={t('account.deleteConfirmTitle')}
+        message={t('account.deleteConfirmMessage')}
+        onBackdropPress={closeModal}
+        testID="delete-step-2"
+      >
+        <Button
+          label={t('account.deleteConfirm')}
+          onPress={onDeleteAccount}
+          ui={ui}
+          testID="delete-confirm"
+        />
+        <Button variant="primary" label={t('common.cancel')} onPress={closeModal} ui={ui} />
+      </Overlay>
     ) : null;
 
   return (
     <Screen title={t('settings.title')} scroll overlay={overlay}>
+      <AccountSection ui={ui} onDelete={openDelete} />
       <SettingsSection ui={ui} title={t('settings.sections.sound')}>
         <ToggleRow
           ui={ui}

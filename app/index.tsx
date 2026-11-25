@@ -25,6 +25,7 @@ import { AnimatedTitle } from '@/ui/home/AnimatedTitle';
 import { DailyCard } from '@/ui/home/DailyCard';
 import { HeroTubes } from '@/ui/home/HeroTubes';
 import { Pulse } from '@/ui/home/Pulse';
+import { SignInCard } from '@/ui/home/SignInCard';
 import { StarterPackBanner } from '@/ui/home/StarterPackBanner';
 import type { IconName } from '@/ui/IconButton';
 import { Screen } from '@/ui/Screen';
@@ -286,6 +287,7 @@ export default function HomeScreen() {
       </View>
       <DailyCard ui={ui} today={today} onPlay={openDaily} onOpen={() => router.push('/daily')} />
       <StarterPackBanner ui={ui} onView={() => openShop('starter_pack_banner')} />
+      <SignInCard ui={ui} />
       <View style={styles.menu}>
         <MenuButton
           icon="cart"
