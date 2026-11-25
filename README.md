@@ -35,15 +35,15 @@ Add Expo/React Native packages with `npx expo install <pkg>` so versions stay al
 
 All configuration comes from environment variables (see `.env.example`). Never commit `.env`.
 
-| Variable                                                                          | Purpose                                                                                              |
-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `ANDROID_PACKAGE`                                                                 | Android application id. Default `com.pourly.water.app`. **Permanent once published on Google Play.** |
-| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`                                              | RevenueCat public Android SDK key.                                                                   |
-| `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`                                                | AdMob app id, written into the Android manifest at prebuild. Defaults to Google's sample id.         |
-| `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID` / `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`   | Production ad unit ids. Development builds always use Google test ids.                               |
-| `EXPO_PUBLIC_PRIVACY_URL` / `EXPO_PUBLIC_TERMS_URL` / `EXPO_PUBLIC_SUPPORT_EMAIL` | Legal links and support address.                                                                     |
-| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`                                                | OAuth web client id for Google Sign-In.                                                              |
-| `EXPO_PUBLIC_FIREBASE_*`                                                          | Firebase JS SDK web config.                                                                          |
+| Variable                                                                          | Purpose                                                                                                     |
+| --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `ANDROID_PACKAGE`                                                                 | Android application id. Default `com.pourly.water.app`. **Permanent once published on Google Play.**        |
+| `EXPO_PUBLIC_REVENUECAT_ANDROID_KEY`                                              | RevenueCat public Android SDK key.                                                                          |
+| `EXPO_PUBLIC_ADMOB_ANDROID_APP_ID`                                                | AdMob app id, written into the Android manifest at prebuild. Defaults to Google's sample id.                |
+| `EXPO_PUBLIC_ADMOB_REWARDED_ANDROID` / `EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID`   | Production ad unit ids. Development builds always use Google test ids.                                      |
+| `EXPO_PUBLIC_PRIVACY_URL` / `EXPO_PUBLIC_TERMS_URL` / `EXPO_PUBLIC_SUPPORT_EMAIL` | Legal links and support address. Empty URLs default to `https://<project id>.web.app/privacy` and `/terms`. |
+| `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`                                                | OAuth web client id for Google Sign-In.                                                                     |
+| `EXPO_PUBLIC_FIREBASE_*`                                                          | Firebase JS SDK web config.                                                                                 |
 
 `app.config.ts` copies the public values into `extra`; the app reads them through
 `src/config/env.ts`. Values are baked in at build time.
@@ -87,6 +87,32 @@ stores its answer) and reach level 5 on an **emulator**, which UMP treats as a t
 automatically. The debug geography is ignored on physical devices unless their hashed id (printed
 by UMP in logcat) is registered as a UMP test device, which this app does not configure.
 
+## Accounts, cloud save and server fulfillment (Firebase)
+
+Optional Google sign-in (Firebase JS SDK + `@react-native-google-signin/google-signin`) keeps
+progress in Firestore (`users/{uid}`) and ties RevenueCat purchases to the Firebase uid. Full
+setup, deployment and the Blaze billing note: **[docs/FIREBASE_SETUP.md](docs/FIREBASE_SETUP.md)**.
+
+- **Cloud disabled**: without the `EXPO_PUBLIC_FIREBASE_*` values (api key, auth domain, project id,
+  app id) **or** `EXPO_PUBLIC_GOOGLE_WEB_CLIENT_ID`, the app logs "Cloud disabled", plays fully as
+  a guest and Settings → Account shows "Sign-in unavailable in this build". Nothing Firebase loads.
+- **Server fulfillment** (`USE_SERVER_FULFILLMENT` in `src/config/constants.ts`, default `true`):
+  signed-in purchases are granted by the `revenuecatWebhook` Cloud Function; guests are granted on
+  the device. Set it to `false` to grant every purchase on the device (no Blaze plan needed for
+  purchases; sign-in and cloud save still work on the free plan).
+
+| Folder / file              | What it is                                                                                         |
+| -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `shared/products.ts`       | The product → grant table, used by the app (`src/config/products.ts`) and the Functions.           |
+| `functions/`               | Cloud Functions (own package, Node 22): `revenuecatWebhook`, `deleteMyAccount`.                    |
+| `firebase/firestore.rules` | Firestore security rules. `firebase/package.json` holds the emulator and rules-testing tools.      |
+| `public/`                  | Firebase Hosting: landing page, `delete-account.html`, 404 (privacy and terms arrive in phase 10). |
+| `firebase.json`            | Rules, Functions (with the predeploy build), Hosting (`cleanUrls`) and emulator ports.             |
+| `.firebaserc`              | Placeholder project id `pourly-app`; replace it with yours (`firebase use --add`).                 |
+
+`functions/` scripts (run inside `functions/`): `yarn build` (copies `shared/` into the gitignored
+`src/shared/`, then `tsc`), `yarn test`, `yarn serve` (emulators), `yarn deploy`, `yarn logs`.
+
 ## Scripts
 
 | Script                       | What it does                                                                         |
@@ -114,12 +140,17 @@ by UMP in logcat) is registered as a UMP test device, which this app does not co
 
 ```
 app/          Expo Router routes (Home, game, daily, shop, themes, settings)
-src/config/   economy, products, ads, env, constants
+src/config/   economy, products (re-exports shared/products.ts), ads, env, constants
+src/services/ auth, cloud save, grants, purchases, ads, notifications, analytics
 src/i18n/     i18next setup and locale JSON files
 src/state/    Zustand stores (persisted), models and migrations
 src/ui/       design tokens and shared components
 src/utils/    date helpers, logger
-docs/         spec and decisions
+shared/       code shared with functions/ (product table)
+functions/    Cloud Functions package (Node 22)
+firebase/     Firestore rules and the rules-testing package
+public/       Firebase Hosting pages
+docs/         spec, decisions, Firebase setup
 ```
 
 ## Resolved versions
