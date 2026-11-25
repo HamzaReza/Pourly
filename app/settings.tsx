@@ -1,10 +1,15 @@
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
-import { useCallback, useState } from 'react';
+import { useCallback, useState, useSyncExternalStore } from 'react';
 import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
-import { PRIVACY_URL, SUPPORT_MAILTO, TERMS_URL } from '@/config/constants';
+import {
+  MANAGE_SUBSCRIPTIONS_URL,
+  PRIVACY_URL,
+  SUPPORT_MAILTO,
+  TERMS_URL,
+} from '@/config/constants';
 import {
   i18n,
   initI18n,
@@ -14,6 +19,8 @@ import {
 } from '@/i18n';
 import { languageNativeName } from '@/i18n/format';
 import { track } from '@/services/analytics';
+import { isPrivacyOptionsRequired, showPrivacyOptions, subscribeConsent } from '@/services/consent';
+import { restorePurchases } from '@/services/fulfillment';
 import { resetAllProgress } from '@/state/metaFlow';
 import {
   useSettingsStore,
@@ -66,6 +73,8 @@ export default function SettingsScreen() {
   const [restartNeeded, setRestartNeeded] = useState(false);
   const [resetting, setResetting] = useState(false);
   const [versionInfo] = useState(appVersion);
+  const [restoring, setRestoring] = useState(false);
+  const privacyOptionsRequired = useSyncExternalStore(subscribeConsent, isPrivacyOptionsRequired);
 
   const settings = () => useSettingsStore.getState();
 
@@ -93,6 +102,19 @@ export default function SettingsScreen() {
   }, []);
 
   const closeModal = useCallback(() => setModal(null), []);
+
+  const onRestore = useCallback(() => {
+    setRestoring(true);
+    restorePurchases().finally(() => setRestoring(false));
+  }, []);
+
+  const onAdPrivacy = useCallback(() => {
+    showPrivacyOptions()
+      .then((opened) => {
+        if (!opened) showToast('settings.adPrivacyFailed');
+      })
+      .catch((error: unknown) => logger.warn('Ad privacy options failed', error));
+  }, []);
 
   const chosen = SUPPORTED_LANGUAGES.find((lng) => lng === language);
   const languageName =
@@ -243,6 +265,25 @@ export default function SettingsScreen() {
         />
         {restartNeeded ? <InfoRow ui={ui} text={t('settings.rtlRestart')} /> : null}
       </SettingsSection>
+      <SettingsSection ui={ui} title={t('settings.sections.purchases')}>
+        <LinkRow
+          ui={ui}
+          icon="refresh"
+          label={t('settings.restorePurchases')}
+          hint={t('settings.restoreHint')}
+          disabled={restoring}
+          onPress={onRestore}
+          testID="setting-restore"
+        />
+        <LinkRow
+          ui={ui}
+          icon="card"
+          label={t('settings.manageSubscription')}
+          external
+          onPress={() => openLink(MANAGE_SUBSCRIPTIONS_URL)}
+          testID="setting-manage-subscription"
+        />
+      </SettingsSection>
       <SettingsSection ui={ui} title={t('settings.sections.about')}>
         <LinkRow
           ui={ui}
@@ -258,6 +299,16 @@ export default function SettingsScreen() {
           external
           onPress={() => openLink(TERMS_URL)}
         />
+        {privacyOptionsRequired ? (
+          <LinkRow
+            ui={ui}
+            icon="options"
+            label={t('settings.adPrivacy')}
+            hint={t('settings.adPrivacyHint')}
+            onPress={onAdPrivacy}
+            testID="setting-ad-privacy"
+          />
+        ) : null}
         <LinkRow
           ui={ui}
           icon="mail"

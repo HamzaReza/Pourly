@@ -10,6 +10,7 @@ import type { ThemeUi } from '@/render/themes';
 import { useGameStore } from '@/state/gameStore';
 import { CoinBadge } from '@/ui/CoinBadge';
 import { IconButton } from '@/ui/IconButton';
+import { VipBadge } from '@/ui/VipBadge';
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
 import { parseLocalDate } from '@/utils/date';
 
@@ -71,6 +72,7 @@ const GameHudComponent = ({
         <Text style={[styles.titleText, { color: ui.text }]}>{title}</Text>
       </Pressable>
       {day === null ? <SkipChip ui={ui} onSkip={onSkip} disabled={skipDisabled} /> : null}
+      <VipBadge />
       <CoinBadge source="game" />
     </View>
   );

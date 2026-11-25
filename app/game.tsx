@@ -25,6 +25,7 @@ import type { CanvasSize } from '@/render/scene';
 import type { Theme, ThemeUi } from '@/render/themes';
 import { useHintSearch } from '@/render/useHint';
 import { useRenderSettings } from '@/render/useRenderSettings';
+import { track } from '@/services/analytics';
 import { play } from '@/services/audio';
 import { hapticError, hapticPourStart, hapticSelect, hapticSuccess } from '@/services/haptics';
 import {
@@ -389,6 +390,7 @@ export default function GameScreen() {
 
   const onShop = useCallback(() => {
     setModal(null);
+    track('shop_opened', { from: 'not_enough_coins' });
     router.push('/shop');
   }, []);
 
@@ -402,7 +404,7 @@ export default function GameScreen() {
 
   const onNext = useCallback(() => {
     setModal(null);
-    onNextPressed();
+    void onNextPressed();
   }, []);
 
   const onPause = useCallback(() => game().pause(), []);

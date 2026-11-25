@@ -13,6 +13,8 @@ import { colors, fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from
 export interface CoinBadgeProps {
   /** Where the badge sits, for the `shop_opened` event. */
   source: string;
+  /** False inside the Shop itself: the balance is shown but does not open the Shop again. */
+  interactive?: boolean;
 }
 
 /** Coin glyph drawn with views (no image). */
@@ -32,7 +34,7 @@ export const CoinGlyph = memo(({ size = 18 }: { size?: number }) => (
 CoinGlyph.displayName = 'CoinGlyph';
 
 /** Coin balance that counts up on the UI thread when coins arrive; tap opens the Shop. */
-const CoinBadgeComponent = ({ source }: CoinBadgeProps) => {
+const CoinBadgeComponent = ({ source, interactive = true }: CoinBadgeProps) => {
   const { t } = useTranslation();
   const ui = useThemeUi();
   const reducedMotion = useReducedMotionPref();
@@ -42,6 +44,29 @@ const CoinBadgeComponent = ({ source }: CoinBadgeProps) => {
     track('shop_opened', { from: source });
     router.push('/shop');
   }, [source]);
+
+  const content = (
+    <>
+      <CoinGlyph />
+      <AnimatedCount
+        value={coins}
+        reducedMotion={reducedMotion}
+        style={[styles.count, { color: ui.text }]}
+      />
+    </>
+  );
+
+  if (!interactive) {
+    return (
+      <View
+        accessible
+        accessibilityLabel={t('coins.balanceA11y', { count: coins })}
+        style={[styles.badge, { backgroundColor: ui.surface }]}
+      >
+        {content}
+      </View>
+    );
+  }
 
   return (
     <Pressable
@@ -55,12 +80,7 @@ const CoinBadgeComponent = ({ source }: CoinBadgeProps) => {
         pressed && styles.pressed,
       ]}
     >
-      <CoinGlyph />
-      <AnimatedCount
-        value={coins}
-        reducedMotion={reducedMotion}
-        style={[styles.count, { color: ui.text }]}
-      />
+      {content}
     </Pressable>
   );
 };

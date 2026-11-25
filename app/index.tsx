@@ -30,6 +30,7 @@ import type { IconName } from '@/ui/IconButton';
 import { Screen } from '@/ui/Screen';
 import { revealApp } from '@/ui/splash';
 import { useActiveTheme, useReducedMotionPref } from '@/ui/theme';
+import { VipBadge } from '@/ui/VipBadge';
 import { showToast } from '@/ui/Toast';
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
 
@@ -237,6 +238,7 @@ export default function HomeScreen() {
           </Pressable>
         ) : null}
         <View style={styles.spacer} />
+        <VipBadge />
         <CoinBadge source="home" />
       </View>
       {canResume ? (

@@ -1,7 +1,7 @@
 /**
- * Building blocks of the Settings screen. Each later phase adds its own `SettingsSection` (Purchases,
- * Ad privacy, Notifications, Account) built from these rows; nothing is rendered for a section
- * that does not exist yet.
+ * Building blocks of the Settings screen (also used for the Shop's sections). Each phase adds its
+ * own `SettingsSection` (Purchases and Ad privacy in phase 7; Notifications and Account later)
+ * built from these rows.
  */
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, type ReactNode } from 'react';
@@ -145,6 +145,8 @@ export interface LinkRowProps {
   accessibilityLabel?: string;
   /** Opens something outside the app (shows an external-link glyph instead of a chevron). */
   external?: boolean;
+  /** Ignores presses while an action it started is still running. */
+  disabled?: boolean;
   onPress: () => void;
   testID?: string;
 }
@@ -159,6 +161,7 @@ export const LinkRow = memo(
     hint,
     accessibilityLabel,
     external,
+    disabled = false,
     onPress,
     testID,
   }: LinkRowProps) => (
@@ -166,8 +169,10 @@ export const LinkRow = memo(
       accessibilityRole={external === true ? 'link' : 'button'}
       accessibilityLabel={accessibilityLabel ?? label}
       accessibilityHint={hint}
+      accessibilityState={{ disabled }}
+      disabled={disabled}
       onPress={onPress}
-      style={({ pressed }) => [styles.row, pressed && styles.pressed]}
+      style={({ pressed }) => [styles.row, (pressed || disabled) && styles.pressed]}
       testID={testID}
     >
       <Ionicons name={icon} size={22} color={ui.text} />

@@ -1,9 +1,10 @@
 /**
- * Meta-game actions behind Home, Themes and Settings: daily gift (with the DAILY_GIFT_X2 ad), VIP
- * daily bonus, theme unlocks and the progress reset. No React; screens render the typed results.
+ * Meta-game actions behind Home, Shop, Themes and Settings: daily gift (with the DAILY_GIFT_X2 ad),
+ * VIP daily bonus, free coins (FREE_COINS ad), theme unlocks and the progress reset. No React; screens render the typed results.
  */
 import { REWARDED_PLACEMENTS } from '@/config/ads';
 import type { RewardBundle } from '@/config/economy';
+import { freeCoinsStatus } from '@/game/freeCoins';
 import type { GiftClaim, VipBonusClaim } from '@/game/gifts';
 import { themeStatus } from '@/game/themeUnlocks';
 import { isThemeId } from '@/render/themes';
@@ -30,6 +31,18 @@ export const doubleGiftWithAd = async (reward: RewardBundle): Promise<boolean> =
   if (result !== 'earned') return false;
   progress().grant(reward);
   return true;
+};
+
+/**
+ * Shop "Free coins ▶": shows the FREE_COINS rewarded ad when the cooldown and daily cap allow it
+ * and grants `freeCoinsAdReward` only on `earned`. Returns the coins granted (0 otherwise).
+ */
+export const watchFreeCoinsAd = async (): Promise<number> => {
+  if (freeCoinsStatus(progress(), localToday(), Date.now()).kind !== 'ready') return 0;
+  const result = await ads.showRewarded(REWARDED_PLACEMENTS.FREE_COINS);
+  if (result !== 'earned') return 0;
+  const now = Date.now();
+  return progress().claimFreeCoins(localToday(now), now);
 };
 
 /** Claims the VIP daily bonus (VIP only, once per local day). */
