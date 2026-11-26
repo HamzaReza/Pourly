@@ -75,15 +75,15 @@ const PourSlotComponent = ({
   });
 
   const active = useDerivedValue(() => plan.get() !== null);
-  const glassBack = useDerivedValue(() => (active.get() ? glass.back : empty), [glass, empty]);
-  const glassFront = useDerivedValue(() => (active.get() ? glass.front : empty), [glass, empty]);
+  const glassBack = useDerivedValue(() => (active.get() ? glass.back : empty));
+  const glassFront = useDerivedValue(() => (active.get() ? glass.front : empty));
 
   const targetTransform = useDerivedValue<Transforms3d>(() => {
     const current = plan.get();
     if (current === null) return ORIGIN;
     return [{ translateX: current.targetX }, { translateY: current.targetY }];
   });
-  const targetLiquid = useDerivedValue(() => pictures.get()?.target ?? empty, [empty]);
+  const targetLiquid = useDerivedValue(() => pictures.get()?.target ?? empty);
   const targetClip = useDerivedValue(() => {
     const current = plan.get();
     const f = frame.get();
@@ -102,7 +102,7 @@ const PourSlotComponent = ({
     if (current === null || f === null || f.targetLevel <= 0) return ZERO_RECT;
     const top = levelTop(current, f.targetLevel);
     return { x: surface.x, y: top + surface.y, width: surface.width, height: surface.height };
-  }, [surface]);
+  });
 
   const stream = useDerivedValue(() => {
     const f = frame.get();
@@ -127,7 +127,7 @@ const PourSlotComponent = ({
   const capPicture = useDerivedValue(() => {
     const f = frame.get();
     return f !== null && f.capVisible ? (pictures.get()?.cap ?? empty) : empty;
-  }, [empty]);
+  });
   const capTransform = useDerivedValue<Transforms3d>(() => {
     const current = plan.get();
     const f = frame.get();
@@ -178,7 +178,7 @@ const PourSlotComponent = ({
       { translateX: -current.lipX },
     ];
   });
-  const sourceLiquid = useDerivedValue(() => pictures.get()?.source ?? empty, [empty]);
+  const sourceLiquid = useDerivedValue(() => pictures.get()?.source ?? empty);
   const sourceClip = useDerivedValue(() => {
     const current = plan.get();
     const f = frame.get();
@@ -199,13 +199,13 @@ const PourSlotComponent = ({
     if (f.flipActive && clock.get() < current.times.flipEnd) return ZERO_RECT;
     const top = levelTop(current, f.sourceLevel);
     return { x: surface.x, y: top + surface.y, width: surface.width, height: surface.height };
-  }, [surface]);
+  });
   const flipPicture = useDerivedValue(() => {
     const f = frame.get();
     const current = pictures.get();
     if (f === null || current === null || !f.flipActive) return empty;
     return f.flipRevealed ? current.flipShown : current.flipHidden;
-  }, [empty]);
+  });
   const flipTransform = useDerivedValue<Transforms3d>(() => {
     const current = plan.get();
     const f = frame.get();

@@ -656,7 +656,6 @@ const BoardComponent = ({
       queuedTap.set(NO_TAP);
       controller.process(tapped);
     },
-    [controller],
   );
 
   // A board that did not come from our own pour (restart, undo, new level) resets every animation.
@@ -795,7 +794,7 @@ interface SelectionGlowProps {
 /** Soft ring around the selected tube only; draws an empty path when nothing is selected. */
 const SelectionGlowComponent = ({ color, outline, empty, rects, lift }: SelectionGlowProps) => {
   const { upIndex, upProgress, shakeIndex, shakeProgress } = lift;
-  const path = useDerivedValue(() => (upIndex.get() >= 0 ? outline : empty), [outline, empty]);
+  const path = useDerivedValue(() => (upIndex.get() >= 0 ? outline : empty));
   const opacity = useDerivedValue(() => Math.min(1, Math.max(0, upProgress.get())));
   const transform = useDerivedValue<Transforms3d>(() => {
     const index = upIndex.get();

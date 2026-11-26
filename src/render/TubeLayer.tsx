@@ -80,19 +80,10 @@ const TubeLayerComponent = ({
   const transform = useDerivedValue<Transforms3d>(() => {
     const offset = tubeOffset(lift, index);
     return [{ translateX: x + offset.x }, { translateY: y + offset.y }];
-  }, [index, x, y]);
-  const back = useDerivedValue(
-    () => (isOwned(ownedMask.get(), index) ? empty : glass.back),
-    [index, glass, empty],
-  );
-  const content = useDerivedValue(
-    () => (isOwned(ownedMask.get(), index) ? empty : liquid),
-    [index, liquid, empty],
-  );
-  const front = useDerivedValue(
-    () => (isOwned(ownedMask.get(), index) ? empty : glass.front),
-    [index, glass, empty],
-  );
+  });
+  const back = useDerivedValue(() => (isOwned(ownedMask.get(), index) ? empty : glass.back));
+  const content = useDerivedValue(() => (isOwned(ownedMask.get(), index) ? empty : liquid));
+  const front = useDerivedValue(() => (isOwned(ownedMask.get(), index) ? empty : glass.front));
 
   return (
     <Group transform={transform}>

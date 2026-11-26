@@ -53,7 +53,7 @@ interface GlowRingProps {
 
 /** A glow ring that draws an empty path (no blur work) while it is invisible. */
 const GlowRing = ({ outline, empty, color, blur, transform, opacity }: GlowRingProps) => {
-  const path = useDerivedValue(() => (opacity.get() > 0.001 ? outline : empty), [outline, empty]);
+  const path = useDerivedValue(() => (opacity.get() > 0.001 ? outline : empty));
   return (
     <Group transform={transform} opacity={opacity}>
       <Path path={path} style="stroke" strokeWidth={GLOW_STROKE} color={color}>
@@ -86,14 +86,11 @@ const WinGlowComponent = ({
 }: WinGlowProps) => {
   const x = rect.drawn.x;
   const y = rect.drawn.y;
-  const transform = useDerivedValue<Transforms3d>(
-    () => [{ translateX: x }, { translateY: y }],
-    [x, y],
-  );
+  const transform = useDerivedValue<Transforms3d>(() => [{ translateX: x }, { translateY: y }]);
   const opacity = useDerivedValue(() => {
     const ms = clock.get();
     return ms < 0 ? 0 : winGlowAlpha(timeline, index, ms);
-  }, [timeline, index]);
+  });
   return (
     <GlowRing
       outline={outline}
@@ -277,7 +274,7 @@ const HintRing = ({ index, rect, outline, empty, color, blur, lift, opacity }: H
   const transform = useDerivedValue<Transforms3d>(() => {
     const offset = tubeOffset(lift, index);
     return [{ translateX: x + offset.x }, { translateY: y + offset.y }];
-  }, [index, x, y]);
+  });
   return (
     <GlowRing
       outline={outline}
