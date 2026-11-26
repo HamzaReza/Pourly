@@ -1,6 +1,6 @@
 > **MACHINE-DRAFTED DRAFT: needs native review.** BORRADOR generado automáticamente. Necesita revisión de un hablante nativo antes de publicarse.
 
-# Pourly: Google Play store listing, Spanish (es)
+# Pourly: Google Play store listing, Spanish – Latin America (es-419)
 
 Character counts are Unicode code points (what the Play Console counts).
 

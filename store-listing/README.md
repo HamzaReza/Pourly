@@ -1,7 +1,7 @@
 # Store listing drafts
 
-One Markdown file per Google Play listing language: `en.md` (English source) plus `es.md`,
-`pt-BR.md`, `fr.md`, `de.md`, `it.md`, `ru.md`, `tr.md`, `id.md`, `ar.md`, `hi.md`, `ja.md`,
+One Markdown file per Google Play listing language: `en.md` (English source) plus `es.md` (Spanish,
+Latin America, `es-419`), `es-ES.md` (Spanish, Spain; same text), `pt-BR.md`, `fr.md`, `de.md`, `it.md`, `ru.md`, `tr.md`, `id.md`, `ar.md`, `hi.md`, `ja.md`,
 `ko.md` (spec §16, §23).
 
 ## Format
