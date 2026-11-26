@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { memo, useCallback, useState } from 'react';
-import { StyleSheet, useWindowDimensions, View } from 'react-native';
+import { Pressable, StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { themeStatus, type ThemeStatus } from '@/game/themeUnlocks';
@@ -117,15 +117,34 @@ const ThemeCardComponent = ({
     }
   })();
 
+  /**
+   * The whole card does what its pill does (apply, unlock, or the Shop). The card itself is not
+   * a separate screen-reader stop: the pill carries the action's label, so it is announced once.
+   */
+  const onCardPress =
+    status.kind === 'owned'
+      ? active
+        ? undefined
+        : () => onApply(themeId)
+      : status.kind === 'coins'
+        ? () => onUnlock(themeId, status.price)
+        : status.kind === 'starterPack'
+          ? () => openShop('themes_starter_pack')
+          : () => openShop('themes_vip');
+
   return (
-    <View
-      style={[
+    <Pressable
+      accessible={false}
+      onPress={onCardPress}
+      disabled={onCardPress === undefined}
+      style={({ pressed }) => [
         styles.card,
         {
           width,
           backgroundColor: ui.surface,
           borderColor: active ? ui.accent : surfaceColors(ui).hairline,
         },
+        pressed && styles.cardPressed,
       ]}
       testID={`theme-card-${themeId}`}
     >
@@ -148,7 +167,7 @@ const ThemeCardComponent = ({
         </Text>
         {action}
       </View>
-    </View>
+    </Pressable>
   );
 };
 
@@ -264,6 +283,9 @@ const styles = StyleSheet.create({
     borderRadius: radii.card,
     borderWidth: CARD_BORDER,
     overflow: 'hidden',
+  },
+  cardPressed: {
+    opacity: 0.85,
   },
   preview: {
     width: '100%',

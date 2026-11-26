@@ -194,7 +194,9 @@ const styles = StyleSheet.create({
   },
   tag: {
     alignItems: 'center',
-    marginVertical: spacing.xs,
+    marginTop: spacing.xs,
+    /** Room between the "New best!" chip and the action buttons. */
+    marginBottom: spacing.md,
   },
   note: {
     ...typography.dialogBody,

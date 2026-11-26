@@ -45,6 +45,7 @@ const RewardOverlayComponent = ({
     <Overlay
       title={title}
       message={message}
+      onRequestClose={onContinue}
       icon="gift-outline"
       iconTone="gold"
       testID="reward-overlay"

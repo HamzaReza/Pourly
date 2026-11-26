@@ -9,7 +9,7 @@ import {
 } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { AccessibilityInfo, Pressable, StyleSheet, View } from 'react-native';
+import { AccessibilityInfo, BackHandler, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -37,6 +37,11 @@ export interface OverlayProps {
   children?: ReactNode;
   /** Backdrop tap; omit to make the backdrop inert. */
   onBackdropPress?: () => void;
+  /**
+   * Android Back while this overlay is the top-most one: closes it (defaults to
+   * `onBackdropPress`). Without either, Back falls through to the screen's own handling.
+   */
+  onRequestClose?: () => void;
   placement?: OverlayPlacement;
   /** Optional glyph in a tinted circle above the title. */
   icon?: IconName;
@@ -58,6 +63,7 @@ const OverlayComponent = ({
   message,
   children,
   onBackdropPress,
+  onRequestClose,
   placement = 'center',
   icon,
   iconTone = 'accent',
@@ -73,6 +79,23 @@ const OverlayComponent = ({
     const node = titleRef.current;
     if (node !== null) AccessibilityInfo.sendAccessibilityEvent(node, 'focus');
   }, []);
+
+  // Back closes only this overlay. BackHandler calls the newest listener first, so the overlay
+  // mounted last (the top-most) handles it and the screen underneath never sees it.
+  const close = onRequestClose ?? onBackdropPress;
+  const closeRef = useRef(close);
+  useEffect(() => {
+    closeRef.current = close;
+  }, [close]);
+  const closable = close !== undefined;
+  useEffect(() => {
+    if (!closable) return;
+    const subscription = BackHandler.addEventListener('hardwareBackPress', () => {
+      closeRef.current?.();
+      return true;
+    });
+    return () => subscription.remove();
+  }, [closable]);
 
   const bottom = placement === 'bottom';
   /**
