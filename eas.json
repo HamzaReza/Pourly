@@ -18,7 +18,8 @@
       },
       "env": {
         "EXPO_PUBLIC_ADMOB_ANDROID_APP_ID": "ca-app-pub-3940256099942544~3347511713",
-        "EXPO_PUBLIC_ADS_USE_TEST_IDS": "true"
+        "EXPO_PUBLIC_ADS_USE_TEST_IDS": "true",
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "armeabi-v7a,arm64-v8a"
       }
     },
     "production": {
@@ -26,6 +27,9 @@
       "autoIncrement": true,
       "android": {
         "buildType": "app-bundle"
+      },
+      "env": {
+        "ORG_GRADLE_PROJECT_reactNativeArchitectures": "armeabi-v7a,arm64-v8a"
       }
     }
   },

@@ -10,6 +10,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
   ...config,
   name: 'Pourly',
   slug: 'pourly',
+  owner: 'hamzareza',
   scheme: 'pourly',
   version: '1.0.0',
   orientation: 'portrait',
@@ -79,6 +80,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     typedRoutes: true,
   },
   extra: {
+    eas: { projectId: 'c7edd0b8-bebc-4839-b056-048f472db3bd' },
     revenueCatAndroidKey: env(process.env.EXPO_PUBLIC_REVENUECAT_ANDROID_KEY),
     admobRewardedAndroid: env(process.env.EXPO_PUBLIC_ADMOB_REWARDED_ANDROID),
     admobInterstitialAndroid: env(process.env.EXPO_PUBLIC_ADMOB_INTERSTITIAL_ANDROID),
