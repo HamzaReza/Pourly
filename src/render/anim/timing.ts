@@ -6,15 +6,19 @@
 /** Reduced motion multiplies every duration by this (spec §8.5.11). */
 export const REDUCED_MOTION_SCALE = 0.4;
 
-/** Pour: `280 ms + 90 ms × segmentsMoved` (spec §8.3). */
-export const POUR_BASE_MS = 280;
-export const POUR_SEGMENT_MS = 90;
+/**
+ * Pour: `550 ms + 200 ms × segmentsMoved`. Slowed from the spec's `280 + 90` (§8.3) at the owner's
+ * request: the stream flows longer and the tube travels and returns more gently (DECISIONS P12.1,
+ * P12.2, P12.4, P12.6). The base covers travel plus tilt, so it moves with `POUR_STREAM_START_MS`.
+ */
+export const POUR_BASE_MS = 550;
+export const POUR_SEGMENT_MS = 200;
 /** The source tube's return to its slot. */
-export const POUR_RETURN_MS = 220;
+export const POUR_RETURN_MS = 420;
 /** Travel from the source slot to the pour position (inside the base duration). */
-export const POUR_TRAVEL_MS = 180;
+export const POUR_TRAVEL_MS = 420;
 /** The stream starts once the tube has arrived and tilted to the lip. */
-export const POUR_STREAM_START_MS = 220;
+export const POUR_STREAM_START_MS = 470;
 /** The stream detaches from the lip this long before the pour ends. */
 export const POUR_STREAM_END_LEAD_MS = 20;
 /** Head of the stream travelling down / tail falling in. */
@@ -79,6 +83,12 @@ export const progress = (ms: number, start: number, end: number): number => {
 export const easeInOutCubic = (t: number): number => {
   'worklet';
   return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+};
+
+/** Gentle ease-in-out (peak speed ≈1.57× the average, vs 3× for cubic): used for tube travel. */
+export const easeInOutSine = (t: number): number => {
+  'worklet';
+  return -(Math.cos(Math.PI * t) - 1) / 2;
 };
 
 export const easeOutCubic = (t: number): number => {

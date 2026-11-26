@@ -2,6 +2,7 @@ import {
   clamp01,
   durationScale,
   easeInOutCubic,
+  easeInOutSine,
   easeOutCubic,
   hash01,
   lerp,
@@ -12,11 +13,11 @@ import {
 } from '@/render/anim/timing';
 
 describe('animation timing helpers', () => {
-  it('times a pour as 280 ms + 90 ms per segment moved', () => {
-    expect(pourDurationMs(0)).toBe(280);
-    expect(pourDurationMs(1)).toBe(370);
-    expect(pourDurationMs(4)).toBe(640);
-    expect(pourDurationMs(-2)).toBe(280);
+  it('times a pour as 550 ms + 200 ms per segment moved', () => {
+    expect(pourDurationMs(0)).toBe(550);
+    expect(pourDurationMs(1)).toBe(750);
+    expect(pourDurationMs(4)).toBe(1350);
+    expect(pourDurationMs(-2)).toBe(550);
   });
 
   it('scales durations by 0.4 with reduced motion and rounds to whole ms', () => {
@@ -54,5 +55,18 @@ describe('animation timing helpers', () => {
       expect(value).toBeLessThan(1);
       expect(hash01(key)).toBe(value);
     }
+  });
+
+  it('eases tube travel gently: symmetric, 0 → 1, and never faster than 1.6× the average', () => {
+    expect(easeInOutSine(0)).toBeCloseTo(0, 9);
+    expect(easeInOutSine(0.5)).toBeCloseTo(0.5, 9);
+    expect(easeInOutSine(1)).toBeCloseTo(1, 9);
+    expect(easeInOutSine(0.25) + easeInOutSine(0.75)).toBeCloseTo(1, 9);
+    const step = 0.001;
+    let peak = 0;
+    for (let t = 0; t + step <= 1; t += step) {
+      peak = Math.max(peak, (easeInOutSine(t + step) - easeInOutSine(t)) / step);
+    }
+    expect(peak).toBeLessThan(1.6);
   });
 });

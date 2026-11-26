@@ -109,7 +109,7 @@ describe('planPour', () => {
     expect(plan.minX).toBe(EDGE_MARGIN);
     expect(plan.maxX).toBe(1000 - EDGE_MARGIN);
     expect(plan.startLift).toBe(0);
-    expect(plan.times.pourEnd).toBe(460);
+    expect(plan.times.pourEnd).toBe(950);
   });
 
   it('lowers the pour position so the raised end stays below the top edge', () => {

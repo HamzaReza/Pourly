@@ -13,6 +13,7 @@ import {
   CAP_SETTLE_MS,
   clamp01,
   easeInOutCubic,
+  easeInOutSine,
   FLIP_MS,
   lerp,
   POUR_RETURN_MS,
@@ -372,7 +373,7 @@ export const pourFrame = (plan: PourPlan, ms: number): PourFrame => {
   let tiltDeg: number;
   let sourceLevel = plan.sourceBefore;
   if (ms < t.pourEnd) {
-    const travel = easeInOutCubic(progress(ms, 0, t.travelEnd));
+    const travel = easeInOutSine(progress(ms, 0, t.travelEnd));
     pivotX = lerp(plan.restX, plan.pourX, travel);
     pivotY = lerp(startY, plan.pourY, travel) - plan.arc * Math.sin(Math.PI * travel);
     const drain = progress(ms, t.streamStart, t.streamEnd - tailMs);
@@ -380,7 +381,7 @@ export const pourFrame = (plan: PourPlan, ms: number): PourFrame => {
     const tiltIn = easeInOutCubic(progress(ms, t.travelEnd * 0.4, t.streamStart));
     tiltDeg = ms < t.streamStart ? tilt0 * tiltIn : tiltForLevel(sourceLevel, plan.capacity);
   } else {
-    const back = easeInOutCubic(progress(ms, t.pourEnd, t.returnEnd));
+    const back = easeInOutSine(progress(ms, t.pourEnd, t.returnEnd));
     pivotX = lerp(plan.pourX, plan.restX, back);
     pivotY = lerp(plan.pourY, plan.restY, back) - plan.arc * 0.5 * Math.sin(Math.PI * back);
     sourceLevel = plan.sourceAfter;

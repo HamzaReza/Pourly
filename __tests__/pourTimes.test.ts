@@ -3,21 +3,21 @@ import { pourTimes } from '@/render/anim/pour';
 describe('pourTimes', () => {
   it('lays out a plain pour: travel, stream, return; the target is released at stream end', () => {
     const t = pourTimes(2, false, false, 1);
-    expect(t.pourEnd).toBe(460);
-    expect(t.travelEnd).toBe(180);
-    expect(t.streamStart).toBe(220);
-    expect(t.streamEnd).toBe(440);
-    expect(t.returnEnd).toBe(680);
-    expect(t.sourceRelease).toBe(680);
-    expect(t.targetRelease).toBe(440);
-    expect(t.total).toBe(680);
+    expect(t.pourEnd).toBe(950);
+    expect(t.travelEnd).toBe(420);
+    expect(t.streamStart).toBe(470);
+    expect(t.streamEnd).toBe(930);
+    expect(t.returnEnd).toBe(1370);
+    expect(t.sourceRelease).toBe(1370);
+    expect(t.targetRelease).toBe(930);
+    expect(t.total).toBe(1370);
   });
 
   it('keeps the phases ordered for every segment count', () => {
     for (let count = 1; count <= 4; count += 1) {
       const t = pourTimes(count, false, false, 1);
-      expect(t.pourEnd).toBe(280 + 90 * count);
-      expect(t.returnEnd).toBe(t.pourEnd + 220);
+      expect(t.pourEnd).toBe(550 + 200 * count);
+      expect(t.returnEnd).toBe(t.pourEnd + 420);
       expect(t.travelEnd).toBeLessThan(t.streamStart);
       expect(t.streamStart).toBeLessThan(t.streamEnd);
       expect(t.streamEnd).toBeLessThan(t.pourEnd);
