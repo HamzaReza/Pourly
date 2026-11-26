@@ -68,6 +68,7 @@
     "gen:levels": "tsx scripts/generate-levels.ts",
     "gen:sounds": "node scripts/generate-sounds.mjs",
     "gen:assets": "node scripts/generate-assets.mjs",
+    "gen:screenshots": "node scripts/generate-screenshots.mjs",
     "gen:all": "yarn gen:levels && yarn gen:sounds && yarn gen:assets",
     "doctor": "npx expo-doctor",
     "export:android": "expo export --platform android",
