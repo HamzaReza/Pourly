@@ -43,6 +43,8 @@ import {
   applyReviewPrompted,
   applyRewardedShown,
   applySetActiveTheme,
+  applyCompleteReplay,
+  applyUnlockChapter,
   applySkipLevel,
   applySpendCoins,
   applyThemeFallback,
@@ -76,6 +78,10 @@ export interface ProgressActions {
   patch: (changes: ProgressPatch, now?: number) => void;
   /** Stars (best kept), next level, coins, 3★ streak and interstitial counter for a win. */
   completeLevel: (input: CompleteLevelInput, now?: number) => void;
+  /** Opens `chapter` for `cost` coins; false when coins are short or it is already open. */
+  unlockChapter: (chapter: number, cost: number, now?: number) => boolean;
+  /** A replay win: best stars and improvement coins only (`level` is unchanged). */
+  completeReplay: (input: CompleteLevelInput, now?: number) => void;
   /** Completes `level` with 1★ (unless better stars exist) and no coins. */
   skipLevel: (level: number, now?: number) => void;
   /** Returns false (and changes nothing) when the balance is too low. */
@@ -151,6 +157,7 @@ export const applyCloudSave = (
       ...state,
       ...cloud,
       stars: { ...cloud.stars },
+      paidChapters: [...cloud.paidChapters],
       dailyHistory: { ...state.dailyHistory, ...cloud.dailyHistory },
       ownedThemes: [...cloud.ownedThemes],
       processedTransactions: [...cloud.processedTransactions],
@@ -182,6 +189,8 @@ const pickProgress = (state: ProgressStore): ProgressState => {
     touchOpen: _touchOpen,
     patch: _patch,
     completeLevel: _completeLevel,
+    completeReplay: _completeReplay,
+    unlockChapter: _unlockChapter,
     skipLevel: _skipLevel,
     spendCoins: _spendCoins,
     grant: _grant,
@@ -224,6 +233,14 @@ export const useProgressStore = create<ProgressStore>()(
       patch: (changes, now = Date.now()) => set({ ...changes, updatedAt: now }),
       completeLevel: (input, now = Date.now()) =>
         set((state) => applyCompleteLevel(pickProgress(state), input, now)),
+      unlockChapter: (chapter, cost, now = Date.now()) => {
+        const next = applyUnlockChapter(pickProgress(get()), chapter, cost, now);
+        if (next === null) return false;
+        set(next);
+        return true;
+      },
+      completeReplay: (input, now = Date.now()) =>
+        set((state) => applyCompleteReplay(pickProgress(state), input, now)),
       skipLevel: (level, now = Date.now()) =>
         set((state) => applySkipLevel(pickProgress(state), level, now)),
       spendCoins: (amount, now = Date.now()) => {

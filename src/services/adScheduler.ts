@@ -22,7 +22,7 @@ export type InterstitialTrigger = 'next' | 'other';
 
 export interface InterstitialState {
   readonly trigger: InterstitialTrigger;
-  readonly mode: 'level' | 'daily';
+  readonly mode: 'level' | 'daily' | 'replay';
   /** The level just finished (0 when none was). */
   readonly completedLevel: number;
   /** The level was skipped with the SKIP_LEVEL ad (the stuck flow). */

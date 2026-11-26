@@ -43,8 +43,9 @@ describe('snapshot encoding', () => {
     expect(restored.initialBoard).toEqual(session.initialBoard);
     expect(restored).toMatchObject({
       moves: 1,
-      extraTubeUsed: true,
-      paidResourceUsedThisAttempt: true,
+      extraTubesAdded: 1,
+      adTubeUsed: false,
+      paidResourceUsedThisAttempt: false,
       elapsedMs: 3000,
       runningSince: null,
       status: 'playing',

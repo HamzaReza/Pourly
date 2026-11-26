@@ -115,4 +115,25 @@ describe('mock provider and ad service', () => {
     expect(currentToast()?.key).toBe('ads.notReady');
     expect(resumeAll).toHaveBeenCalled();
   });
+
+  it('quietUnavailable skips the generic toast when not ready and when the show fails', async () => {
+    const quiet = { quietUnavailable: true };
+    const failing: AdsProvider = {
+      preload: jest.fn(),
+      isRewardedReady: () => false,
+      showRewarded: () => Promise.reject(new Error('sdk')),
+      showInterstitial: () => Promise.resolve(true),
+    };
+    clearToasts();
+    setAdsProvider(failing);
+    await expect(ads.showRewarded(REWARDED_PLACEMENTS.EXTRA_TUBE, quiet)).resolves.toBe(
+      'unavailable',
+    );
+    expect(currentToast()).toBeNull();
+    setAdsProvider({ ...failing, isRewardedReady: () => true });
+    await expect(ads.showRewarded(REWARDED_PLACEMENTS.EXTRA_TUBE, quiet)).resolves.toBe(
+      'unavailable',
+    );
+    expect(currentToast()).toBeNull();
+  });
 });

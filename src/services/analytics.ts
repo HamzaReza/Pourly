@@ -6,7 +6,7 @@
 import type { RewardedPlacement } from '@/config/ads';
 import { logger } from '@/utils/logger';
 
-export type GameModeParam = 'level' | 'daily';
+export type GameModeParam = 'level' | 'daily' | 'replay';
 
 /** How a power-up was paid for. */
 export type PaymentSource = 'free' | 'inventory' | 'coins' | 'ad';
@@ -31,6 +31,18 @@ export interface AnalyticsEvents {
     skipped: boolean;
   };
   level_stuck: { level: number; moves: number };
+  /** The chapter gate dialog opened (P12.7); `stars` held in the previous chapter. */
+  chapter_gate_shown: { chapter: number; stars: number; target: number };
+  chapter_unlocked: { chapter: number; method: 'stars' | 'coins'; coins: number };
+  /** A completed level opened from the Levels screen; `bestStars` before this play. */
+  replay_started: { level: number; bestStars: number };
+  replay_completed: {
+    level: number;
+    stars: number;
+    previousStars: number;
+    improved: boolean;
+    coins: number;
+  };
   level_restart: { level: number; restarts: number };
   hint_used: { level: number; source: PaymentSource };
   undo_used: { level: number; source: PaymentSource };

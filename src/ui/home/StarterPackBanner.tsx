@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { countdownParts, starterPackRemainingMs } from '@/game/starterPack';
@@ -8,7 +8,17 @@ import { formatNumber } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import { useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
-import { colors, fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import {
+  alphas,
+  colors,
+  fontSizes,
+  fontWeights,
+  radii,
+  spacing,
+  typography,
+  withAlpha,
+} from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 const TICK_MS = 1000;
 
@@ -53,7 +63,9 @@ const StarterPackBannerComponent = ({ ui, onView }: StarterPackBannerProps) => {
       style={[styles.banner, { backgroundColor: ui.surface, borderColor: ui.accent }]}
       testID="starter-pack-banner"
     >
-      <Ionicons name="gift" size={28} color={colors.coin} />
+      <View style={[styles.iconTile, { backgroundColor: withAlpha(ui.text, alphas.subtle) }]}>
+        <Ionicons name="gift" size={20} color={colors.coin} />
+      </View>
       <View
         style={styles.texts}
         accessible
@@ -70,6 +82,7 @@ const StarterPackBannerComponent = ({ ui, onView }: StarterPackBannerProps) => {
       </View>
       <Button
         variant="primary"
+        size="sm"
         label={t('starterPack.view')}
         accessibilityLabel={t('starterPack.viewA11y')}
         onPress={onView}
@@ -87,22 +100,28 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     padding: spacing.md,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
     borderWidth: 1,
+  },
+  iconTile: {
+    width: 40,
+    height: 40,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   texts: {
     flex: 1,
     gap: spacing.xxs,
   },
   title: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   subtitle: {
-    fontSize: fontSizes.caption,
+    ...typography.fine,
   },
   timer: {
-    fontSize: fontSizes.small,
+    fontSize: fontSizes.footnote,
     fontWeight: fontWeights.semibold,
     fontVariant: ['tabular-nums'],
   },

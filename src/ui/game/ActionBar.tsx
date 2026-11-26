@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -10,11 +10,13 @@ import {
   type CostDecision,
 } from '@/game/economy';
 import type { ThemeUi } from '@/render/themes';
-import { isActive, useGameStore } from '@/state/gameStore';
+import { isActive, selectTubeAdUnavailable, useGameStore } from '@/state/gameStore';
 import { useProgressStore } from '@/state/progressStore';
 import { CountBadge } from '@/ui/CountBadge';
+import { surfaceColors } from '@/ui/theme';
 import type { IconName } from '@/ui/IconButton';
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 export interface ActionBarProps {
   ui: ThemeUi;
@@ -34,18 +36,23 @@ interface ActionButtonProps {
   ui: ThemeUi;
 }
 
-/** The badge for a cost decision: free/owned count, coin price, or the rewarded-ad icon. */
-const CostBadge = ({ decision }: { decision: CostDecision | null }) => {
+/**
+ * The badge for a cost decision: free/owned count, coin price, or the rewarded-ad icon. A +Tube
+ * the player cannot afford (`shop`) still shows its coin price.
+ */
+const CostBadge = ({ decision, ui }: { decision: CostDecision | null; ui: ThemeUi }) => {
   if (decision === null) return null;
   switch (decision.kind) {
     case 'free':
-      return <CountBadge count={decision.freeLeft} />;
+      return <CountBadge ui={ui} count={decision.freeLeft} />;
     case 'inventory':
-      return <CountBadge count={decision.owned} />;
+      return <CountBadge ui={ui} count={decision.owned} />;
     case 'coins':
-      return <CountBadge count={decision.cost} coin />;
+    case 'shop':
+      return <CountBadge ui={ui} count={decision.cost} coin />;
+    case 'ad':
     case 'adOrShop':
-      return <CountBadge icon="play" />;
+      return <CountBadge ui={ui} icon="play" />;
     case 'unavailable':
       return null;
   }
@@ -68,11 +75,21 @@ const ActionButtonComponent = ({
     onPress={onPress}
     style={({ pressed }) => [styles.action, pressed && styles.pressed, disabled && styles.disabled]}
   >
-    <View style={[styles.icon, { backgroundColor: ui.surface }]}>
-      <Ionicons name={icon} size={24} color={ui.text} />
-      <CostBadge decision={decision} />
+    <View
+      style={[
+        styles.icon,
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+      ]}
+    >
+      <Ionicons name={icon} size={22} color={ui.text} />
+      <CostBadge decision={decision} ui={ui} />
     </View>
-    <Text numberOfLines={1} style={[styles.label, { color: ui.text }]}>
+    <Text
+      numberOfLines={1}
+      adjustsFontSizeToFit
+      minimumFontScale={0.8}
+      style={[styles.label, { color: ui.textMuted }]}
+    >
       {label}
     </Text>
   </Pressable>
@@ -89,7 +106,10 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
   const live = useGameStore((state) => state.session !== null && isActive(state.session.status));
   const canUndo = useGameStore((state) => (state.session?.history.past.length ?? 0) > 0);
   const undosUsed = useGameStore((state) => state.session?.undosUsed ?? 0);
-  const extraTubeUsed = useGameStore((state) => state.session?.extraTubeUsed ?? false);
+  const tubesAdded = useGameStore((state) => state.session?.extraTubesAdded ?? 0);
+  const adTubeUsed = useGameStore((state) => state.session?.adTubeUsed ?? false);
+  /** The level's free ad could not be shown: the +Tube is offered for coins instead. */
+  const tubeAdUnavailable = useGameStore(selectTubeAdUnavailable);
   const hintShown = useGameStore((state) => state.hint !== null);
   const coins = useProgressStore((state) => state.coins);
   const undos = useProgressStore((state) => state.undos);
@@ -98,7 +118,12 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
 
   const undoCost = resolveUndoCost({ undosUsed, inventory: undos, coins });
   const hintCost = resolveHintCost({ inventory: hints, coins });
-  const tubeCost = resolveExtraTubeCost({ extraTubeUsed, inventory: extraTubes, coins });
+  const tubeCost = resolveExtraTubeCost({
+    tubesAdded,
+    adTubeUsed: adTubeUsed || tubeAdUnavailable,
+    inventory: extraTubes,
+    coins,
+  });
 
   const describe = (decision: CostDecision): string => {
     switch (decision.kind) {
@@ -107,7 +132,9 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
       case 'inventory':
         return t('game.costOwned', { count: decision.owned });
       case 'coins':
+      case 'shop':
         return t('game.costCoins', { count: decision.cost });
+      case 'ad':
       case 'adOrShop':
         return t('game.costAd');
       case 'unavailable':
@@ -120,7 +147,7 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
   return (
     <View style={styles.bar}>
       <ActionButton
-        icon="arrow-undo"
+        icon="arrow-undo-outline"
         label={t('game.undo')}
         accessibilityLabel={a11y(t('game.undo'), undoCost)}
         onPress={onUndo}
@@ -129,7 +156,7 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
         ui={ui}
       />
       <ActionButton
-        icon="bulb"
+        icon="bulb-outline"
         label={t('game.hint')}
         accessibilityLabel={a11y(t('game.hint'), hintCost)}
         onPress={onHint}
@@ -147,11 +174,15 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
         ui={ui}
       />
       <ActionButton
-        icon="add-circle"
+        icon="add-circle-outline"
         label={t('game.addTube')}
-        accessibilityLabel={a11y(t('game.addTube'), tubeCost)}
+        accessibilityLabel={
+          tubeCost.kind === 'unavailable'
+            ? t('game.actionA11y', { action: t('game.addTube'), detail: t('game.costTubeLimit') })
+            : a11y(t('game.addTube'), tubeCost)
+        }
         onPress={onAddTube}
-        disabled={!live || extraTubeUsed}
+        disabled={!live || tubeCost.kind === 'unavailable'}
         decision={tubeCost}
         ui={ui}
       />
@@ -182,7 +213,8 @@ const styles = StyleSheet.create({
   icon: {
     width: 48,
     height: 48,
-    borderRadius: radii.pill,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
     alignItems: 'center',
     justifyContent: 'center',
   },

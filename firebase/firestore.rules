@@ -40,8 +40,13 @@ service cloud.firestore {
       ];
     }
 
+    // Optional fields: newer clients write them, older documents may lack them.
+    function optionalProgressFields() {
+      return ['paidChapters'];
+    }
+
     function isValidProgress(data) {
-      return data.keys().hasOnly(progressFields())
+      return data.keys().hasOnly(progressFields().concat(optionalProgressFields()))
         && data.keys().hasAll(progressFields())
         && data.schemaVersion is int && data.schemaVersion >= 1 && data.schemaVersion <= 1000
         && data.level is int && data.level >= 1 && data.level <= 1000000
@@ -60,6 +65,8 @@ service cloud.firestore {
         && isShortString(data.activeTheme, 32)
         && data.processedTransactions is list && data.processedTransactions.size() <= 200
         && data.starterPackPurchased is bool
+        && (!('paidChapters' in data)
+          || (data.paidChapters is list && data.paidChapters.size() <= 500))
         && data.updatedAt == request.time
         && isShortString(data.lastWriterInstall, 64);
     }

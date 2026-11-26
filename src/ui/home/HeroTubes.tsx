@@ -24,6 +24,7 @@ import type { PourPlan } from '@/render/anim/pour';
 import { buildHeroScene, heroPhase, type HeroScene } from '@/render/hero';
 import type { PourPictureSet } from '@/render/pourPictures';
 import { PourSlot, type PourSlotState } from '@/render/PourLayer';
+import type { CanvasSize } from '@/render/scene';
 import type { Theme } from '@/render/themes';
 
 export interface HeroTubesProps {
@@ -31,6 +32,8 @@ export interface HeroTubesProps {
   colorBlind: boolean;
   /** False while Home is not focused, under reduced motion or in low quality: a still frame. */
   animate: boolean;
+  /** Canvas size; the scene's default (220 × 150) when omitted. */
+  size?: CanvasSize;
 }
 
 interface HeroTubeProps {
@@ -76,8 +79,11 @@ const NO_SPRITE = Skia.XYWHRect(0, 0, 0, 0);
  * pour layer are reused; one UI-thread clock drives everything, so React never re-renders while
  * it plays. The clock stops (holding its frame) whenever `animate` is false.
  */
-const HeroTubesComponent = ({ theme, colorBlind, animate }: HeroTubesProps) => {
-  const scene = useMemo(() => buildHeroScene(Skia, theme, colorBlind), [theme, colorBlind]);
+const HeroTubesComponent = ({ theme, colorBlind, animate, size }: HeroTubesProps) => {
+  const scene = useMemo(
+    () => buildHeroScene(Skia, theme, colorBlind, size),
+    [theme, colorBlind, size],
+  );
   const clock = useSharedValue(0);
   const plan = useSharedValue<PourPlan | null>(null);
   const pictures = useSharedValue<PourPictureSet | null>(null);
@@ -105,7 +111,6 @@ const HeroTubesComponent = ({ theme, colorBlind, animate }: HeroTubesProps) => {
         pictures.set(null);
       }
     },
-    [starts, totals, plans, pourPictures],
   );
 
   useEffect(() => {

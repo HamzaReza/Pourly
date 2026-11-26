@@ -1,5 +1,5 @@
 import { memo, type ReactNode } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { RewardBundle } from '@/config/economy';
@@ -9,7 +9,8 @@ import { Button } from '@/ui/Button';
 import { CoinGlyph } from '@/ui/CoinBadge';
 import { Overlay } from '@/ui/Overlay';
 import { useReducedMotionPref } from '@/ui/theme';
-import { fontSizes, fontWeights, spacing } from '@/ui/tokens';
+import { alphas, fontSizes, fontWeights, radii, spacing, typography, withAlpha } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 export interface RewardOverlayProps {
   ui: ThemeUi;
@@ -41,32 +42,40 @@ const RewardOverlayComponent = ({
   const reducedMotion = useReducedMotionPref();
   const coins = reward.coins ?? 0;
   return (
-    <Overlay title={title} message={message} testID="reward-overlay">
-      {coins > 0 ? (
-        <View
-          accessible
-          accessibilityLabel={t('reward.coins', { count: coins })}
-          style={styles.line}
-        >
-          <CoinGlyph size={24} />
-          <AnimatedCount
-            value={coins}
-            from={0}
-            prefix="+"
-            reducedMotion={reducedMotion}
-            style={[styles.amount, { color: ui.text }]}
-          />
-        </View>
-      ) : null}
-      {ITEM_LINES.map(([field, key]) => {
-        const amount = reward[field] ?? 0;
-        if (amount <= 0) return null;
-        return (
-          <Text key={field} style={[styles.item, { color: ui.text }]}>
-            {t(key, { count: amount })}
-          </Text>
-        );
-      })}
+    <Overlay
+      title={title}
+      message={message}
+      icon="gift-outline"
+      iconTone="gold"
+      testID="reward-overlay"
+    >
+      <View style={[styles.panel, { backgroundColor: withAlpha(ui.text, alphas.subtle) }]}>
+        {coins > 0 ? (
+          <View
+            accessible
+            accessibilityLabel={t('reward.coins', { count: coins })}
+            style={styles.line}
+          >
+            <CoinGlyph size={24} />
+            <AnimatedCount
+              value={coins}
+              from={0}
+              prefix="+"
+              reducedMotion={reducedMotion}
+              style={[styles.amount, { color: ui.text }]}
+            />
+          </View>
+        ) : null}
+        {ITEM_LINES.map(([field, key]) => {
+          const amount = reward[field] ?? 0;
+          if (amount <= 0) return null;
+          return (
+            <Text key={field} style={[styles.item, { color: ui.text }]}>
+              {t(key, { count: amount })}
+            </Text>
+          );
+        })}
+      </View>
       {children}
       <Button variant="primary" label={t('common.continue')} onPress={onContinue} ui={ui} />
     </Overlay>
@@ -82,14 +91,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.sm,
   },
+  panel: {
+    borderRadius: radii.card,
+    paddingVertical: spacing.md,
+    paddingHorizontal: spacing.lg,
+    gap: spacing.xs,
+  },
   amount: {
     minWidth: 56,
-    fontSize: fontSizes.heading,
-    fontWeight: fontWeights.heavy,
+    ...typography.stat,
   },
   item: {
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.bold,
+    fontSize: fontSizes.body,
+    fontWeight: fontWeights.semibold,
     textAlign: 'center',
   },
 });

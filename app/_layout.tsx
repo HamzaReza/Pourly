@@ -21,6 +21,8 @@ import { waitForStoresHydrated } from '@/state/hydration';
 import { useProgressStore } from '@/state/progressStore';
 import { useSettingsStore } from '@/state/settingsStore';
 import { decideAutoStart } from '@/state/startup';
+import { loadBrandFont } from '@/ui/brandFont';
+import { loadUiFonts, setUiFontLanguage } from '@/ui/fonts';
 import { GrantRewardHost } from '@/ui/GrantRewardHost';
 import { MockAdHost } from '@/ui/MockAdHost';
 import { MockPurchaseHost } from '@/ui/MockPurchaseHost';
@@ -35,9 +37,15 @@ void SplashScreen.preventAutoHideAsync();
 const SPLASH_SAFETY_MS = 1500;
 
 const bootstrap = async (): Promise<void> => {
+  // The wordmark font loads alongside startup so Home never shows the title in the fallback
+  // font; it never rejects and gives up after a short timeout.
+  const brandFont = loadBrandFont();
+  const uiFonts = loadUiFonts();
   await waitForStoresHydrated();
   await initI18n(useSettingsStore.getState().language);
   syncLayoutDirection(i18n.language);
+  setUiFontLanguage(i18n.language);
+  i18n.on('languageChanged', setUiFontLanguage);
   const now = Date.now();
   const progress = useProgressStore.getState();
   progress.touchOpen(now);
@@ -45,6 +53,7 @@ const bootstrap = async (): Promise<void> => {
   useGameStore.getState().discardStale(progress.level, dailyLevelId(localToday(now)));
   decideAutoStart(await readLaunchRoute());
   track('app_open', { session: useProgressStore.getState().sessionCount });
+  await Promise.all([brandFont, uiFonts]);
 };
 
 export default function RootLayout() {

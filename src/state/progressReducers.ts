@@ -50,6 +50,23 @@ export const applyCompleteLevel = (
 });
 
 /**
+ * A replay win (Levels screen): best stars kept and the star-improvement coins granted. `level`,
+ * the 3★ review streak and the daily state are untouched. Like any level win it advances the
+ * interstitial cadence (an interstitial itself only ever follows Next, which replays do not have).
+ */
+export const applyCompleteReplay = (
+  state: ProgressState,
+  { level, stars, coins }: CompleteLevelInput,
+  now: number,
+): ProgressState => ({
+  ...state,
+  stars: { ...state.stars, [level]: bestStars(state.stars[level], stars) },
+  coins: state.coins + wholeNonNegative(coins),
+  ads: { ...state.ads, levelsSinceInterstitial: state.ads.levelsSinceInterstitial + 1 },
+  updatedAt: now,
+});
+
+/**
  * A level skipped with the SKIP_LEVEL ad: completed with 1★ unless better stars exist, no coins.
  * It breaks the 3★ streak and does not count toward the interstitial cadence (stuck flow).
  */
@@ -64,6 +81,28 @@ export const applySkipLevel = (
   review: { ...state.review, threeStarStreak: 0 },
   updatedAt: now,
 });
+
+/**
+ * Opens `chapter` for `cost` coins (P12.7). Null when the balance is too low, the cost is invalid
+ * or the chapter is already paid for.
+ */
+export const applyUnlockChapter = (
+  state: ProgressState,
+  chapter: number,
+  cost: number,
+  now: number,
+): ProgressState | null => {
+  if (!Number.isInteger(chapter) || chapter < 2 || state.paidChapters.includes(chapter)) {
+    return null;
+  }
+  if (!Number.isInteger(cost) || cost < 0 || state.coins < cost) return null;
+  return {
+    ...state,
+    coins: state.coins - cost,
+    paidChapters: [...state.paidChapters, chapter].sort((a, b) => a - b),
+    updatedAt: now,
+  };
+};
 
 /** Spends coins; null when the balance is too low or the amount is invalid. */
 export const applySpendCoins = (

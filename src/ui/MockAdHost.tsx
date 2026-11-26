@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useEffect, useRef, useState, useSyncExternalStore, type ComponentRef } from 'react';
-import { AccessibilityInfo, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/services/ads.mock';
 
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from './tokens';
+import { Text } from '@/ui/Text';
 
 const AD_BACKGROUND = '#111111';
 const AD_TEXT = '#FFFFFF';

@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, { ZoomIn } from 'react-native-reanimated';
 import { useTranslation } from 'react-i18next';
 
@@ -10,10 +10,12 @@ import type { ThemeUi } from '@/render/themes';
 import type { LevelResult } from '@/state/gameStore';
 import { AnimatedCount } from '@/ui/AnimatedCount';
 import { Button } from '@/ui/Button';
+import { Tag } from '@/ui/Tag';
 import { CoinGlyph } from '@/ui/CoinBadge';
 import { Overlay } from '@/ui/Overlay';
 import { useReducedMotionPref } from '@/ui/theme';
-import { colors, fontSizes, fontWeights, spacing } from '@/ui/tokens';
+import { colors, fontSizes, fontWeights, spacing, typography } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 /** First star lands after the card is in; the others follow at this interval. */
 const STAR_DELAY_MS = 220;
@@ -26,6 +28,8 @@ export interface WinOverlayProps {
   onNext: () => void;
   onDouble: () => Promise<boolean>;
   onHome: () => void;
+  /** Replay wins: back to the Levels screen (the primary action instead of Next). */
+  onLevels?: () => void;
 }
 
 /**
@@ -33,13 +37,21 @@ export interface WinOverlayProps {
  * (primary), Double coins ▶ (DOUBLE_COINS rewarded ad) and Home. A daily win shows "Daily
  * complete", the streak flame and Home as the primary action (no Next, so no interstitial).
  */
-const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverlayProps) => {
+const WinOverlayComponent = ({
+  ui,
+  result,
+  onNext,
+  onDouble,
+  onHome,
+  onLevels,
+}: WinOverlayProps) => {
   const { t } = useTranslation();
   const reducedMotion = useReducedMotionPref();
   const [busy, setBusy] = useState(false);
   const coins = result.doubled ? result.coins * 2 : result.coins;
   const canDouble = ECONOMY.doubleCoinsOnWin && !result.doubled && result.coins > 0;
   const daily = result.daily;
+  const replay = result.replay;
 
   const double = (): void => {
     setBusy(true);
@@ -102,7 +114,26 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
       {daily !== undefined && !daily.rewarded ? (
         <Text style={[styles.note, { color: ui.textMuted }]}>{t('win.dailyReplay')}</Text>
       ) : null}
-      {daily === undefined ? (
+      {replay !== undefined && replay.improved ? (
+        <View style={styles.tag}>
+          <Tag ui={ui} tone="gold" icon="trophy" label={t('win.newBest')} testID="win-new-best" />
+        </View>
+      ) : null}
+      {replay !== undefined && !replay.improved ? (
+        <Text style={[styles.note, { color: ui.textMuted }]}>
+          {replay.previousStars === 3 ? t('win.perfectAgain') : t('win.replayNote')}
+        </Text>
+      ) : null}
+      {replay !== undefined ? (
+        <Button
+          variant="primary"
+          label={t('win.levels')}
+          accessibilityLabel={t('win.levelsA11y')}
+          onPress={onLevels ?? onHome}
+          ui={ui}
+          testID="win-levels"
+        />
+      ) : daily === undefined ? (
         <Button
           variant="primary"
           label={t('win.next')}
@@ -122,6 +153,7 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
       )}
       {canDouble ? (
         <Button
+          size="md"
           label={t('win.double')}
           accessibilityLabel={t('win.doubleA11y')}
           onPress={double}
@@ -130,7 +162,9 @@ const WinOverlayComponent = ({ ui, result, onNext, onDouble, onHome }: WinOverla
           ui={ui}
         />
       ) : null}
-      {daily === undefined ? <Button label={t('win.home')} onPress={onHome} ui={ui} /> : null}
+      {daily === undefined ? (
+        <Button variant="ghost" label={t('win.home')} onPress={onHome} ui={ui} />
+      ) : null}
     </Overlay>
   );
 };
@@ -152,15 +186,19 @@ const styles = StyleSheet.create({
   },
   coinText: {
     minWidth: 56,
-    fontSize: fontSizes.heading,
-    fontWeight: fontWeights.heavy,
+    ...typography.stat,
   },
   streakText: {
-    fontSize: fontSizes.title,
+    fontSize: fontSizes.title - 2,
     fontWeight: fontWeights.bold,
   },
+  tag: {
+    alignItems: 'center',
+    marginVertical: spacing.xs,
+  },
   note: {
-    fontSize: fontSizes.body,
-    textAlign: 'center',
+    ...typography.dialogBody,
+    marginTop: spacing.sm,
+    marginBottom: spacing.lg,
   },
 });

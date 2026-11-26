@@ -1,5 +1,5 @@
 import { memo, useEffect } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -9,20 +9,42 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
-import { fontSizes, fontWeights } from '@/ui/tokens';
+import { brandTitleFont } from '@/ui/brandFont';
+import { fontSizes } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 const SWAY_MS = 1600;
+/** Letters at the end of the wordmark drawn in the accent ("Pour" + "ly"). */
+const ACCENT_LETTERS = 2;
 
 export interface AnimatedTitleProps {
   text: string;
   color: string;
+  /** Tints the last letters of the wordmark; the whole title uses `color` when omitted. */
+  accent?: string;
   /** False when Home is not focused or motion is reduced: the title rests. */
   animate: boolean;
+  /** Font size in dp; see `titleSizeFor`. */
+  size?: number;
 }
 
-/** The game title with a gentle bob and tilt on the UI thread. */
-const AnimatedTitleComponent = ({ text, color, animate }: AnimatedTitleProps) => {
+/** Wordmark size for a window width: ~19% of it, clamped to 56–84 dp (≈ 68 dp at 360 dp). */
+export const titleSizeFor = (windowWidth: number): number =>
+  Math.round(Math.min(84, Math.max(56, windowWidth * 0.19)));
+
+/**
+ * The game's wordmark (brand font, falling back to the system font) with a gentle bob and tilt
+ * on the UI thread. Read as one word by screen readers.
+ */
+const AnimatedTitleComponent = ({
+  text,
+  color,
+  accent,
+  animate,
+  size = fontSizes.display + 4,
+}: AnimatedTitleProps) => {
   const phase = useSharedValue(0);
+  const font = brandTitleFont();
 
   useEffect(() => {
     if (!animate) {
@@ -43,10 +65,22 @@ const AnimatedTitleComponent = ({ text, color, animate }: AnimatedTitleProps) =>
     };
   });
 
+  const split = accent !== undefined && text.length > ACCENT_LETTERS + 1;
+  const head = split ? text.slice(0, -ACCENT_LETTERS) : text;
+  const tail = split ? text.slice(-ACCENT_LETTERS) : '';
+
   return (
     <Animated.View style={style}>
-      <Text accessibilityRole="header" style={[styles.title, { color }]}>
-        {text}
+      <Text
+        accessibilityRole="header"
+        accessibilityLabel={text}
+        numberOfLines={1}
+        adjustsFontSizeToFit
+        style={[styles.title, font, { color, fontSize: size, lineHeight: Math.round(size * 1.15) }]}
+        testID="home-title"
+      >
+        {head}
+        {split ? <Text style={{ color: accent }}>{tail}</Text> : null}
       </Text>
     </Animated.View>
   );
@@ -56,8 +90,6 @@ export const AnimatedTitle = memo(AnimatedTitleComponent);
 
 const styles = StyleSheet.create({
   title: {
-    fontSize: fontSizes.display,
-    fontWeight: fontWeights.heavy,
     textAlign: 'center',
   },
 });

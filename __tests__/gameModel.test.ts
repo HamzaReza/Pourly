@@ -68,13 +68,15 @@ describe('session reducers', () => {
     expect(reduceUndo(start, false)).toBeNull();
   });
 
-  it('adds the extra tube once, through all of history, so undo keeps it', () => {
+  it('adds extra tubes up to the level cap, through all of history, so undo keeps them', () => {
     const after = pour(fresh(), 0, 2);
     const added = reduceAddTube(after);
     expect(added?.history.current.tubes).toHaveLength(5);
-    expect(added?.paidResourceUsedThisAttempt).toBe(true);
+    expect(added?.paidResourceUsedThisAttempt).toBe(false);
     expect(reduceUndo(added!, false)?.history.current.tubes).toHaveLength(5);
-    expect(reduceAddTube(added!)).toBeNull();
+    const second = reduceAddTube(added!);
+    expect(second).toMatchObject({ extraTubesAdded: 2 });
+    expect(reduceAddTube(second!)).toBeNull();
   });
 
   it('turns a stuck board live again with the extra tube', () => {
@@ -82,17 +84,17 @@ describe('session reducers', () => {
     expect(reduceAddTube(stuck)?.status).toBe('playing');
   });
 
-  it('restart resets the attempt but keeps hints, restarts and time', () => {
+  it('restart resets the attempt but keeps extra tubes, hints, restarts and time', () => {
     let session = pour(fresh(), 0, 2);
     session = reduceAddTube(session)!;
     session = reduceUndo(session, true)!;
     session = reduceHintUsed(session);
     const restarted = reduceRestart(reducePause(session, T0 + 3000), T0 + 9000)!;
-    expect(restarted.history.current).toBe(session.initialBoard);
+    expect(restarted.history.current.tubes).toEqual([...session.initialBoard.tubes, []]);
     expect(restarted).toMatchObject({
       moves: 0,
       undosUsed: 0,
-      extraTubeUsed: false,
+      extraTubesAdded: 1,
       paidResourceUsedThisAttempt: false,
       hintsUsed: 1,
       restartsThisLevel: 1,
@@ -164,6 +166,7 @@ describe('game store actions', () => {
     expect(store.undo(false)).toBe(false);
     store.commitPour(0, 2, T0);
     expect(store.undo(false)).toBe(true);
+    expect(store.addTube()).toBe(true);
     expect(store.addTube()).toBe(true);
     expect(store.addTube()).toBe(false);
     expect(store.restart(T0)).toBe(true);

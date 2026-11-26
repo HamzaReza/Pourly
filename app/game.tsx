@@ -16,7 +16,7 @@ import { useTranslation } from 'react-i18next';
 
 import type { RewardBundle } from '@/config/economy';
 import { dailyLevelId } from '@/game/daily';
-import type { PowerUp } from '@/game/economy';
+import { resolveExtraTubeCost, type PowerUp } from '@/game/economy';
 import { isTutorialLevel } from '@/game/tutorial';
 import type { Board, Move } from '@/game/types';
 import { BoardView } from '@/render/Board';
@@ -25,6 +25,7 @@ import type { CanvasSize } from '@/render/scene';
 import type { Theme, ThemeUi } from '@/render/themes';
 import { useHintSearch } from '@/render/useHint';
 import { useRenderSettings } from '@/render/useRenderSettings';
+import { formatNumber } from '@/i18n/format';
 import { track } from '@/services/analytics';
 import { play } from '@/services/audio';
 import { hapticError, hapticPourStart, hapticSelect, hapticSuccess } from '@/services/haptics';
@@ -33,10 +34,13 @@ import { currentReviewInput, requestReviewIfDue, reviewVerdict } from '@/service
 import {
   activatePowerUp,
   buyPowerUpWithAd,
+  canUse,
   commitPlayerPour,
+  costOf,
   doubleWinCoins,
   ensureDailySession,
   ensureLevelSession,
+  ensureReplaySession,
   localToday,
   onNextPressed,
   restartLevel,
@@ -51,9 +55,11 @@ import {
   selectBoard,
   selectCanUndo,
   selectStatus,
+  selectTubeAdUnavailable,
   useGameStore,
   type GameMode,
 } from '@/state/gameStore';
+import { currentProgressionGate } from '@/state/chapterFlow';
 import { useProgressStore } from '@/state/progressStore';
 import { ActionBar } from '@/ui/game/ActionBar';
 import { createBoardEvents, type BoardEvents } from '@/ui/game/boardEvents';
@@ -64,10 +70,12 @@ import { PauseOverlay } from '@/ui/game/overlays/PauseOverlay';
 import { RestartConfirmOverlay } from '@/ui/game/overlays/RestartConfirmOverlay';
 import { RewardOverlay } from '@/ui/game/overlays/RewardOverlay';
 import { StuckOverlay } from '@/ui/game/overlays/StuckOverlay';
+import { TubeConfirmOverlay, type TubePayment } from '@/ui/game/overlays/TubeConfirmOverlay';
 import { WinOverlay } from '@/ui/game/overlays/WinOverlay';
+import { ChapterGateOverlay } from '@/ui/game/overlays/ChapterGateOverlay';
 import { TutorialGuide } from '@/ui/game/TutorialGuide';
 import { FpsOverlay } from '@/ui/FpsOverlay';
-import { goHome } from '@/ui/Screen';
+import { goBack, goHome } from '@/ui/Screen';
 import { revealApp } from '@/ui/splash';
 import { useActiveTheme } from '@/ui/theme';
 import { showToast } from '@/ui/Toast';
@@ -80,8 +88,8 @@ const BOTTOM_BAR_HEIGHT = MIN_TOUCH_TARGET + spacing.xxl;
 
 type HintSearch = () => Promise<Move | null>;
 
-/** How the player leaves the Win overlay. */
-type WinExit = 'next' | 'home';
+/** How the player leaves the Win overlay (`levels`: back to the Levels screen after a replay). */
+type WinExit = 'next' | 'home' | 'levels';
 
 /** Overlays opened by the player's actions (the others follow the game status). */
 type ModalState =
@@ -91,8 +99,11 @@ type ModalState =
       readonly cost: number;
       readonly move: Move | null;
       readonly board: Board | null;
+      /** False for the +Tube once the level's ad tube is used: the Shop only. */
+      readonly adOffered: boolean;
     }
   | { readonly kind: 'confirmRestart' }
+  | { readonly kind: 'confirmTube'; readonly payment: TubePayment }
   | { readonly kind: 'reward'; readonly reward: RewardBundle }
   | null;
 
@@ -232,14 +243,27 @@ const BoardLayerComponent = ({
 
 const BoardLayer = memo(BoardLayerComponent);
 
-/** `/game?mode=daily` plays today's daily challenge; anything else plays the player's level. */
-const routeModeOf = (mode: string | string[] | undefined): GameMode =>
-  mode === 'daily' ? 'daily' : 'level';
+/** The completed level `/game?mode=replay&level=N` replays, or null when the param is invalid. */
+const replayLevelOf = (level: string | string[] | undefined): number | null => {
+  const value = typeof level === 'string' ? Number(level) : NaN;
+  return Number.isInteger(value) && value >= 1 ? value : null;
+};
+
+/**
+ * `/game?mode=daily` plays today's daily challenge, `/game?mode=replay&level=N` replays a
+ * completed level; anything else plays the player's level.
+ */
+const routeModeOf = (mode: string | string[] | undefined, replayLevel: number | null): GameMode => {
+  if (mode === 'daily') return 'daily';
+  if (mode === 'replay' && replayLevel !== null) return 'replay';
+  return 'level';
+};
 
 export default function GameScreen() {
   const { t } = useTranslation();
-  const params = useLocalSearchParams<{ mode?: string }>();
-  const [routeMode] = useState(() => routeModeOf(params.mode));
+  const params = useLocalSearchParams<{ mode?: string; level?: string }>();
+  const [replayLevel] = useState(() => replayLevelOf(params.level));
+  const [routeMode] = useState(() => routeModeOf(params.mode, replayLevel));
   const [today] = useState(() => localToday());
   const mounted = useRef(true);
   const theme = useActiveTheme();
@@ -256,9 +280,11 @@ export default function GameScreen() {
   /** The session found at mount; shown only if it is still resumable (else a new one replaces it). */
   const [mountSession] = useState(() => game().session);
   const [mountUsable] = useState(() =>
-    routeMode === 'daily'
-      ? isDailyResumable(mountSession, dailyLevelId(today))
-      : isResumable(mountSession, useProgressStore.getState().level),
+    routeMode === 'replay'
+      ? false
+      : routeMode === 'daily'
+        ? isDailyResumable(mountSession, dailyLevelId(today))
+        : isResumable(mountSession, useProgressStore.getState().level),
   );
 
   const [modal, setModal] = useState<ModalState>(null);
@@ -285,18 +311,47 @@ export default function GameScreen() {
   const status = useGameStore(selectStatus);
   const result = useGameStore((state) => state.session?.result ?? null);
   const canUndo = useGameStore(selectCanUndo);
-  const extraTubeUsed = useGameStore((state) => state.session?.extraTubeUsed ?? true);
+  const tubesAdded = useGameStore((state) => state.session?.extraTubesAdded ?? 0);
+  const adTubeUsed = useGameStore((state) => state.session?.adTubeUsed ?? false);
+  const tubeAdUnavailable = useGameStore(selectTubeAdUnavailable);
   const coins = useProgressStore((state) => state.coins);
+  const extraTubes = useProgressStore((state) => state.extraTubes);
+  const tubeCost = useMemo(
+    () =>
+      resolveExtraTubeCost({
+        tubesAdded,
+        adTubeUsed: adTubeUsed || tubeAdUnavailable,
+        inventory: extraTubes,
+        coins,
+      }),
+    [tubesAdded, adTubeUsed, tubeAdUnavailable, extraTubes, coins],
+  );
   const tutorialDone = useProgressStore((state) => state.tutorialDone);
+
+  /** The locked chapter whose gate is open (P12.7), or null. */
+  const [gateChapter, setGateChapter] = useState<number | null>(() =>
+    routeMode === 'level' ? (currentProgressionGate()?.chapter ?? null) : null,
+  );
+  /** Gated at mount: no level session starts until the chapter opens. */
+  const [gatedAtMount] = useState(() => gateChapter !== null);
 
   useLayoutEffect(() => {
     mounted.current = true;
     if (routeMode === 'daily') ensureDailySession(today, Date.now(), () => mounted.current);
-    else ensureLevelSession();
+    else if (routeMode === 'replay' && replayLevel !== null) {
+      ensureReplaySession(replayLevel, Date.now(), () => mounted.current);
+    } else {
+      // A locked chapter refuses every route into its levels: the gate shows instead.
+      if (!gatedAtMount) ensureLevelSession();
+    }
     return () => {
       mounted.current = false;
+      // Leaving a replay discards it and brings the player's real slots back.
+      if (routeMode === 'replay') game().exitReplay();
+      // The +Tube's switch to coins after a failed ad lasts only while the player stays here.
+      game().clearTubeAdUnavailable();
     };
-  }, [routeMode, today]);
+  }, [routeMode, today, replayLevel, gatedAtMount]);
 
   useEffect(
     () =>
@@ -345,19 +400,69 @@ export default function GameScreen() {
     }
   }, []);
 
+  /**
+   * Pays for `powerUp` with a rewarded ad; an earned unit that no longer applies is banked. When
+   * the +Tube ad cannot be shown, a single toast says so and the +Tube controls switch to coins
+   * (the flow marks it; the level's ad tube stays unused).
+   */
+  const runAd = useCallback(
+    (powerUp: PowerUp, move: Move | null, board: Board | null) => {
+      void withAd(() => buyPowerUpWithAd(powerUp, move, board)).then((outcome) => {
+        if (outcome.kind === 'applied') {
+          setModal(null);
+          play('tap');
+        } else if (outcome.kind === 'granted') {
+          setModal({ kind: 'reward', reward: outcome.reward });
+        } else if (outcome.kind === 'adUnavailable' && powerUp === 'extraTube') {
+          showToast('game.tubeAdUnavailable');
+        }
+      });
+    },
+    [withAd],
+  );
+
   const handleResult = useCallback(
     (outcome: PowerUpResult, move: Move | null = null, board: Board | null = null) => {
-      if (outcome.kind === 'needsPayment') {
-        setModal({ kind: 'notEnough', powerUp: outcome.powerUp, cost: outcome.cost, move, board });
+      if (outcome.kind === 'needsPayment' || outcome.kind === 'needsShop') {
+        setModal({
+          kind: 'notEnough',
+          powerUp: outcome.powerUp,
+          cost: outcome.cost,
+          move,
+          board,
+          adOffered: outcome.kind === 'needsPayment',
+        });
+      } else if (outcome.kind === 'needsAd') {
+        runAd(outcome.powerUp, move, board);
       } else if (outcome.kind === 'applied') {
         play('tap');
       }
     },
-    [],
+    [runAd],
   );
 
   const onUndo = useCallback(() => handleResult(activatePowerUp('undo')), [handleResult]);
-  const onAddTube = useCallback(() => handleResult(activatePowerUp('extraTube')), [handleResult]);
+
+  /**
+   * +Tube: an inventory +Tube or coins are spent only after a confirmation; the level's ad tube
+   * plays the ad straight away; no coins and no ad left opens the Shop prompt.
+   */
+  const onAddTube = useCallback(() => {
+    if (!canUse('extraTube')) return;
+    const decision = costOf('extraTube');
+    if (decision.kind === 'inventory') {
+      setModal({ kind: 'confirmTube', payment: { kind: 'inventory', owned: decision.owned } });
+    } else if (decision.kind === 'coins') {
+      setModal({ kind: 'confirmTube', payment: { kind: 'coins', cost: decision.cost } });
+    } else {
+      handleResult(activatePowerUp('extraTube'));
+    }
+  }, [handleResult]);
+
+  const confirmTube = useCallback(() => {
+    setModal(null);
+    handleResult(activatePowerUp('extraTube'));
+  }, [handleResult]);
 
   const onHint = useCallback(() => {
     const search = searchRef.current;
@@ -392,12 +497,8 @@ export default function GameScreen() {
 
   const onWatchAd = useCallback(() => {
     if (modal === null || modal.kind !== 'notEnough') return;
-    const { powerUp, move, board } = modal;
-    void withAd(() => buyPowerUpWithAd(powerUp, move, board)).then((outcome) => {
-      if (outcome.kind === 'applied') setModal(null);
-      else if (outcome.kind === 'granted') setModal({ kind: 'reward', reward: outcome.reward });
-    });
-  }, [modal, withAd]);
+    runAd(modal.powerUp, modal.move, modal.board);
+  }, [modal, runAd]);
 
   const onShop = useCallback(() => {
     setModal(null);
@@ -415,12 +516,51 @@ export default function GameScreen() {
 
   const onNext = useCallback(() => {
     setModal(null);
+    // The next level is in a locked chapter: the gate replaces Next (P12.7).
+    const gate = currentProgressionGate();
+    if (gate !== null) {
+      setGateChapter(gate.chapter);
+      return;
+    }
     void onNextPressed();
   }, []);
+
+  /** Leaving the gate without unlocking: back to the Win card, or Home when nothing is open. */
+  const closeGate = useCallback(() => {
+    setGateChapter(null);
+    if (game().session?.mode !== 'level' || game().session?.status !== 'won') goHome();
+  }, []);
+
+  /** Unlocked: continue into the chapter (Next after a win, or the level this route asked for). */
+  const gateUnlocked = useCallback(() => {
+    setGateChapter(null);
+    const session = game().session;
+    if (session?.mode === 'level' && session.status === 'won') void onNextPressed();
+    else ensureLevelSession();
+  }, []);
+
+  const gateReplay = useCallback((chapter: number) => {
+    setGateChapter(null);
+    router.replace({ pathname: '/levels', params: { chapter: String(chapter) } });
+  }, []);
+
+  const gateShop = useCallback(() => {
+    track('shop_opened', { from: 'chapter_gate' });
+    router.push('/shop');
+  }, []);
+
+  // A win whose stars opened the next chapter says so once.
+  const chapterUnlocked = result?.chapterUnlocked;
+  useEffect(() => {
+    if (chapterUnlocked !== undefined) {
+      showToast('chapters.unlocked', { n: formatNumber(chapterUnlocked) });
+    }
+  }, [chapterUnlocked, levelId]);
 
   const exitWin = useCallback(
     (exit: WinExit) => {
       if (exit === 'next') onNext();
+      else if (exit === 'levels') goBack();
       else goHome();
     },
     [onNext],
@@ -453,6 +593,7 @@ export default function GameScreen() {
   );
 
   const onWinNext = useCallback(() => leaveWin('next'), [leaveWin]);
+  const onWinLevels = useCallback(() => leaveWin('levels'), [leaveWin]);
   const onWinHome = useCallback(() => leaveWin('home'), [leaveWin]);
 
   const answerPrompt = useCallback(
@@ -495,7 +636,8 @@ export default function GameScreen() {
   useEffect(() => {
     backAction.current = () => {
       if (reviewing.current) return;
-      if (modal !== null) setModal(null);
+      if (gateChapter !== null) closeGate();
+      else if (modal !== null) setModal(null);
       else if (showPrompt) onPromptNotNow();
       else if (showPause) game().resume();
       else if (showStuck) setStuckVisible(false);
@@ -505,6 +647,8 @@ export default function GameScreen() {
       else game().pause();
     };
   }, [
+    gateChapter,
+    closeGate,
     modal,
     showPrompt,
     onPromptNotNow,
@@ -541,7 +685,13 @@ export default function GameScreen() {
   const tutorialLevel =
     mode === 'level' && isTutorialLevel(levelNumber, tutorialDone) ? levelNumber : null;
   const overlayOpen =
-    modal !== null || showPause || showStuck || showWin || showSkipped || showPrompt;
+    modal !== null ||
+    showPause ||
+    showStuck ||
+    showWin ||
+    showSkipped ||
+    showPrompt ||
+    gateChapter !== null;
   const live = status !== null && isActive(status);
 
   return (
@@ -603,13 +753,14 @@ export default function GameScreen() {
           <FpsOverlay />
         </View>
       ) : null}
-      {showWin && result !== null ? (
+      {showWin && result !== null && gateChapter === null ? (
         <WinOverlay
           ui={ui}
           result={result}
           onNext={onWinNext}
           onDouble={onDouble}
           onHome={onWinHome}
+          onLevels={onWinLevels}
         />
       ) : null}
       {showPrompt ? (
@@ -633,7 +784,7 @@ export default function GameScreen() {
         <StuckOverlay
           ui={ui}
           canUndo={canUndo}
-          canAddTube={!extraTubeUsed}
+          tubeCost={tubeCost}
           busy={busy}
           onUndo={onUndo}
           onAddTube={onAddTube}
@@ -652,13 +803,31 @@ export default function GameScreen() {
           cost={modal.cost}
           coins={coins}
           busy={busy}
-          onWatchAd={onWatchAd}
+          onWatchAd={modal.adOffered ? onWatchAd : undefined}
           onShop={onShop}
           onClose={closeModal}
         />
       ) : null}
+      {modal?.kind === 'confirmTube' ? (
+        <TubeConfirmOverlay
+          ui={ui}
+          payment={modal.payment}
+          onConfirm={confirmTube}
+          onCancel={closeModal}
+        />
+      ) : null}
       {modal?.kind === 'confirmRestart' ? (
         <RestartConfirmOverlay ui={ui} onConfirm={confirmRestart} onCancel={closeModal} />
+      ) : null}
+      {gateChapter !== null ? (
+        <ChapterGateOverlay
+          ui={ui}
+          chapter={gateChapter}
+          onReplay={gateReplay}
+          onUnlocked={gateUnlocked}
+          onClose={closeGate}
+          onShop={gateShop}
+        />
       ) : null}
       {modal?.kind === 'reward' ? (
         <RewardOverlay

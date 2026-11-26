@@ -18,11 +18,12 @@
   "home": {
     "play": "Nível {{n}}",
     "playA11y": "Jogar o nível {{n}}",
-    "resume": "Retomar nível {{n}}",
+    "continue": "Continuar nível {{n}}",
     "resumeA11y": "Retomar o nível {{n}} de onde você parou",
     "shop": "Loja",
     "themes": "Temas",
     "settings": "Ajustes",
+    "levels": "Níveis",
     "playHardA11y": "Jogar o nível {{n}}, nível difícil",
     "signInCard": {
       "title": "Entre para salvar seu progresso",
@@ -91,7 +92,10 @@
     "costAd": "assistir a um anúncio",
     "costUsed": "já usado",
     "dailyTitle": "Diário · {{date}}",
-    "dailyTitleA11y": "Desafio diário, {{date}}"
+    "dailyTitleA11y": "Desafio diário, {{date}}",
+    "costTubeLimit": "limite atingido neste nível",
+    "tubeAdUnavailable": "Nenhum anúncio disponível agora. Você pode pegar o tubo com moedas.",
+    "replayTitle": "Rejogar · Nível {{n}}"
   },
   "coins": {
     "badgeA11y_many": "{{count}} moedas. Abrir a loja",
@@ -129,14 +133,27 @@
     "streak_one": "Sequência de {{value}} dia",
     "streak_many": "Sequência de {{value}} de dias",
     "streak_other": "Sequência de {{value}} dias",
-    "dailyReplay": "Você já concluiu hoje. Jogar de novo é só por diversão."
+    "dailyReplay": "Você já concluiu hoje. Jogar de novo é só por diversão.",
+    "levels": "Níveis",
+    "levelsA11y": "Voltar à lista de níveis",
+    "newBest": "Novo recorde!",
+    "replayNote": "Supere suas estrelas para ganhar moedas.",
+    "perfectAgain": "Perfeito de novo! Você já tem todas as estrelas."
   },
   "stuck": {
     "title": "Sem jogadas",
     "message": "Desfaça uma jogada, adicione um tubo, reinicie ou pule este nível.",
     "messageNoSkip": "Desfaça uma jogada, adicione um tubo ou reinicie.",
     "undo": "Desfazer",
-    "addTube": "+Tubo",
+    "tubeUse_one": "Usar +Tubo (resta {{count}})",
+    "tubeUse_many": "Usar +Tubo (restam {{count}})",
+    "tubeUse_other": "Usar +Tubo (restam {{count}})",
+    "tubeAd": "Ver anúncio: +1 tubo",
+    "tubeAdA11y": "Assista a um anúncio para adicionar um tubo vazio",
+    "tubeCoins_one": "+1 tubo · {{count}} moeda",
+    "tubeCoins_many": "+1 tubo · {{count}} moedas",
+    "tubeCoins_other": "+1 tubo · {{count}} moedas",
+    "tubeLimit": "Limite de tubos atingido neste nível",
     "restart": "Reiniciar",
     "skip": "Pular nível",
     "skipA11y": "Pule este nível assistindo a um anúncio",
@@ -144,7 +161,9 @@
   },
   "notEnough": {
     "title": "Moedas insuficientes",
-    "message": "{{item}} custa {{cost}} moedas. Você tem {{coins}}.",
+    "message_one": "{{item}} custa {{value}} moeda. Você tem {{balance}}.",
+    "message_many": "{{item}} custa {{value}} de moedas. Você tem {{balance}}.",
+    "message_other": "{{item}} custa {{value}} moedas. Você tem {{balance}}.",
     "watchAd": "Ver anúncio",
     "watchAdA11y": "Assista a um anúncio para ganhar {{item}}",
     "shop": "Loja"
@@ -154,6 +173,18 @@
     "message": "Você usou um item pago nesta tentativa. Ao reiniciar, ele será perdido.",
     "confirm": "Reiniciar mesmo assim",
     "cancel": "Continuar jogando"
+  },
+  "tubeConfirm": {
+    "useTitle": "Usar 1 +Tubo?",
+    "useMessage_one": "Você tem {{count}} +Tubo. O tubo vazio fica neste nível, mesmo se você reiniciar.",
+    "useMessage_many": "Você tem {{count}} +Tubos. O tubo vazio fica neste nível, mesmo se você reiniciar.",
+    "useMessage_other": "Você tem {{count}} +Tubos. O tubo vazio fica neste nível, mesmo se você reiniciar.",
+    "useConfirm": "Adicionar tubo",
+    "buyTitle_one": "Gastar {{count}} moeda por +1 tubo?",
+    "buyTitle_many": "Gastar {{count}} moedas por +1 tubo?",
+    "buyTitle_other": "Gastar {{count}} moedas por +1 tubo?",
+    "buyMessage": "O tubo vazio fica neste nível, mesmo se você reiniciar.",
+    "buyConfirm": "Comprar tubo"
   },
   "reward": {
     "title": "Recompensa",
@@ -245,6 +276,7 @@
     "freeCoins": {
       "title": "Moedas grátis",
       "button": "Moedas grátis",
+      "watch": "Assistir",
       "a11y_one": "Assista a um anúncio e ganhe {{value}} moeda grátis",
       "a11y_many": "Assista a um anúncio e ganhe {{value}} de moedas grátis",
       "a11y_other": "Assista a um anúncio e ganhe {{value}} moedas grátis",
@@ -309,7 +341,11 @@
     "thanksMessage": "Sua compra foi adicionada.",
     "alreadyOwnedTitle": "Já comprado",
     "alreadyOwnedMessage": "Esta conta do Google Play já tem este item. Restaure suas compras para recuperá-lo.",
-    "restoreAction": "Restaurar compras"
+    "restoreAction": "Restaurar compras",
+    "tags": {
+      "popular": "Popular",
+      "bestValue": "Melhor oferta"
+    }
   },
   "themes": {
     "title": "Temas",
@@ -490,5 +526,44 @@
     "comeback3Body": "Volte quando quiser: o nível {{n}} está pronto para você.",
     "comeback4Title": "Uma última partida?",
     "comeback4Body": "Este é nosso último lembrete. O nível {{n}} está salvo e esperando quando você quiser."
+  },
+  "levels": {
+    "title": "Níveis",
+    "starsA11y": "Estrelas conquistadas: {{value}} de {{max}}",
+    "cellA11y": "Nível {{n}}: {{stars}} de 3 estrelas. Jogar de novo",
+    "currentA11y": "Nível {{n}}: ainda não concluído. Jogar",
+    "hardA11y": "nível difícil",
+    "lockedA11y": "Nível {{n}}, bloqueado",
+    "chapter": "Níveis {{from}}–{{to}}",
+    "chapterA11y": "Níveis {{from}} a {{to}}: {{done}} de {{total}} concluídos, {{stars}} de {{maxStars}} estrelas",
+    "completed_one": "{{value}} nível concluído",
+    "completed_many": "{{value}} de níveis concluídos",
+    "completed_other": "{{value}} níveis concluídos"
+  },
+  "chapters": {
+    "gateTitle": "O capítulo {{n}} está bloqueado",
+    "gateMessage": "Junte {{target}}★ no capítulo {{prev}} para desbloqueá-lo.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} de {{target}} estrelas no capítulo {{prev}}",
+    "replay": "Rejogar níveis",
+    "unlockCoins_one": "Desbloquear por {{value}} moeda",
+    "unlockCoins_many": "Desbloquear por {{value}} de moedas",
+    "unlockCoins_other": "Desbloquear por {{value}} moedas",
+    "confirmTitle_one": "Gastar {{value}} moeda para desbloquear o capítulo {{n}}?",
+    "confirmTitle_many": "Gastar {{value}} de moedas para desbloquear o capítulo {{n}}?",
+    "confirmTitle_other": "Gastar {{value}} moedas para desbloquear o capítulo {{n}}?",
+    "confirmMessage": "Você também pode desbloqueá-lo de graça juntando estrelas.",
+    "confirm": "Desbloquear",
+    "unlocked": "Capítulo {{n}} desbloqueado!",
+    "homeCta": "Desbloquear capítulo {{n}}",
+    "homeCtaA11y": "O capítulo {{n}} está bloqueado. Ver como desbloquear",
+    "headerLocked": "{{stars}} / {{target}} ★ no capítulo {{prev}} para desbloquear",
+    "headerLockedA11y": "O capítulo {{n}} está bloqueado: {{stars}} de {{target}} estrelas no capítulo {{prev}}. Ver como desbloquear",
+    "item": "Desbloquear o capítulo {{n}}",
+    "locked": "Bloqueado",
+    "headerToUnlock": "{{stars}}/{{target}}★ para desbloquear",
+    "balance_one": "Você tem {{value}} moeda",
+    "balance_many": "Você tem {{value}} de moedas",
+    "balance_other": "Você tem {{value}} moedas"
   }
 }

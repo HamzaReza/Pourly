@@ -70,7 +70,7 @@ describe('Themes screen', () => {
     await render(<ThemesScreen />);
     await fireEvent.press(screen.getByLabelText('Unlock the Neon theme for 1,000 coins'));
     expect(screen.getByText('Not enough coins')).toBeTruthy();
-    expect(screen.getByText('The Neon theme costs 1000 coins. You have 100.')).toBeTruthy();
+    expect(screen.getByText('The Neon theme costs 1,000 coins. You have 100.')).toBeTruthy();
     expect(screen.queryByText('Watch ad')).toBeNull();
     await fireEvent.press(screen.getByText('Shop'));
     expect(router.push).toHaveBeenCalledWith('/shop');

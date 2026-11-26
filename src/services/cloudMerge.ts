@@ -10,6 +10,7 @@
  * | ----------------------------- | ----------------------------------------------------------- |
  * | level                         | highest                                                     |
  * | stars                         | per level, the most stars                                   |
+ * | paidChapters                  | union (chapters bought with coins, P12.7)                   |
  * | coins, hints, undos, tubes    | remote + (local − baseline), floored at 0; no baseline: max |
  * | streak, bestStreak            | max (bestStreak ≥ streak)                                   |
  * | lastDailyDate                 | the later date                                              |
@@ -38,10 +39,14 @@ export const CLOUD_SCHEMA_VERSION = 1;
 export const MAX_CLOUD_DAILY_HISTORY = 120;
 /** Owned themes kept in the cloud (Firestore rules allow 50). */
 export const MAX_CLOUD_THEMES = 50;
+/** Paid chapters kept in the cloud (Firestore rules allow 500). */
+export const MAX_CLOUD_CHAPTERS = 500;
 
 export interface CloudProgress {
   level: number;
   stars: Record<number, StarCount>;
+  /** Chapters opened with coins (P12.7). Optional in the document (older writers omit it). */
+  paidChapters: number[];
   coins: number;
   hints: number;
   undos: number;
@@ -80,6 +85,7 @@ const capDailyHistory = (
 export const pickCloudProgress = (state: ProgressState): CloudProgress => ({
   level: state.level,
   stars: { ...state.stars },
+  paidChapters: [...state.paidChapters],
   coins: state.coins,
   hints: state.hints,
   undos: state.undos,
@@ -110,6 +116,7 @@ export const cloudFingerprint = (progress: CloudProgress): string => {
   return JSON.stringify([
     progress.level,
     sortedRecord(progress.stars),
+    progress.paidChapters,
     BALANCE_KEYS.map((key) => progress[key]),
     progress.streak,
     progress.bestStreak,
@@ -148,6 +155,16 @@ const strings = (value: unknown, max: number): string[] => {
   return out.slice(-max);
 };
 
+/** Chapters 2 and up, unique, ascending, at most `MAX_CLOUD_CHAPTERS`. */
+const chapters = (value: unknown): number[] => {
+  if (!Array.isArray(value)) return [];
+  const out = new Set<number>();
+  for (const item of value) {
+    if (typeof item === 'number' && Number.isInteger(item) && item >= 2) out.add(item);
+  }
+  return [...out].sort((a, b) => a - b).slice(0, MAX_CLOUD_CHAPTERS);
+};
+
 const isStarCount = (value: unknown): value is StarCount =>
   value === 1 || value === 2 || value === 3;
 
@@ -182,6 +199,7 @@ export const parseCloudSnapshot = (data: unknown): CloudProgress | null => {
   return {
     level: level >= 1 ? level : 1,
     stars,
+    paidChapters: chapters(data.paidChapters),
     coins: count(data.coins),
     hints: count(data.hints),
     undos: count(data.undos),
@@ -270,6 +288,11 @@ export const mergeProgress = (
     stars[levelNumber] = other === undefined || value > other ? value : other;
   }
 
+  const paidChapters = [...new Set([...local.paidChapters, ...remote.paidChapters])]
+    .sort((a, b) => a - b)
+    .slice(0, MAX_CLOUD_CHAPTERS);
+  note('paidChapters', paidChapters, local.paidChapters, remote.paidChapters);
+
   const mergeBalance = (key: (typeof BALANCE_KEYS)[number]): number => {
     const merged =
       lastSyncedBalances === null
@@ -319,6 +342,7 @@ export const mergeProgress = (
   const progress: CloudProgress = {
     level,
     stars,
+    paidChapters,
     ...balances,
     streak,
     bestStreak,

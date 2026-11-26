@@ -68,22 +68,30 @@ describe('stuck overlay', () => {
       onSkip: jest.fn(),
       onClose: jest.fn(),
     };
-    await render(<StuckOverlay ui={ui} canUndo canAddTube busy={false} {...handlers} />);
+    await render(
+      <StuckOverlay
+        ui={ui}
+        canUndo
+        tubeCost={{ kind: 'inventory', item: 'extraTubes', owned: 2 }}
+        busy={false}
+        {...handlers}
+      />,
+    );
     expect(screen.getByText('No moves left')).toBeTruthy();
     await fireEvent.press(screen.getByText('Undo'));
-    await fireEvent.press(screen.getByText('+Tube'));
+    await fireEvent.press(screen.getByText('Use +Tube (2 left)'));
     await fireEvent.press(screen.getByText('Restart'));
     await fireEvent.press(screen.getByLabelText('Skip this level by watching an ad'));
     await fireEvent.press(screen.getByText('Keep looking'));
     for (const fn of Object.values(handlers)) expect(fn).toHaveBeenCalledTimes(1);
   });
 
-  it('hides undo and +tube when they cannot be used', async () => {
+  it('hides undo and disables +tube at the level cap', async () => {
     await render(
       <StuckOverlay
         ui={ui}
         canUndo={false}
-        canAddTube={false}
+        tubeCost={{ kind: 'unavailable' }}
         busy
         onUndo={jest.fn()}
         onAddTube={jest.fn()}
@@ -93,7 +101,7 @@ describe('stuck overlay', () => {
       />,
     );
     expect(screen.queryByText('Undo')).toBeNull();
-    expect(screen.queryByText('+Tube')).toBeNull();
+    expect(screen.getByText('Tube limit reached for this level')).toBeDisabled();
     expect(screen.getByLabelText('Skip this level by watching an ad')).toBeDisabled();
   });
 });

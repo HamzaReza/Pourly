@@ -9,9 +9,11 @@ import { REWARDED_PLACEMENTS, type RewardedPlacement } from '@/config/ads';
 import type { RewardBundle } from '@/config/economy';
 import {
   canSkip,
+  extraTubesLeft,
   resolveExtraTubeCost,
   resolveHintCost,
   resolveUndoCost,
+  replayReward,
   winReward,
   type CostDecision,
   type PowerUp,
@@ -26,6 +28,7 @@ import { shouldShowInterstitial, type InterstitialState } from '@/services/adSch
 import { track, type PaymentSource } from '@/services/analytics';
 import { localDateString } from '@/utils/date';
 
+import { chapterOpenedByStars, currentProgressionGate, nextChapterOpen } from './chapterFlow';
 import { prepareDaily, readyDaily } from './dailyLoader';
 import {
   elapsedOf,
@@ -33,10 +36,12 @@ import {
   isActive,
   isDailyResumable,
   isResumable,
+  selectTubeAdUnavailable,
   useGameStore,
   type DailyWinInfo,
   type GameMode,
   type GameSession,
+  type ReplayWinInfo,
 } from './gameStore';
 import { levelNow, prepareLevel, readyLevel } from './levelLoader';
 import type { StarCount } from './progressModel';
@@ -77,6 +82,9 @@ export const startLevel = (level: Level, mode: GameMode, now: number = Date.now(
  * that settles once an ungenerated level (> 300) is ready.
  */
 export const ensureLevelSession = (now: number = Date.now()): Promise<void> | null => {
+  // A locked chapter blocks progression on every route (Home, deep link, resume): the screen
+  // shows the gate instead (P12.7).
+  if (currentProgressionGate() !== null) return null;
   const target = progress().level;
   game().switchTo('level', now);
   if (isResumable(game().session, target)) {
@@ -93,6 +101,37 @@ export const ensureLevelSession = (now: number = Date.now()): Promise<void> | nu
     if (progress().level === target && !isResumable(game().session, target)) {
       startLevel(level, 'level', Date.now());
     }
+  });
+};
+
+/** Starts a replay of the completed `level` and reports `level_start` and `replay_started`. */
+const startReplay = (level: Level, now: number): void => {
+  const number = level.config.level;
+  startLevel(level, 'replay', now);
+  track('replay_started', { level: number, bestStars: progress().stars[number] ?? 0 });
+};
+
+/**
+ * Starts a fresh replay of `levelNumber` (a level below the player's current one). The player's
+ * real slots are stashed untouched until the replay ends (`exitReplay`). Returns null when it
+ * started synchronously, else a promise that settles once the level is ready; `isWanted` drops a
+ * late result (the player left first). Levels not yet reached are refused (returns null).
+ */
+export const ensureReplaySession = (
+  levelNumber: number,
+  now: number = Date.now(),
+  isWanted: () => boolean = () => true,
+): Promise<void> | null => {
+  if (!Number.isInteger(levelNumber) || levelNumber < 1 || levelNumber >= progress().level) {
+    return null;
+  }
+  const ready = readyLevel(levelNumber);
+  if (ready !== null) {
+    startReplay(ready, now);
+    return null;
+  }
+  return prepareLevel(levelNumber).then((level) => {
+    if (isWanted()) startReplay(level, Date.now());
   });
 };
 
@@ -158,9 +197,29 @@ const finishDaily = (
 const finishWin = (session: GameSession, now: number): void => {
   const stars = computeStars(session.moves, session.par);
   const owner = progress();
+  const gated = session.mode !== 'daily';
+  const nextOpenBefore = gated ? nextChapterOpen(session.levelNumber) : true;
   let coins = 0;
   let daily: DailyWinInfo | undefined;
-  if (session.mode === 'level') {
+  let replay: ReplayWinInfo | undefined;
+  if (session.mode === 'replay') {
+    const previousStars = owner.stars[session.levelNumber] ?? null;
+    coins = replayReward({
+      previousStars,
+      stars,
+      hard: session.hard,
+      isVip: owner.entitlements.vip,
+    });
+    owner.completeReplay({ level: session.levelNumber, stars, coins }, now);
+    replay = { previousStars, improved: previousStars === null || stars > previousStars };
+    track('replay_completed', {
+      level: session.levelNumber,
+      stars,
+      previousStars: previousStars ?? 0,
+      improved: replay.improved,
+      coins,
+    });
+  } else if (session.mode === 'level') {
     coins = winReward({ stars, hard: session.hard, isVip: owner.entitlements.vip, doubled: false });
     owner.completeLevel({ level: session.levelNumber, stars, coins }, now);
     if (session.levelNumber >= TUTORIAL_LAST_LEVEL) owner.markTutorialDone(now);
@@ -168,12 +227,15 @@ const finishWin = (session: GameSession, now: number): void => {
   } else {
     ({ coins, daily } = finishDaily(session, stars, now));
   }
+  const chapterUnlocked = gated ? chapterOpenedByStars(session.levelNumber, nextOpenBefore) : null;
   game().markWon({
     stars,
     coins,
     skipped: false,
     doubled: false,
     ...(daily === undefined ? {} : { daily }),
+    ...(replay === undefined ? {} : { replay }),
+    ...(chapterUnlocked === null ? {} : { chapterUnlocked }),
   });
   track('level_complete', {
     level: session.levelNumber,
@@ -214,7 +276,10 @@ export const commitPlayerPour = (
 // Power-ups
 // ---------------------------------------------------------------------------------------------
 
-/** How `powerUp` would be paid right now. */
+/**
+ * How `powerUp` would be paid right now. After the level's free +Tube ad could not be shown, the
+ * +Tube is priced as if the ad were used (coins, then Shop) without marking it used.
+ */
 export const costOf = (powerUp: PowerUp): CostDecision => {
   const session = game().session;
   const owner = progress();
@@ -229,7 +294,8 @@ export const costOf = (powerUp: PowerUp): CostDecision => {
       return resolveHintCost({ inventory: owner.hints, coins: owner.coins });
     case 'extraTube':
       return resolveExtraTubeCost({
-        extraTubeUsed: session?.extraTubeUsed ?? false,
+        tubesAdded: session?.extraTubesAdded ?? 0,
+        adTubeUsed: (session?.adTubeUsed ?? false) || selectTubeAdUnavailable(game()),
         inventory: owner.extraTubes,
         coins: owner.coins,
       });
@@ -246,7 +312,7 @@ export const canUse = (powerUp: PowerUp): boolean => {
     case 'hint':
       return true;
     case 'extraTube':
-      return !session.extraTubeUsed;
+      return extraTubesLeft(session.extraTubesAdded) > 0;
   }
 };
 
@@ -254,6 +320,10 @@ export type PowerUpResult =
   | { readonly kind: 'applied'; readonly source: PaymentSource }
   /** Neither inventory nor coins cover it: offer a rewarded ad or the Shop. */
   | { readonly kind: 'needsPayment'; readonly powerUp: PowerUp; readonly cost: number }
+  /** Paid by the level's one rewarded ad (+Tube): show it straight away with `buyPowerUpWithAd`. */
+  | { readonly kind: 'needsAd'; readonly powerUp: PowerUp }
+  /** Coins are short and no ad is left (+Tube): offer the Shop only. */
+  | { readonly kind: 'needsShop'; readonly powerUp: PowerUp; readonly cost: number }
   | { readonly kind: 'unavailable' };
 
 const pay = (decision: CostDecision, now: number): PaymentSource | null => {
@@ -264,7 +334,9 @@ const pay = (decision: CostDecision, now: number): PaymentSource | null => {
       return progress().consume(decision.item, now) ? 'inventory' : null;
     case 'coins':
       return progress().spendCoins(decision.cost, now) ? 'coins' : null;
+    case 'ad':
     case 'adOrShop':
+    case 'shop':
     case 'unavailable':
       return null;
   }
@@ -278,7 +350,7 @@ const apply = (powerUp: PowerUp, source: PaymentSource, move: Move | null): bool
       track('undo_used', { level, source });
       return true;
     case 'extraTube':
-      if (!game().addTube()) return false;
+      if (!game().addTube(source === 'ad')) return false;
       track('extra_tube_used', { level, source });
       return true;
     case 'hint':
@@ -290,8 +362,9 @@ const apply = (powerUp: PowerUp, source: PaymentSource, move: Move | null): bool
 };
 
 /**
- * Uses a power-up, paying with a free undo, inventory or coins in that order. `move` is the hint
- * already found by the solver (hints are only charged once a move exists).
+ * Uses a power-up, paying with a free undo, inventory or coins in that order (the extra tube
+ * tries its one ad per level before coins). `move` is the hint already found by the solver (hints
+ * are only charged once a move exists).
  */
 export const activatePowerUp = (
   powerUp: PowerUp,
@@ -302,9 +375,15 @@ export const activatePowerUp = (
   const decision = costOf(powerUp);
   if (decision.kind === 'unavailable') return { kind: 'unavailable' };
   if (decision.kind === 'adOrShop') return { kind: 'needsPayment', powerUp, cost: decision.cost };
+  if (decision.kind === 'ad') return { kind: 'needsAd', powerUp };
+  if (decision.kind === 'shop') return { kind: 'needsShop', powerUp, cost: decision.cost };
   const source = pay(decision, now);
   if (source === null) {
-    return { kind: 'needsPayment', powerUp, cost: decision.kind === 'coins' ? decision.cost : 0 };
+    const cost = decision.kind === 'coins' ? decision.cost : 0;
+    // The +Tube has no second ad: a failed payment sends the player to the Shop only.
+    return powerUp === 'extraTube'
+      ? { kind: 'needsShop', powerUp, cost }
+      : { kind: 'needsPayment', powerUp, cost };
   }
   apply(powerUp, source, move);
   return { kind: 'applied', source };
@@ -314,23 +393,43 @@ export type PowerUpAdResult =
   | { readonly kind: 'applied' }
   /** Earned, but the board changed meanwhile: the unit went to the inventory. */
   | { readonly kind: 'granted'; readonly reward: RewardBundle }
+  /** The ad could not be shown (not ready, no fill, offline, error); nothing was spent. */
+  | { readonly kind: 'adUnavailable' }
   | { readonly kind: 'none' };
 
 /**
  * Pays for a power-up with a rewarded ad. Applied only on `earned`; if the board changed while
- * the ad was up (so it no longer applies), the unit goes to the inventory instead.
+ * the ad was up (so it no longer applies), the unit goes to the inventory instead. The extra tube
+ * has one ad per level: it is not shown again once used, and an earned one is spent on the level
+ * even when its unit was banked. When the +Tube ad cannot be shown (`adUnavailable`, told apart
+ * from `none` = dismissed early or not offered), the generic "ad not ready" toast is skipped (the
+ * screen shows a +Tube one) and the level's +Tube switches to coins without spending the ad.
  */
 export const buyPowerUpWithAd = async (
   powerUp: PowerUp,
   move: Move | null,
   board: Board | null,
 ): Promise<PowerUpAdResult> => {
-  const result = await ads.showRewarded(PLACEMENT_FOR[powerUp]);
+  const before = game().session;
+  const tube = powerUp === 'extraTube';
+  if (tube && (before === null || before.adTubeUsed)) return { kind: 'none' };
+  const placement = PLACEMENT_FOR[powerUp];
+  const result = await (tube
+    ? ads.showRewarded(placement, { quietUnavailable: true })
+    : ads.showRewarded(placement));
+  if (result === 'unavailable') {
+    if (tube && game().session?.levelId === before?.levelId) game().markTubeAdUnavailable();
+    return { kind: 'adUnavailable' };
+  }
   if (result !== 'earned') return { kind: 'none' };
+  const sameLevel = before !== null && game().session?.levelId === before.levelId;
   const sameBoard = board === null || game().session?.history.current === board;
-  if (canUse(powerUp) && sameBoard && apply(powerUp, 'ad', move)) return { kind: 'applied' };
+  if (sameLevel && canUse(powerUp) && sameBoard && apply(powerUp, 'ad', move)) {
+    return { kind: 'applied' };
+  }
   const reward = UNIT_OF[powerUp];
   progress().grant(reward);
+  if (powerUp === 'extraTube' && sameLevel) game().markAdTubeUsed();
   return { kind: 'granted', reward };
 };
 
@@ -368,7 +467,7 @@ export const isSkipOffered = (session: GameSession | null, now: number): boolean
  */
 export const skipWithAd = async (): Promise<boolean> => {
   const before = game().session;
-  if (before === null || before.status === 'won' || before.mode === 'daily') return false;
+  if (before === null || before.status === 'won' || before.mode !== 'level') return false;
   const result = await ads.showRewarded(REWARDED_PLACEMENTS.SKIP_LEVEL);
   if (result !== 'earned') return false;
   const now = Date.now();
@@ -425,7 +524,9 @@ const interstitialState = (): InterstitialState => {
 
 let nextInFlight = false;
 
+/** Starts the player's next level, unless a locked chapter blocks it (the screen shows the gate). */
 const startNextLevel = (now: number): void => {
+  if (currentProgressionGate() !== null) return;
   startLevel(levelNow(progress().level), 'level', now);
 };
 

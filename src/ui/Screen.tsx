@@ -1,13 +1,14 @@
 import { router } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { type ReactNode } from 'react';
-import { I18nManager, ScrollView, StyleSheet, Text, View } from 'react-native';
+import { I18nManager, ScrollView, StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
 import { IconButton } from './IconButton';
 import { useActiveTheme } from './theme';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, spacing } from './tokens';
+import { MIN_TOUCH_TARGET, spacing, typography } from './tokens';
+import { Text } from '@/ui/Text';
 
 export interface ScreenProps {
   /** Header title. Omit together with `showBack={false}` for a header-less screen. */
@@ -18,6 +19,11 @@ export interface ScreenProps {
   headerEnd?: ReactNode;
   /** Scrolls the content (long screens such as Settings). */
   scroll?: boolean;
+  /**
+   * With `scroll`: the content is at least as tall as the viewport, so a `flex: 1` child can
+   * centre itself vertically and still scroll on short screens.
+   */
+  fill?: boolean;
   children?: ReactNode;
   /** Drawn over the whole screen, outside the padding (overlays and sheets). */
   overlay?: ReactNode;
@@ -47,6 +53,7 @@ export const Screen = ({
   showBack = true,
   headerEnd,
   scroll = false,
+  fill = false,
   children,
   overlay,
 }: ScreenProps) => {
@@ -64,16 +71,17 @@ export const Screen = ({
       <View style={[styles.frame, { paddingTop: insets.top + spacing.sm }]}>
         {title !== undefined || showBack ? (
           <View style={[styles.header, horizontal]}>
-            {showBack ? (
-              <IconButton
-                icon={I18nManager.isRTL ? 'chevron-forward' : 'chevron-back'}
-                accessibilityLabel={t('common.back')}
-                onPress={goBack}
-                color={ui.text}
-              />
-            ) : (
-              <View style={styles.headerSpacer} />
-            )}
+            {/* Equal start and end slots keep the title centred whatever the end accessory is. */}
+            <View style={[styles.headerSlot, styles.headerStart]}>
+              {showBack ? (
+                <IconButton
+                  icon={I18nManager.isRTL ? 'chevron-forward' : 'chevron-back'}
+                  accessibilityLabel={t('common.back')}
+                  onPress={goBack}
+                  color={ui.text}
+                />
+              ) : null}
+            </View>
             <Text
               accessibilityRole="header"
               numberOfLines={1}
@@ -81,7 +89,7 @@ export const Screen = ({
             >
               {title}
             </Text>
-            {headerEnd ?? <View style={styles.headerSpacer} />}
+            <View style={[styles.headerSlot, styles.headerEnd]}>{headerEnd}</View>
           </View>
         ) : null}
         {scroll ? (
@@ -89,6 +97,7 @@ export const Screen = ({
             style={styles.flex}
             contentContainerStyle={[
               styles.scrollContent,
+              fill && styles.grow,
               horizontal,
               { paddingBottom: insets.bottom + spacing.lg },
             ]}
@@ -122,21 +131,33 @@ const styles = StyleSheet.create({
     minHeight: MIN_TOUCH_TARGET,
     gap: spacing.sm,
   },
-  headerSpacer: {
-    width: MIN_TOUCH_TARGET,
+  headerSlot: {
+    flex: 1,
+    minWidth: MIN_TOUCH_TARGET,
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  headerStart: {
+    justifyContent: 'flex-start',
+  },
+  headerEnd: {
+    justifyContent: 'flex-end',
   },
   title: {
-    flex: 1,
+    flexShrink: 1,
+    maxWidth: '60%',
     textAlign: 'center',
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.bold,
+    ...typography.screenTitle,
   },
   content: {
     flex: 1,
-    paddingTop: spacing.xl,
+    paddingTop: spacing.lg,
+  },
+  grow: {
+    flexGrow: 1,
   },
   scrollContent: {
-    paddingTop: spacing.xl,
-    gap: spacing.lg,
+    paddingTop: spacing.lg,
+    gap: spacing.xl - spacing.xs,
   },
 });

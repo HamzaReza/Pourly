@@ -18,11 +18,12 @@
   "home": {
     "play": "レベル {{n}}",
     "playA11y": "レベル {{n}} をプレイ",
-    "resume": "レベル {{n}} を再開",
+    "continue": "レベル{{n}}を続ける",
     "resumeA11y": "中断したところからレベル {{n}} を再開",
     "shop": "ショップ",
     "themes": "テーマ",
     "settings": "設定",
+    "levels": "レベル",
     "playHardA11y": "レベル {{n}} をプレイ、ハードレベル",
     "signInCard": {
       "title": "ログインして進行状況を保存",
@@ -87,7 +88,10 @@
     "costAd": "広告を見る",
     "costUsed": "使用済み",
     "dailyTitle": "デイリー · {{date}}",
-    "dailyTitleA11y": "デイリーチャレンジ、{{date}}"
+    "dailyTitleA11y": "デイリーチャレンジ、{{date}}",
+    "costTubeLimit": "このレベルの上限に達しました",
+    "tubeAdUnavailable": "今は広告を表示できません。代わりにコインでチューブを入手できます。",
+    "replayTitle": "リプレイ · レベル{{n}}"
   },
   "coins": {
     "badgeA11y_other": "{{count}}コイン。ショップを開く",
@@ -117,14 +121,23 @@
     "home": "ホーム",
     "dailyTitle": "デイリークリア！",
     "streak_other": "{{value}}日連続",
-    "dailyReplay": "今日はクリア済みです。リプレイは報酬なしで楽しめます。"
+    "dailyReplay": "今日はクリア済みです。リプレイは報酬なしで楽しめます。",
+    "levels": "レベル",
+    "levelsA11y": "レベル一覧に戻る",
+    "newBest": "自己ベスト更新！",
+    "replayNote": "星の記録を更新するとコインがもらえます。",
+    "perfectAgain": "またもやパーフェクト！星はすでに全部獲得済みです。"
   },
   "stuck": {
     "title": "もう動かせません",
     "message": "1手戻す、チューブを追加、やり直す、またはこのレベルをスキップしましょう。",
     "messageNoSkip": "1手戻す、チューブを追加、またはやり直しましょう。",
     "undo": "戻す",
-    "addTube": "+チューブ",
+    "tubeUse_other": "+チューブを使う(残り{{count}})",
+    "tubeAd": "広告を見る:+1チューブ",
+    "tubeAdA11y": "広告を見て空のチューブを追加",
+    "tubeCoins_other": "+1チューブ・{{count}}コイン",
+    "tubeLimit": "このレベルのチューブ上限に達しました",
     "restart": "やり直す",
     "skip": "スキップ",
     "skipA11y": "広告を見てこのレベルをスキップ",
@@ -132,7 +145,7 @@
   },
   "notEnough": {
     "title": "コインが足りません",
-    "message": "{{item}}には{{cost}}コイン必要です。所持コインは{{coins}}です。",
+    "message_other": "{{item}}には{{value}}コイン必要です。所持コインは{{balance}}です。",
     "watchAd": "広告を見る",
     "watchAdA11y": "広告を見て{{item}}を手に入れる",
     "shop": "ショップ"
@@ -142,6 +155,14 @@
     "message": "このプレイで有料アイテムを使いました。やり直すとそのアイテムは失われます。",
     "confirm": "やり直す",
     "cancel": "続ける"
+  },
+  "tubeConfirm": {
+    "useTitle": "+チューブを1つ使いますか?",
+    "useMessage_other": "+チューブを{{count}}個持っています。空のチューブはやり直してもこのレベルに残ります。",
+    "useConfirm": "チューブを追加",
+    "buyTitle_other": "{{count}}コインで+1チューブを購入しますか?",
+    "buyMessage": "空のチューブはやり直してもこのレベルに残ります。",
+    "buyConfirm": "チューブを買う"
   },
   "reward": {
     "title": "報酬",
@@ -219,6 +240,7 @@
     "freeCoins": {
       "title": "無料コイン",
       "button": "無料コイン",
+      "watch": "視聴",
       "a11y_other": "広告を見て無料コインを{{value}}枚もらう",
       "reward_other": "短い広告で+{{value}}コイン",
       "left_other": "今日はあと{{count}}回",
@@ -267,7 +289,11 @@
     "thanksMessage": "購入したアイテムが追加されました。",
     "alreadyOwnedTitle": "購入済みです",
     "alreadyOwnedMessage": "このGoogle Playアカウントはすでに購入済みです。購入を復元すると取り戻せます。",
-    "restoreAction": "購入を復元"
+    "restoreAction": "購入を復元",
+    "tags": {
+      "popular": "人気",
+      "bestValue": "お得"
+    }
   },
   "themes": {
     "title": "テーマ",
@@ -448,5 +474,36 @@
     "comeback3Body": "おかえりなさい。レベル {{n}} がいつでも待っています。",
     "comeback4Title": "最後にもう一杯？",
     "comeback4Body": "これが最後のお知らせです。レベル {{n}} は保存済み。いつでも戻ってきてくださいね。"
+  },
+  "levels": {
+    "title": "レベル",
+    "starsA11y": "獲得した星：{{max}}個中{{value}}個",
+    "cellA11y": "レベル{{n}}：星{{stars}}/3。もう一度プレイ",
+    "currentA11y": "レベル{{n}}：未クリア。プレイ",
+    "hardA11y": "難しいレベル",
+    "lockedA11y": "レベル{{n}}、ロック中",
+    "chapter": "レベル{{from}}–{{to}}",
+    "chapterA11y": "レベル{{from}}〜{{to}}：{{total}}中{{done}}クリア、星{{maxStars}}個中{{stars}}個",
+    "completed_other": "{{value}}レベルクリア"
+  },
+  "chapters": {
+    "gateTitle": "チャプター{{n}}はロック中",
+    "gateMessage": "チャプター{{prev}}で{{target}}★集めると解放されます。",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "チャプター{{prev}}の星：{{target}}個中{{stars}}個",
+    "replay": "レベルをもう一度遊ぶ",
+    "unlockCoins_other": "{{value}}コインで解放",
+    "confirmTitle_other": "{{value}}コインを使ってチャプター{{n}}を解放しますか？",
+    "confirmMessage": "星を集めれば無料で解放することもできます。",
+    "confirm": "解放する",
+    "unlocked": "チャプター{{n}}が解放されました！",
+    "homeCta": "チャプター{{n}}を解放",
+    "homeCtaA11y": "チャプター{{n}}はロック中です。解放方法を見る",
+    "headerLocked": "解放まで：チャプター{{prev}}で{{stars}} / {{target}} ★",
+    "headerLockedA11y": "チャプター{{n}}はロック中：チャプター{{prev}}の星は{{target}}個中{{stars}}個。解放方法を見る",
+    "item": "チャプター{{n}}の解放",
+    "locked": "ロック中",
+    "headerToUnlock": "解放まで {{stars}}/{{target}}★",
+    "balance_other": "所持コイン：{{value}}"
   }
 }

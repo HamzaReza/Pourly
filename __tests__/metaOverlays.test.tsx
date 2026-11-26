@@ -70,7 +70,7 @@ describe('phase 6 overlay variants', () => {
       <StuckOverlay
         ui={ui}
         canUndo
-        canAddTube
+        tubeCost={{ kind: 'ad' }}
         busy={false}
         onUndo={jest.fn()}
         onAddTube={jest.fn()}
@@ -95,7 +95,7 @@ describe('phase 6 overlay variants', () => {
         onClose={jest.fn()}
       />,
     );
-    expect(screen.getByText('The Neon theme costs 1000 coins. You have 120.')).toBeTruthy();
+    expect(screen.getByText('The Neon theme costs 1,000 coins. You have 120.')).toBeTruthy();
     expect(screen.queryByText('Watch ad')).toBeNull();
     await fireEvent.press(screen.getByText('Shop'));
     expect(onShop).toHaveBeenCalledTimes(1);

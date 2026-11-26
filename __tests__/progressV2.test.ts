@@ -6,8 +6,8 @@ import { applyTouchOpen } from '@/state/progressStore';
 const NOW = new Date(2026, 10, 24, 12, 0, 0).getTime();
 
 describe('progress v2', () => {
-  it('is version 2 with the new fields defaulted', () => {
-    expect(PROGRESS_VERSION).toBe(2);
+  it('is version 3 (v2 fields defaulted)', () => {
+    expect(PROGRESS_VERSION).toBe(3);
     const fresh = createDefaultProgress(NOW);
     expect(fresh.firstSessionStartedAt).toBe(NOW);
     expect(fresh.pendingPurchases).toEqual([]);
@@ -23,7 +23,7 @@ describe('progress v2', () => {
     const migrated = migrateProgress(v1, 1, NOW);
     expect(migrated.firstSessionStartedAt).toBe(NOW - 1000);
     expect(migrated.pendingPurchases).toEqual([]);
-    expect(migrated.schemaVersion).toBe(2);
+    expect(migrated.schemaVersion).toBe(PROGRESS_VERSION);
   });
 
   it('validates the new fields', () => {

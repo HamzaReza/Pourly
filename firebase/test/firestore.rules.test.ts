@@ -49,6 +49,7 @@ const progress = (overrides: Record<string, unknown> = {}): Record<string, unkno
   activeTheme: 'classic',
   processedTransactions: ['GPA.1'],
   starterPackPurchased: false,
+  paidChapters: [2],
   updatedAt: serverTimestamp(),
   lastWriterInstall: 'install-a',
   ...overrides,
@@ -133,6 +134,8 @@ describe('users/{uid} cloud save', () => {
     ['long theme id', { activeTheme: 'x'.repeat(33) }],
     ['empty install id', { lastWriterInstall: '' }],
     ['non-boolean starter pack flag', { starterPackPurchased: 'yes' }],
+    ['non-list paid chapters', { paidChapters: 2 }],
+    ['501 paid chapters', { paidChapters: Array.from({ length: 501 }, (_, i) => i + 2) }],
     [
       '201 transaction ids',
       { processedTransactions: Array.from({ length: 201 }, (_, i) => `t${i}`) },

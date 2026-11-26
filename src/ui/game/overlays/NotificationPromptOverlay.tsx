@@ -1,6 +1,4 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { ThemeUi } from '@/render/themes';
@@ -32,11 +30,9 @@ const NotificationPromptOverlayComponent = ({
       title={t('notificationPrompt.title')}
       message={t('notificationPrompt.message')}
       onClose={busy ? undefined : onNotNow}
+      icon="notifications-outline"
       testID="notification-prompt"
     >
-      <View style={styles.icon} accessible={false} importantForAccessibility="no-hide-descendants">
-        <Ionicons name="notifications" size={40} color={ui.accent} />
-      </View>
       <Button
         variant="primary"
         label={t('notificationPrompt.allow')}
@@ -47,6 +43,7 @@ const NotificationPromptOverlayComponent = ({
         testID="notification-allow"
       />
       <Button
+        variant="ghost"
         label={t('notificationPrompt.notNow')}
         accessibilityLabel={t('notificationPrompt.notNowA11y')}
         onPress={onNotNow}
@@ -59,9 +56,3 @@ const NotificationPromptOverlayComponent = ({
 };
 
 export const NotificationPromptOverlay = memo(NotificationPromptOverlayComponent);
-
-const styles = StyleSheet.create({
-  icon: {
-    alignItems: 'center',
-  },
-});

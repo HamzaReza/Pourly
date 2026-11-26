@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Linking, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { MANAGE_SUBSCRIPTIONS_URL, PRIVACY_URL, TERMS_URL } from '@/config/constants';
@@ -16,11 +16,12 @@ import {
 import type { StoreProduct } from '@/services/iapTypes';
 import { useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
-import { CoinBadge, CoinGlyph } from '@/ui/CoinBadge';
+import { CoinBadge } from '@/ui/CoinBadge';
 import { RewardOverlay } from '@/ui/game/overlays/RewardOverlay';
 import { Overlay } from '@/ui/Overlay';
 import { Screen } from '@/ui/Screen';
-import { SettingsSection } from '@/ui/settings/rows';
+import { hairline, ListSection, SectionTitle } from '@/ui/List';
+import { CoinPackTile } from '@/ui/shop/CoinPackTile';
 import { FreeCoinsCard } from '@/ui/shop/FreeCoinsCard';
 import { PriceButton, type PriceState } from '@/ui/shop/PriceButton';
 import { ProductRow } from '@/ui/shop/ProductRow';
@@ -28,8 +29,9 @@ import { StarterPackCard } from '@/ui/shop/StarterPackCard';
 import { VipCard } from '@/ui/shop/VipCard';
 import { useThemeUi } from '@/ui/theme';
 import { showToast } from '@/ui/toastQueue';
-import { fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import { fontSizes, MIN_TOUCH_TARGET, radii, spacing, typography } from '@/ui/tokens';
 import { logger } from '@/utils/logger';
+import { Text } from '@/ui/Text';
 
 /** The store catalog as the Shop sees it. */
 type Catalog =
@@ -150,6 +152,7 @@ export default function ShopScreen() {
         title={t('shop.alreadyOwnedTitle')}
         message={t('shop.alreadyOwnedMessage')}
         onBackdropPress={closeOverlay}
+        icon="receipt-outline"
         testID="shop-already-owned"
       >
         <Button
@@ -159,7 +162,7 @@ export default function ShopScreen() {
           disabled={restoring}
           ui={ui}
         />
-        <Button label={t('common.cancel')} onPress={closeOverlay} ui={ui} />
+        <Button variant="ghost" label={t('common.cancel')} onPress={closeOverlay} ui={ui} />
       </Overlay>
     );
 
@@ -172,11 +175,11 @@ export default function ShopScreen() {
     >
       {catalog.kind === 'unavailable' || catalog.kind === 'failed' ? (
         <View
-          style={[styles.notice, { backgroundColor: ui.surface }]}
+          style={[styles.notice, { backgroundColor: ui.surface, borderColor: hairline(ui) }]}
           accessibilityLiveRegion="polite"
           testID="shop-unavailable"
         >
-          <Ionicons name="cloud-offline" size={24} color={ui.textMuted} />
+          <Ionicons name="cloud-offline-outline" size={22} color={ui.textMuted} />
           <View style={styles.noticeTexts}>
             <Text style={[styles.noticeTitle, { color: ui.text }]}>
               {t('shop.unavailableTitle')}
@@ -186,7 +189,7 @@ export default function ShopScreen() {
             </Text>
           </View>
           {catalog.kind === 'failed' ? (
-            <Button label={t('shop.retry')} onPress={retry} ui={ui} testID="shop-retry" />
+            <Button size="sm" label={t('shop.retry')} onPress={retry} ui={ui} testID="shop-retry" />
           ) : null}
         </View>
       ) : null}
@@ -196,37 +199,54 @@ export default function ShopScreen() {
         disabled={busy}
         onBuy={() => buy(PRODUCT_IDS.starterPack)}
       />
-      <SettingsSection ui={ui} title={t('shop.sections.coins')}>
+      <View style={styles.section}>
+        <SectionTitle ui={ui} title={t('shop.sections.coins')} />
         <FreeCoinsCard ui={ui} />
-        {COIN_PACK_IDS.map((productId) => {
-          const coins = PRODUCTS[productId].grant.coins ?? 0;
-          const amount = t('shop.coinsAmount', { count: coins, value: formatNumber(coins) });
-          return (
-            <ProductRow
-              key={productId}
-              ui={ui}
-              leading={<CoinGlyph size={26} />}
-              title={amount}
-              subtitle={t(`shop.names.${productId}`)}
-              trailing={
-                <PriceButton
-                  ui={ui}
-                  name={amount}
-                  price={priceOf(productId)}
-                  disabled={busy}
-                  onBuy={() => buy(productId)}
-                  testID={`buy-${productId}`}
-                />
-              }
-              testID={`shop-${productId}`}
-            />
-          );
-        })}
-      </SettingsSection>
-      <SettingsSection ui={ui} title={t('shop.sections.removeAds')}>
+        <View style={styles.grid}>
+          {COIN_PACK_IDS.map((productId, index) => {
+            const coins = PRODUCTS[productId].grant.coins ?? 0;
+            const amount = t('shop.coinsAmount', { count: coins, value: formatNumber(coins) });
+            const tag = COIN_PACK_TAGS[productId];
+            return (
+              <CoinPackTile
+                key={productId}
+                ui={ui}
+                tier={index + 1}
+                amount={amount}
+                name={t(`shop.names.${productId}`)}
+                tag={tag === undefined ? undefined : t(`shop.tags.${tag}`)}
+                highlighted={tag === 'popular'}
+                price={
+                  <PriceButton
+                    ui={ui}
+                    name={amount}
+                    price={priceOf(productId)}
+                    disabled={busy}
+                    onBuy={() => buy(productId)}
+                    fill
+                    testID={`buy-${productId}`}
+                  />
+                }
+                testID={`shop-${productId}`}
+              />
+            );
+          })}
+        </View>
+      </View>
+      <VipCard
+        ui={ui}
+        active={vip}
+        priceOf={priceOf}
+        disabled={busy}
+        onBuy={buy}
+        onManage={manage}
+        onTerms={openTerms}
+        onPrivacy={openPrivacy}
+      />
+      <ListSection ui={ui} title={t('shop.sections.removeAds')}>
         <ProductRow
           ui={ui}
-          leading={<Ionicons name="ban" size={26} color={ui.accent} />}
+          leading={<Ionicons name="ban" size={20} color={ui.accent} />}
           title={removeAdsName}
           subtitle={t('shop.removeAds.description')}
           trailing={
@@ -241,40 +261,53 @@ export default function ShopScreen() {
           }
           testID="shop-remove_ads"
         />
-      </SettingsSection>
-      <VipCard
-        ui={ui}
-        active={vip}
-        priceOf={priceOf}
-        disabled={busy}
-        onBuy={buy}
-        onManage={manage}
-        onTerms={openTerms}
-        onPrivacy={openPrivacy}
-      />
-      <SettingsSection ui={ui} title={t('shop.sections.purchases')}>
-        <View style={styles.purchases}>
-          <Button
-            label={t('shop.restore')}
-            onPress={restore}
+      </ListSection>
+      <View style={styles.footer}>
+        <View style={styles.footerLinks}>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={t('shop.restore')}
+            accessibilityState={{ disabled: restoring }}
             disabled={restoring}
-            icon="refresh"
-            ui={ui}
+            onPress={restore}
+            hitSlop={FOOTER_SLOP}
+            style={({ pressed }) => [styles.footerLink, (pressed || restoring) && styles.pressed]}
             testID="shop-restore"
-          />
-          <Text style={[styles.note, { color: ui.textMuted }]}>{t('shop.restoreNote')}</Text>
-          <Button
-            label={t('shop.manage')}
+          >
+            <Ionicons name="refresh" size={14} color={ui.accent} />
+            <Text style={[styles.footerLinkText, { color: ui.accent }]}>{t('shop.restore')}</Text>
+          </Pressable>
+          <Text style={[styles.dot, { color: ui.textMuted }]}>·</Text>
+          <Pressable
+            accessibilityRole="link"
+            accessibilityLabel={t('shop.manage')}
             onPress={manage}
-            icon="open-outline"
-            ui={ui}
+            hitSlop={FOOTER_SLOP}
+            style={({ pressed }) => [styles.footerLink, pressed && styles.pressed]}
             testID="shop-manage"
-          />
+          >
+            <Text style={[styles.footerLinkText, { color: ui.accent }]}>{t('shop.manage')}</Text>
+            <Ionicons name="open-outline" size={13} color={ui.accent} />
+          </Pressable>
         </View>
-      </SettingsSection>
+        <Text style={[styles.note, { color: ui.textMuted }]}>{t('shop.restoreNote')}</Text>
+      </View>
     </Screen>
   );
 }
+
+/** Ribbons on the coin packs: the middle pack is the highlighted one. */
+const COIN_PACK_TAGS: Partial<Record<ProductId, 'popular' | 'bestValue'>> = {
+  [PRODUCT_IDS.coins1500]: 'popular',
+  [PRODUCT_IDS.coins4000]: 'bestValue',
+};
+
+const FOOTER_HEIGHT = 28;
+/** Grows the 28 dp footer links to a 44 dp touch target. */
+const FOOTER_SLOP = {
+  top: (MIN_TOUCH_TARGET - FOOTER_HEIGHT) / 2,
+  bottom: (MIN_TOUCH_TARGET - FOOTER_HEIGHT) / 2,
+};
 
 const styles = StyleSheet.create({
   notice: {
@@ -282,24 +315,56 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
     padding: spacing.md,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   noticeTexts: {
     flex: 1,
     gap: spacing.xxs,
   },
   noticeTitle: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   noticeText: {
-    fontSize: fontSizes.small,
+    fontSize: fontSizes.footnote,
   },
-  purchases: {
-    padding: spacing.md,
+  section: {
     gap: spacing.sm,
   },
-  note: {
+  grid: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    paddingTop: spacing.md,
+  },
+  footer: {
+    alignItems: 'center',
+    gap: spacing.xs,
+    paddingHorizontal: spacing.md,
+  },
+  footerLinks: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    justifyContent: 'center',
+    columnGap: spacing.sm,
+  },
+  footerLink: {
+    minHeight: FOOTER_HEIGHT,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
+  footerLinkText: {
+    ...typography.link,
+  },
+  dot: {
     fontSize: fontSizes.small,
+  },
+  pressed: {
+    opacity: 0.6,
+  },
+  note: {
+    ...typography.fine,
+    textAlign: 'center',
   },
 });

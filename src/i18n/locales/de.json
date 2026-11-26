@@ -18,11 +18,12 @@
   "home": {
     "play": "Level {{n}}",
     "playA11y": "Level {{n}} spielen",
-    "resume": "Weiter: Level {{n}}",
+    "continue": "Level {{n}} fortsetzen",
     "resumeA11y": "Level {{n}} dort fortsetzen, wo du aufgehört hast",
     "shop": "Shop",
     "themes": "Designs",
     "settings": "Optionen",
+    "levels": "Level",
     "playHardA11y": "Level {{n}} spielen, schweres Level",
     "signInCard": {
       "title": "Melde dich an, um deinen Fortschritt zu sichern",
@@ -89,7 +90,10 @@
     "costAd": "Werbevideo ansehen",
     "costUsed": "schon benutzt",
     "dailyTitle": "Täglich · {{date}}",
-    "dailyTitleA11y": "Tagesrätsel, {{date}}"
+    "dailyTitleA11y": "Tagesrätsel, {{date}}",
+    "costTubeLimit": "Limit für dieses Level erreicht",
+    "tubeAdUnavailable": "Gerade ist keine Werbung verfügbar. Du kannst das Glas stattdessen mit Münzen holen.",
+    "replayTitle": "Wiederholen · Level {{n}}"
   },
   "coins": {
     "badgeA11y_one": "{{count}} Münzen. Shop öffnen",
@@ -123,14 +127,25 @@
     "dailyTitle": "Tagesrätsel geschafft!",
     "streak_one": "{{value}} Tag in Folge",
     "streak_other": "{{value}} Tage in Folge",
-    "dailyReplay": "Heute schon geschafft. Wiederholungen sind nur zum Spaß."
+    "dailyReplay": "Heute schon geschafft. Wiederholungen sind nur zum Spaß.",
+    "levels": "Level",
+    "levelsA11y": "Zurück zur Levelliste",
+    "newBest": "Neuer Rekord!",
+    "replayNote": "Übertriff deine Sterne, um Münzen zu verdienen.",
+    "perfectAgain": "Wieder perfekt! Du hast schon alle Sterne."
   },
   "stuck": {
     "title": "Keine Züge mehr",
     "message": "Mach einen Zug rückgängig, füge ein Glas hinzu, starte neu oder überspringe das Level.",
     "messageNoSkip": "Mach einen Zug rückgängig, füge ein Glas hinzu oder starte neu.",
     "undo": "Zurück",
-    "addTube": "+Glas",
+    "tubeUse_one": "+Glas nutzen (noch {{count}})",
+    "tubeUse_other": "+Glas nutzen (noch {{count}})",
+    "tubeAd": "Werbung ansehen: +1 Glas",
+    "tubeAdA11y": "Werbevideo ansehen, um ein leeres Glas hinzuzufügen",
+    "tubeCoins_one": "+1 Glas · {{count}} Münze",
+    "tubeCoins_other": "+1 Glas · {{count}} Münzen",
+    "tubeLimit": "Glas-Limit für dieses Level erreicht",
     "restart": "Neustart",
     "skip": "Überspringen",
     "skipA11y": "Dieses Level mit einem Werbevideo überspringen",
@@ -138,7 +153,8 @@
   },
   "notEnough": {
     "title": "Nicht genug Münzen",
-    "message": "{{item}} kostet {{cost}} Münzen. Du hast {{coins}}.",
+    "message_one": "{{item}} kostet {{value}} Münze. Du hast {{balance}}.",
+    "message_other": "{{item}} kostet {{value}} Münzen. Du hast {{balance}}.",
     "watchAd": "Video ansehen",
     "watchAdA11y": "Sieh dir ein Werbevideo an für: {{item}}",
     "shop": "Shop"
@@ -148,6 +164,16 @@
     "message": "Du hast in diesem Versuch ein bezahltes Item benutzt. Beim Neustart geht es verloren.",
     "confirm": "Trotzdem neu",
     "cancel": "Weiterspielen"
+  },
+  "tubeConfirm": {
+    "useTitle": "1 +Glas nutzen?",
+    "useMessage_one": "Du hast {{count}} +Glas. Das leere Glas bleibt in diesem Level, auch nach einem Neustart.",
+    "useMessage_other": "Du hast {{count}} +Gläser. Das leere Glas bleibt in diesem Level, auch nach einem Neustart.",
+    "useConfirm": "Glas hinzufügen",
+    "buyTitle_one": "{{count}} Münze für +1 Glas ausgeben?",
+    "buyTitle_other": "{{count}} Münzen für +1 Glas ausgeben?",
+    "buyMessage": "Das leere Glas bleibt in diesem Level, auch nach einem Neustart.",
+    "buyConfirm": "Glas kaufen"
   },
   "reward": {
     "title": "Belohnung",
@@ -232,6 +258,7 @@
     "freeCoins": {
       "title": "Gratis-Münzen",
       "button": "Gratis-Münzen",
+      "watch": "Ansehen",
       "a11y_one": "Sieh dir ein Werbevideo an für {{value}} Gratis-Münze",
       "a11y_other": "Sieh dir ein Werbevideo an für {{value}} Gratis-Münzen",
       "reward_one": "+{{value}} Münze für ein kurzes Video",
@@ -288,7 +315,11 @@
     "thanksMessage": "Dein Kauf wurde hinzugefügt.",
     "alreadyOwnedTitle": "Bereits gekauft",
     "alreadyOwnedMessage": "Dieses Google Play-Konto besitzt es bereits. Stelle deine Käufe wieder her, um es zurückzubekommen.",
-    "restoreAction": "Käufe wiederherstellen"
+    "restoreAction": "Käufe wiederherstellen",
+    "tags": {
+      "popular": "Beliebt",
+      "bestValue": "Bester Wert"
+    }
   },
   "themes": {
     "title": "Designs",
@@ -469,5 +500,40 @@
     "comeback3Body": "Steig wieder ein: Level {{n}} wartet, wann immer du bereit bist.",
     "comeback4Title": "Eine letzte Runde?",
     "comeback4Body": "Das ist unsere letzte Erinnerung. Level {{n}} ist gespeichert und wartet, wann immer du willst."
+  },
+  "levels": {
+    "title": "Level",
+    "starsA11y": "Gesammelte Sterne: {{value}} von {{max}}",
+    "cellA11y": "Level {{n}}: {{stars}} von 3 Sternen. Erneut spielen",
+    "currentA11y": "Level {{n}}: noch nicht geschafft. Spielen",
+    "hardA11y": "schweres Level",
+    "lockedA11y": "Level {{n}}, gesperrt",
+    "chapter": "Level {{from}}–{{to}}",
+    "chapterA11y": "Level {{from}} bis {{to}}: {{done}} von {{total}} geschafft, {{stars}} von {{maxStars}} Sternen",
+    "completed_one": "{{value}} Level geschafft",
+    "completed_other": "{{value}} Level geschafft"
+  },
+  "chapters": {
+    "gateTitle": "Kapitel {{n}} ist gesperrt",
+    "gateMessage": "Sammle {{target}}★ in Kapitel {{prev}}, um es freizuschalten.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} von {{target}} Sternen in Kapitel {{prev}}",
+    "replay": "Level wiederholen",
+    "unlockCoins_one": "Für {{value}} Münze freischalten",
+    "unlockCoins_other": "Für {{value}} Münzen freischalten",
+    "confirmTitle_one": "{{value}} Münze ausgeben, um Kapitel {{n}} freizuschalten?",
+    "confirmTitle_other": "{{value}} Münzen ausgeben, um Kapitel {{n}} freizuschalten?",
+    "confirmMessage": "Du kannst es auch kostenlos mit Sternen freischalten.",
+    "confirm": "Freischalten",
+    "unlocked": "Kapitel {{n}} freigeschaltet!",
+    "homeCta": "Kapitel {{n}} freischalten",
+    "homeCtaA11y": "Kapitel {{n}} ist gesperrt. So schaltest du es frei",
+    "headerLocked": "{{stars}} / {{target}} ★ in Kapitel {{prev}} zum Freischalten",
+    "headerLockedA11y": "Kapitel {{n}} ist gesperrt: {{stars}} von {{target}} Sternen in Kapitel {{prev}}. So schaltest du es frei",
+    "item": "Das Freischalten von Kapitel {{n}}",
+    "locked": "Gesperrt",
+    "headerToUnlock": "{{stars}}/{{target}}★ zum Freischalten",
+    "balance_one": "Du hast {{value}} Münze",
+    "balance_other": "Du hast {{value}} Münzen"
   }
 }

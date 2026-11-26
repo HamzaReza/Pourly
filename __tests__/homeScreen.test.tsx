@@ -152,8 +152,11 @@ describe('Home', () => {
     expect(screen.getByText('Ends in 71:59:59')).toBeTruthy();
     await fireEvent.press(screen.getByLabelText('View the Starter Pack in the shop'));
     expect(router.push).toHaveBeenCalledWith('/shop');
+    // Jump the clock to the end instead of ticking through 259,200 one-second renders (which
+    // timed out under heavy CPU load); the next tick sees the offer expired.
     await act(() => {
-      jest.advanceTimersByTime(72 * 3_600_000);
+      jest.setSystemTime(NOW + 72 * 3_600_000);
+      jest.advanceTimersByTime(1000);
     });
     expect(screen.queryByTestId('starter-pack-banner')).toBeNull();
   });

@@ -18,11 +18,12 @@
   "home": {
     "play": "Livello {{n}}",
     "playA11y": "Gioca il livello {{n}}",
-    "resume": "Riprendi liv. {{n}}",
+    "continue": "Continua il livello {{n}}",
     "resumeA11y": "Riprendi il livello {{n}} da dove eri rimasto",
     "shop": "Negozio",
     "themes": "Temi",
     "settings": "Impostazioni",
+    "levels": "Livelli",
     "playHardA11y": "Gioca il livello {{n}}, livello difficile",
     "signInCard": {
       "title": "Accedi per salvare i progressi",
@@ -91,7 +92,10 @@
     "costAd": "guarda un video",
     "costUsed": "già usato",
     "dailyTitle": "Sfida · {{date}}",
-    "dailyTitleA11y": "Sfida giornaliera, {{date}}"
+    "dailyTitleA11y": "Sfida giornaliera, {{date}}",
+    "costTubeLimit": "limite raggiunto in questo livello",
+    "tubeAdUnavailable": "Al momento non ci sono video disponibili. Puoi prendere il tubo con le monete.",
+    "replayTitle": "Rigioca · Livello {{n}}"
   },
   "coins": {
     "badgeA11y_many": "{{count}} monete. Apri il negozio",
@@ -129,14 +133,27 @@
     "streak_one": "{{value}} giorno di fila",
     "streak_many": "{{value}} giorni di fila",
     "streak_other": "{{value}} giorni di fila",
-    "dailyReplay": "Già fatta oggi. Rigiocarla è solo per divertimento."
+    "dailyReplay": "Già fatta oggi. Rigiocarla è solo per divertimento.",
+    "levels": "Livelli",
+    "levelsA11y": "Torna all’elenco dei livelli",
+    "newBest": "Nuovo record!",
+    "replayNote": "Supera le tue stelle per guadagnare monete.",
+    "perfectAgain": "Di nuovo perfetto! Hai già tutte le stelle."
   },
   "stuck": {
     "title": "Nessuna mossa",
     "message": "Annulla una mossa, aggiungi un tubo, riavvia o salta il livello.",
     "messageNoSkip": "Annulla una mossa, aggiungi un tubo o riavvia.",
     "undo": "Annulla",
-    "addTube": "+Tubo",
+    "tubeUse_one": "Usa +Tubo (ne resta {{count}})",
+    "tubeUse_many": "Usa +Tubo (ne restano {{count}})",
+    "tubeUse_other": "Usa +Tubo (ne restano {{count}})",
+    "tubeAd": "Guarda video: +1 tubo",
+    "tubeAdA11y": "Guarda un video per aggiungere un tubo vuoto",
+    "tubeCoins_one": "+1 tubo · {{count}} moneta",
+    "tubeCoins_many": "+1 tubo · {{count}} monete",
+    "tubeCoins_other": "+1 tubo · {{count}} monete",
+    "tubeLimit": "Limite di tubi raggiunto in questo livello",
     "restart": "Riavvia",
     "skip": "Salta livello",
     "skipA11y": "Salta il livello guardando un video",
@@ -144,7 +161,9 @@
   },
   "notEnough": {
     "title": "Monete insufficienti",
-    "message": "{{item}} costa {{cost}} monete. Ne hai {{coins}}.",
+    "message_one": "{{item}} costa {{value}} moneta. Ne hai {{balance}}.",
+    "message_many": "{{item}} costa {{value}} di monete. Ne hai {{balance}}.",
+    "message_other": "{{item}} costa {{value}} monete. Ne hai {{balance}}.",
     "watchAd": "Vedi video",
     "watchAdA11y": "Guarda un video per ottenere {{item}}",
     "shop": "Negozio"
@@ -154,6 +173,18 @@
     "message": "Hai usato un oggetto a pagamento in questo tentativo. Riavviando lo perdi.",
     "confirm": "Riavvia comunque",
     "cancel": "Continua"
+  },
+  "tubeConfirm": {
+    "useTitle": "Usare 1 +Tubo?",
+    "useMessage_one": "Hai {{count}} +Tubo. Il tubo vuoto resta in questo livello, anche se riavvii.",
+    "useMessage_many": "Hai {{count}} +Tubi. Il tubo vuoto resta in questo livello, anche se riavvii.",
+    "useMessage_other": "Hai {{count}} +Tubi. Il tubo vuoto resta in questo livello, anche se riavvii.",
+    "useConfirm": "Aggiungi tubo",
+    "buyTitle_one": "Spendere {{count}} moneta per +1 tubo?",
+    "buyTitle_many": "Spendere {{count}} monete per +1 tubo?",
+    "buyTitle_other": "Spendere {{count}} monete per +1 tubo?",
+    "buyMessage": "Il tubo vuoto resta in questo livello, anche se riavvii.",
+    "buyConfirm": "Compra tubo"
   },
   "reward": {
     "title": "Ricompensa",
@@ -245,6 +276,7 @@
     "freeCoins": {
       "title": "Monete gratis",
       "button": "Monete gratis",
+      "watch": "Guarda",
       "a11y_one": "Guarda un video per {{value}} moneta gratis",
       "a11y_many": "Guarda un video per {{value}} monete gratis",
       "a11y_other": "Guarda un video per {{value}} monete gratis",
@@ -309,7 +341,11 @@
     "thanksMessage": "Il tuo acquisto è stato aggiunto.",
     "alreadyOwnedTitle": "Già acquistato",
     "alreadyOwnedMessage": "Questo account Google Play lo possiede già. Ripristina gli acquisti per recuperarlo.",
-    "restoreAction": "Ripristina acquisti"
+    "restoreAction": "Ripristina acquisti",
+    "tags": {
+      "popular": "Popolare",
+      "bestValue": "Più conveniente"
+    }
   },
   "themes": {
     "title": "Temi",
@@ -490,5 +526,44 @@
     "comeback3Body": "Rimettiti in gioco: il livello {{n}} è pronto quando vuoi tu.",
     "comeback4Title": "Un'ultima partita?",
     "comeback4Body": "Questo è il nostro ultimo promemoria. Il livello {{n}} è salvato e ti aspetta quando vuoi."
+  },
+  "levels": {
+    "title": "Livelli",
+    "starsA11y": "Stelle raccolte: {{value}} su {{max}}",
+    "cellA11y": "Livello {{n}}: {{stars}} stelle su 3. Rigioca",
+    "currentA11y": "Livello {{n}}: non ancora completato. Gioca",
+    "hardA11y": "livello difficile",
+    "lockedA11y": "Livello {{n}}, bloccato",
+    "chapter": "Livelli {{from}}–{{to}}",
+    "chapterA11y": "Livelli da {{from}} a {{to}}: {{done}} su {{total}} completati, {{stars}} stelle su {{maxStars}}",
+    "completed_one": "{{value}} livello completato",
+    "completed_many": "{{value}} di livelli completati",
+    "completed_other": "{{value}} livelli completati"
+  },
+  "chapters": {
+    "gateTitle": "Il capitolo {{n}} è bloccato",
+    "gateMessage": "Raccogli {{target}}★ nel capitolo {{prev}} per sbloccarlo.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} stelle su {{target}} nel capitolo {{prev}}",
+    "replay": "Rigioca i livelli",
+    "unlockCoins_one": "Sblocca per {{value}} moneta",
+    "unlockCoins_many": "Sblocca per {{value}} di monete",
+    "unlockCoins_other": "Sblocca per {{value}} monete",
+    "confirmTitle_one": "Spendere {{value}} moneta per sbloccare il capitolo {{n}}?",
+    "confirmTitle_many": "Spendere {{value}} di monete per sbloccare il capitolo {{n}}?",
+    "confirmTitle_other": "Spendere {{value}} monete per sbloccare il capitolo {{n}}?",
+    "confirmMessage": "Puoi anche sbloccarlo gratis raccogliendo stelle.",
+    "confirm": "Sblocca",
+    "unlocked": "Capitolo {{n}} sbloccato!",
+    "homeCta": "Sblocca il capitolo {{n}}",
+    "homeCtaA11y": "Il capitolo {{n}} è bloccato. Scopri come sbloccarlo",
+    "headerLocked": "{{stars}} / {{target}} ★ nel capitolo {{prev}} per sbloccare",
+    "headerLockedA11y": "Il capitolo {{n}} è bloccato: {{stars}} stelle su {{target}} nel capitolo {{prev}}. Scopri come sbloccarlo",
+    "item": "Lo sblocco del capitolo {{n}}",
+    "locked": "Bloccato",
+    "headerToUnlock": "{{stars}}/{{target}}★ per sbloccare",
+    "balance_one": "Hai {{value}} moneta",
+    "balance_many": "Hai {{value}} di monete",
+    "balance_other": "Hai {{value}} monete"
   }
 }

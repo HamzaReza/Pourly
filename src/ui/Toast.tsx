@@ -1,12 +1,13 @@
 import { memo, useEffect, useSyncExternalStore } from 'react';
-import { AccessibilityInfo, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, StyleSheet, View } from 'react-native';
 import Animated, { FadeInDown, FadeOut } from 'react-native-reanimated';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useTranslation } from 'react-i18next';
 
-import { useReducedMotionPref, useThemeUi } from './theme';
+import { surfaceColors, useReducedMotionPref, useThemeUi } from './theme';
 import { currentToast, dismissToast, subscribeToasts } from './toastQueue';
-import { fontSizes, fontWeights, radii, spacing, zIndex } from './tokens';
+import { elevation, fontSizes, fontWeights, radii, spacing, zIndex } from './tokens';
+import { Text } from '@/ui/Text';
 
 export { showToast } from './toastQueue';
 
@@ -40,7 +41,10 @@ const ToastHostComponent = () => {
           entering={reducedMotion ? undefined : FadeInDown.duration(180)}
           exiting={FadeOut.duration(160)}
           accessibilityLiveRegion="polite"
-          style={[styles.toast, { backgroundColor: ui.surface, borderColor: ui.textMuted }]}
+          style={[
+            styles.toast,
+            { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+          ]}
         >
           <Text style={[styles.text, { color: ui.text }]}>{text}</Text>
         </Animated.View>
@@ -62,12 +66,17 @@ const styles = StyleSheet.create({
   toast: {
     maxWidth: 420,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderRadius: radii.lg,
+    paddingVertical: spacing.sm + spacing.xxs,
+    borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
+    elevation: elevation.floating,
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
   },
   text: {
-    fontSize: fontSizes.body,
+    fontSize: fontSizes.small,
     fontWeight: fontWeights.semibold,
     textAlign: 'center',
   },

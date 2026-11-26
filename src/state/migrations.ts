@@ -76,6 +76,16 @@ const sanitizeStars = (value: unknown): Record<number, StarCount> => {
   return out;
 };
 
+/** Chapters 2 and up, unique, ascending. */
+export const sanitizeChapters = (value: unknown): number[] => {
+  if (!Array.isArray(value)) return [];
+  const out = new Set<number>();
+  for (const item of value) {
+    if (typeof item === 'number' && Number.isInteger(item) && item >= 2) out.add(item);
+  }
+  return [...out].sort((a, b) => a - b);
+};
+
 const sanitizeDailyHistory = (value: unknown): Record<string, DailyResult> => {
   const out: Record<string, DailyResult> = {};
   for (const [key, entry] of Object.entries(asRecord(value))) {
@@ -168,6 +178,7 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
     firstSessionStartedAt: num(v.firstSessionStartedAt, d.firstSessionStartedAt),
     level: level >= 1 ? level : d.level,
     stars: sanitizeStars(v.stars),
+    paidChapters: sanitizeChapters(v.paidChapters),
     coins: count(v.coins, d.coins),
     hints: count(v.hints, d.hints),
     undos: count(v.undos, d.undos),
@@ -207,7 +218,8 @@ type MigrationStep = (state: UnknownRecord) => UnknownRecord;
  * Structural migrations keyed by the version they upgrade FROM. Version 0 (unversioned data) and
  * version 1 share the same shape. Version 2 adds `firstSessionStartedAt` (the first session's
  * start, taken from the last open, which is exact while the player is still in session 1 and
- * irrelevant afterwards) and `pendingPurchases` (empty).
+ * irrelevant afterwards) and `pendingPurchases` (empty). Version 3 adds `paidChapters` (empty: no
+ * chapter was bought before chapter gates existed, P12.7).
  */
 const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {
   1: (state) => ({
@@ -215,6 +227,7 @@ const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {
     firstSessionStartedAt: state.firstSessionStartedAt ?? state.lastOpenAt,
     pendingPurchases: state.pendingPurchases ?? [],
   }),
+  2: (state) => ({ ...state, paidChapters: state.paidChapters ?? [] }),
 };
 
 /**

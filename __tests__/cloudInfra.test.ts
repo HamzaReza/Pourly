@@ -205,7 +205,7 @@ describe('flushProgress', () => {
     };
     expect(stored.state.coins).toBe(4321);
     expect(stored.state.touchOpen).toBeUndefined();
-    expect(stored.version).toBe(2);
+    expect(stored.version).toBe(3);
   });
 });
 

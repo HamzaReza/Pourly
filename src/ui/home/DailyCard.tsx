@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
-import { I18nManager, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { currentStreak, isDailyDone } from '@/game/daily';
@@ -8,7 +8,18 @@ import { formatNumber } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import { useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
-import { colors, fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import { surfaceColors } from '@/ui/theme';
+import {
+  alphas,
+  colors,
+  controlHeights,
+  MIN_TOUCH_TARGET,
+  radii,
+  spacing,
+  typography,
+  withAlpha,
+} from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 export interface DailyCardProps {
   ui: ThemeUi;
@@ -29,7 +40,12 @@ const DailyCardComponent = ({ ui, today, onPlay, onOpen }: DailyCardProps) => {
       : t('dailyCard.noStreak');
 
   return (
-    <View style={[styles.card, { backgroundColor: ui.surface }]}>
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+      ]}
+    >
       <Pressable
         accessibilityRole="button"
         accessibilityLabel={
@@ -38,24 +54,33 @@ const DailyCardComponent = ({ ui, today, onPlay, onOpen }: DailyCardProps) => {
         onPress={onOpen}
         style={({ pressed }) => [styles.info, pressed && styles.pressed]}
       >
-        <Ionicons name="flame" size={30} color={streak > 0 ? colors.flame : ui.textMuted} />
+        <View
+          style={[
+            styles.iconTile,
+            {
+              backgroundColor: withAlpha(streak > 0 ? colors.flame : ui.textMuted, alphas.tint),
+            },
+          ]}
+        >
+          <Ionicons
+            name={streak > 0 ? 'flame' : 'flame-outline'}
+            size={20}
+            color={streak > 0 ? colors.flame : ui.textMuted}
+          />
+        </View>
         <View style={styles.texts}>
           <Text style={[styles.title, { color: ui.text }]}>{t('dailyCard.title')}</Text>
           <Text style={[styles.streak, { color: ui.textMuted }]}>{streakText}</Text>
         </View>
-        <Ionicons
-          name={I18nManager.isRTL ? 'chevron-back' : 'chevron-forward'}
-          size={18}
-          color={ui.textMuted}
-        />
       </Pressable>
       {done ? (
-        <View style={styles.done}>
-          <Text style={[styles.doneText, { color: ui.text }]}>{t('dailyCard.done')}</Text>
+        <View style={[styles.done, { backgroundColor: withAlpha(colors.success, alphas.tint) }]}>
+          <Text style={[styles.doneText, { color: colors.success }]}>{t('dailyCard.done')}</Text>
         </View>
       ) : (
         <Button
           variant="primary"
+          size="md"
           label={t('dailyCard.play')}
           accessibilityLabel={t('dailyCard.playA11y')}
           onPress={onPlay}
@@ -74,9 +99,17 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
-    padding: spacing.sm,
+    padding: spacing.xs,
     paddingEnd: spacing.md,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  iconTile: {
+    width: 36,
+    height: 36,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   info: {
     flex: 1,
@@ -94,19 +127,18 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   title: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   streak: {
-    fontSize: fontSizes.small,
+    ...typography.rowHint,
   },
   done: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: controlHeights.sm,
     justifyContent: 'center',
     paddingHorizontal: spacing.md,
+    borderRadius: radii.pill,
   },
   doneText: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.control,
   },
 });

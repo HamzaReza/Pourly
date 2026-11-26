@@ -1,6 +1,6 @@
 import { Redirect } from 'expo-router';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, Text, View, type LayoutChangeEvent } from 'react-native';
+import { StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { CAPACITY, MAX_TUBES, PALETTE_SIZE } from '@/config/game';
@@ -17,6 +17,7 @@ import { FpsOverlay } from '@/ui/FpsOverlay';
 import { IconButton } from '@/ui/IconButton';
 import { goBack } from '@/ui/Screen';
 import { colors, fontSizes, MIN_TOUCH_TARGET, spacing } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 /** One automatic move (select + destination tap) per tick. */
 const MOVE_INTERVAL_MS = 420;

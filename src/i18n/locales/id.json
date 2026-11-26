@@ -18,11 +18,12 @@
   "home": {
     "play": "Level {{n}}",
     "playA11y": "Main level {{n}}",
-    "resume": "Lanjut level {{n}}",
+    "continue": "Lanjutkan level {{n}}",
     "resumeA11y": "Lanjutkan level {{n}} dari posisi terakhir",
     "shop": "Toko",
     "themes": "Tema",
     "settings": "Setelan",
+    "levels": "Level",
     "playHardA11y": "Main level {{n}}, level sulit",
     "signInCard": {
       "title": "Masuk untuk menyimpan progres",
@@ -87,7 +88,10 @@
     "costAd": "tonton iklan",
     "costUsed": "sudah dipakai",
     "dailyTitle": "Harian · {{date}}",
-    "dailyTitleA11y": "Tantangan harian, {{date}}"
+    "dailyTitleA11y": "Tantangan harian, {{date}}",
+    "costTubeLimit": "batas tercapai di level ini",
+    "tubeAdUnavailable": "Saat ini tidak ada iklan. Kamu bisa mendapatkan tabung dengan koin.",
+    "replayTitle": "Main lagi · Level {{n}}"
   },
   "coins": {
     "badgeA11y_other": "{{count}} koin. Buka toko",
@@ -117,14 +121,23 @@
     "home": "Menu",
     "dailyTitle": "Harian selesai!",
     "streak_other": "{{value}} hari beruntun",
-    "dailyReplay": "Sudah selesai hari ini. Main ulang hanya untuk seru-seruan."
+    "dailyReplay": "Sudah selesai hari ini. Main ulang hanya untuk seru-seruan.",
+    "levels": "Level",
+    "levelsA11y": "Kembali ke daftar level",
+    "newBest": "Rekor baru!",
+    "replayNote": "Kalahkan rekor bintangmu untuk mendapat koin.",
+    "perfectAgain": "Sempurna lagi! Kamu sudah punya semua bintang."
   },
   "stuck": {
     "title": "Langkah habis",
     "message": "Mundur satu langkah, tambah tabung, ulangi, atau lewati level ini.",
     "messageNoSkip": "Mundur satu langkah, tambah tabung, atau ulangi.",
     "undo": "Mundur",
-    "addTube": "+Tabung",
+    "tubeUse_other": "Pakai +Tabung (sisa {{count}})",
+    "tubeAd": "Tonton iklan: +1 tabung",
+    "tubeAdA11y": "Tonton iklan untuk menambah tabung kosong",
+    "tubeCoins_other": "+1 tabung · {{count}} koin",
+    "tubeLimit": "Batas tabung di level ini tercapai",
     "restart": "Ulangi",
     "skip": "Lewati level",
     "skipA11y": "Lewati level ini dengan menonton iklan",
@@ -132,7 +145,7 @@
   },
   "notEnough": {
     "title": "Koin tidak cukup",
-    "message": "{{item}} seharga {{cost}} koin. Kamu punya {{coins}}.",
+    "message_other": "{{item}} butuh {{value}} koin. Kamu punya {{balance}}.",
     "watchAd": "Tonton iklan",
     "watchAdA11y": "Tonton iklan untuk mendapatkan {{item}}",
     "shop": "Toko"
@@ -142,6 +155,14 @@
     "message": "Kamu memakai item berbayar di percobaan ini. Jika diulang, item itu hilang.",
     "confirm": "Tetap ulangi",
     "cancel": "Lanjut main"
+  },
+  "tubeConfirm": {
+    "useTitle": "Pakai 1 +Tabung?",
+    "useMessage_other": "Kamu punya {{count}} +Tabung. Tabung kosong tetap ada di level ini, meski kamu mengulang.",
+    "useConfirm": "Tambah tabung",
+    "buyTitle_other": "Habiskan {{count}} koin untuk +1 tabung?",
+    "buyMessage": "Tabung kosong tetap ada di level ini, meski kamu mengulang.",
+    "buyConfirm": "Beli tabung"
   },
   "reward": {
     "title": "Hadiah",
@@ -219,6 +240,7 @@
     "freeCoins": {
       "title": "Koin gratis",
       "button": "Koin gratis",
+      "watch": "Tonton",
       "a11y_other": "Tonton iklan untuk {{value}} koin gratis",
       "reward_other": "+{{value}} koin untuk iklan singkat",
       "left_other": "Sisa {{count}} hari ini",
@@ -267,7 +289,11 @@
     "thanksMessage": "Pembelianmu sudah ditambahkan.",
     "alreadyOwnedTitle": "Sudah dibeli",
     "alreadyOwnedMessage": "Akun Google Play ini sudah memilikinya. Pulihkan pembelian untuk mendapatkannya kembali.",
-    "restoreAction": "Pulihkan pembelian"
+    "restoreAction": "Pulihkan pembelian",
+    "tags": {
+      "popular": "Populer",
+      "bestValue": "Paling hemat"
+    }
   },
   "themes": {
     "title": "Tema",
@@ -448,5 +474,36 @@
     "comeback3Body": "Ayo main lagi: level {{n}} siap kapan pun kamu mau.",
     "comeback4Title": "Satu tuangan lagi?",
     "comeback4Body": "Ini pengingat terakhir kami. Level {{n}} tersimpan dan menunggumu kapan saja."
+  },
+  "levels": {
+    "title": "Level",
+    "starsA11y": "Bintang terkumpul: {{value}} dari {{max}}",
+    "cellA11y": "Level {{n}}: {{stars}} dari 3 bintang. Main lagi",
+    "currentA11y": "Level {{n}}: belum selesai. Main",
+    "hardA11y": "level sulit",
+    "lockedA11y": "Level {{n}}, terkunci",
+    "chapter": "Level {{from}}–{{to}}",
+    "chapterA11y": "Level {{from}} sampai {{to}}: {{done}} dari {{total}} selesai, {{stars}} dari {{maxStars}} bintang",
+    "completed_other": "{{value}} level selesai"
+  },
+  "chapters": {
+    "gateTitle": "Bab {{n}} terkunci",
+    "gateMessage": "Kumpulkan {{target}}★ di bab {{prev}} untuk membukanya.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} dari {{target}} bintang di bab {{prev}}",
+    "replay": "Main lagi level",
+    "unlockCoins_other": "Buka dengan {{value}} koin",
+    "confirmTitle_other": "Habiskan {{value}} koin untuk membuka bab {{n}}?",
+    "confirmMessage": "Kamu juga bisa membukanya gratis dengan mengumpulkan bintang.",
+    "confirm": "Buka",
+    "unlocked": "Bab {{n}} terbuka!",
+    "homeCta": "Buka bab {{n}}",
+    "homeCtaA11y": "Bab {{n}} terkunci. Lihat cara membukanya",
+    "headerLocked": "{{stars}} / {{target}} ★ di bab {{prev}} untuk membuka",
+    "headerLockedA11y": "Bab {{n}} terkunci: {{stars}} dari {{target}} bintang di bab {{prev}}. Lihat cara membukanya",
+    "item": "Membuka bab {{n}}",
+    "locked": "Terkunci",
+    "headerToUnlock": "{{stars}}/{{target}}★ untuk membuka",
+    "balance_other": "Kamu punya {{value}} koin"
   }
 }

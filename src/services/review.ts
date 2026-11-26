@@ -29,7 +29,7 @@ export const REVIEW_SPACING_MS = 60 * 24 * 60 * 60 * 1000;
 export const REVIEW_AD_QUIET_MS = 60_000;
 
 export interface ReviewInput {
-  readonly mode: 'level' | 'daily';
+  readonly mode: 'level' | 'daily' | 'replay';
   /** The level that was just won. */
   readonly level: number;
   readonly skipped: boolean;

@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useCallback } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { ThemeUi } from '@/render/themes';
@@ -9,7 +9,9 @@ import { useCloudStore, type SignInCardDismissal } from '@/state/cloudStore';
 import { hasAnyPurchase, useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
 import { IconButton } from '@/ui/IconButton';
-import { fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import { surfaceColors } from '@/ui/theme';
+import { radii, spacing, typography } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 /** The card appears once level 5 is completed (the next level is 6) or after a first purchase. */
 export const SIGN_IN_CARD_LEVEL = 6;
@@ -64,13 +66,22 @@ const SignInCardComponent = ({ ui }: SignInCardProps) => {
   if (!shouldShowSignInCard({ available, guest, level, hasPurchase, dismissal })) return null;
 
   return (
-    <View style={[styles.card, { backgroundColor: ui.surface }]} testID="sign-in-card">
-      <Ionicons name="cloud-upload" size={28} color={ui.accent} />
+    <View
+      style={[
+        styles.card,
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+      ]}
+      testID="sign-in-card"
+    >
+      <View style={[styles.iconTile, { backgroundColor: surfaceColors(ui).accentTint }]}>
+        <Ionicons name="cloud-upload-outline" size={20} color={ui.accent} />
+      </View>
       <View style={styles.texts}>
         <Text style={[styles.title, { color: ui.text }]}>{t('home.signInCard.title')}</Text>
         <Text style={[styles.body, { color: ui.textMuted }]}>{t('home.signInCard.body')}</Text>
         <Button
           variant="primary"
+          size="sm"
           label={t('home.signInCard.button')}
           accessibilityLabel={t('account.signIn')}
           onPress={onSignIn}
@@ -99,21 +110,28 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.md,
     paddingStart: spacing.md,
     paddingEnd: spacing.xs,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  iconTile: {
+    width: 36,
+    height: 36,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   texts: {
     flex: 1,
     gap: spacing.xs,
   },
   title: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   body: {
-    fontSize: fontSizes.small,
+    ...typography.rowHint,
   },
   button: {
     alignSelf: 'flex-start',
-    marginTop: spacing.xs,
+    marginTop: spacing.sm,
   },
 });

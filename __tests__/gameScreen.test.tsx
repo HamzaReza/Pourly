@@ -163,19 +163,25 @@ describe('game screen', () => {
     expect(currentToast()?.key).toBe('game.noHint');
   });
 
-  it('restart asks for confirmation only after a paid item', async () => {
+  it('restart asks for confirmation only after a paid item; the extra tube is kept', async () => {
     setProgress({ level: 5 });
     useGameStore.getState().loadLevel(levelOf(5, revealBoard()), 'level', NOW);
+    hintResult.current = { from: 0, to: 2 };
     await mount();
     await fireEvent.press(screen.getByText('Restart'));
     expect(useGameStore.getState().session?.restartsThisLevel).toBe(1);
     await fireEvent.press(screen.getByLabelText('+Tube, 1 left'));
+    expect(screen.getByText('Use 1 +Tube?')).toBeTruthy();
+    await fireEvent.press(screen.getByText('Add tube'));
+    await fireEvent.press(screen.getByText('Restart'));
+    expect(useGameStore.getState().session?.restartsThisLevel).toBe(2);
+    await fireEvent.press(screen.getByLabelText('Hint, 3 left'));
     await fireEvent.press(screen.getByText('Restart'));
     expect(screen.getByText('Restart level?')).toBeTruthy();
     await fireEvent.press(screen.getByText('Restart anyway'));
     expect(useGameStore.getState().session).toMatchObject({
-      restartsThisLevel: 2,
-      extraTubeUsed: false,
+      restartsThisLevel: 3,
+      extraTubesAdded: 1,
     });
   });
 

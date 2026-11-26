@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { STARTER_PACK_CONTENTS } from '@/config/products';
@@ -8,9 +8,13 @@ import { countdownParts, starterPackRemainingMs } from '@/game/starterPack';
 import { formatNumber } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import { useProgressStore } from '@/state/progressStore';
-import { colors, fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import { alphas, colors, radii, spacing, typography, withAlpha } from '@/ui/tokens';
+
+import { Card } from '@/ui/Card';
+import { Tag } from '@/ui/Tag';
 
 import { PriceButton, type PriceState } from './PriceButton';
+import { Text } from '@/ui/Text';
 
 const TICK_MS = 1000;
 
@@ -54,18 +58,15 @@ const StarterPackCardComponent = ({ ui, price, disabled, onBuy }: StarterPackCar
   const name = t('shop.names.starter_pack');
 
   return (
-    <View
-      style={[styles.card, { backgroundColor: ui.surface, borderColor: ui.accent }]}
-      testID="shop-starter-pack"
-    >
+    <Card ui={ui} tone="selected" style={styles.card} testID="shop-starter-pack">
       <View style={styles.header}>
-        <Ionicons name="gift" size={28} color={colors.coin} />
-        <Text accessibilityRole="header" style={[styles.title, { color: ui.text }]}>
-          {name}
-        </Text>
-        <View style={[styles.pill, { backgroundColor: ui.accent }]}>
-          <Text style={[styles.pillText, { color: ui.onAccent }]}>
-            {t('shop.starterPack.oneTime')}
+        <View style={[styles.iconTile, { backgroundColor: withAlpha(ui.text, alphas.subtle) }]}>
+          <Ionicons name="gift" size={22} color={colors.coin} />
+        </View>
+        <View style={styles.headerTexts}>
+          <Tag ui={ui} label={t('shop.starterPack.oneTime')} />
+          <Text accessibilityRole="header" style={[styles.title, { color: ui.text }]}>
+            {name}
           </Text>
         </View>
       </View>
@@ -77,15 +78,18 @@ const StarterPackCardComponent = ({ ui, price, disabled, onBuy }: StarterPackCar
         })}
       </Text>
       <View style={styles.footer}>
-        <Text
-          style={[styles.timer, { color: ui.text }]}
-          accessibilityLabel={t('starterPack.endsInA11y', {
-            hours: formatNumber(hours),
-            minutes: formatNumber(minutes),
-          })}
-        >
-          {t('starterPack.endsIn', { time })}
-        </Text>
+        <View style={styles.timerWrap}>
+          <Ionicons name="time-outline" size={15} color={ui.accent} />
+          <Text
+            style={[styles.timer, { color: ui.text }]}
+            accessibilityLabel={t('starterPack.endsInA11y', {
+              hours: formatNumber(hours),
+              minutes: formatNumber(minutes),
+            })}
+          >
+            {t('starterPack.endsIn', { time })}
+          </Text>
+        </View>
         <PriceButton
           ui={ui}
           name={name}
@@ -95,7 +99,7 @@ const StarterPackCardComponent = ({ ui, price, disabled, onBuy }: StarterPackCar
           testID="buy-starter_pack"
         />
       </View>
-    </View>
+    </Card>
   );
 };
 
@@ -103,32 +107,30 @@ export const StarterPackCard = memo(StarterPackCardComponent);
 
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radii.lg,
-    borderWidth: 1.5,
-    padding: spacing.md,
-    gap: spacing.sm,
+    gap: spacing.md,
   },
   header: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.md,
+  },
+  iconTile: {
+    width: 44,
+    height: 44,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  headerTexts: {
+    flex: 1,
+    alignItems: 'flex-start',
+    gap: spacing.xs,
   },
   title: {
-    flex: 1,
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.bold,
-  },
-  pill: {
-    borderRadius: radii.pill,
-    paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.xxs,
-  },
-  pillText: {
-    fontSize: fontSizes.caption,
-    fontWeight: fontWeights.bold,
+    ...typography.cardTitle,
   },
   description: {
-    fontSize: fontSizes.small,
+    ...typography.cardBody,
   },
   footer: {
     flexDirection: 'row',
@@ -136,10 +138,15 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     gap: spacing.md,
   },
+  timerWrap: {
+    flexShrink: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.xs,
+  },
   timer: {
     flexShrink: 1,
-    fontSize: fontSizes.small,
-    fontWeight: fontWeights.semibold,
+    ...typography.link,
     fontVariant: ['tabular-nums'],
   },
 });

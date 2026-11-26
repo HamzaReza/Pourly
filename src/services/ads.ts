@@ -78,10 +78,18 @@ const withAudioPaused = async <T>(show: () => Promise<T>, fallback: T): Promise<
   }
 };
 
-const showRewarded = async (placement: RewardedPlacement): Promise<RewardedResult> => {
+export interface ShowRewardedOptions {
+  /** Skip the generic "Ad not ready" toast; the caller shows its own message. */
+  readonly quietUnavailable?: boolean;
+}
+
+const showRewarded = async (
+  placement: RewardedPlacement,
+  { quietUnavailable = false }: ShowRewardedOptions = {},
+): Promise<RewardedResult> => {
   track('ad_rewarded_requested', { placement });
   if (!isRewardedReady()) {
-    showToast('ads.notReady');
+    if (!quietUnavailable) showToast('ads.notReady');
     preload();
     return 'unavailable';
   }
@@ -89,8 +97,9 @@ const showRewarded = async (placement: RewardedPlacement): Promise<RewardedResul
     () => provider.showRewarded(placement),
     'unavailable',
   );
-  if (result === 'unavailable') showToast('ads.notReady');
-  else useProgressStore.getState().recordRewardedAd(Date.now());
+  if (result === 'unavailable') {
+    if (!quietUnavailable) showToast('ads.notReady');
+  } else useProgressStore.getState().recordRewardedAd(Date.now());
   if (result === 'earned') track('ad_rewarded_earned', { placement });
   preload();
   return result;

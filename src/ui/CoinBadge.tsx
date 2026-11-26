@@ -7,7 +7,7 @@ import { track } from '@/services/analytics';
 import { useProgressStore } from '@/state/progressStore';
 
 import { AnimatedCount } from './AnimatedCount';
-import { useReducedMotionPref, useThemeUi } from './theme';
+import { surfaceColors, useReducedMotionPref, useThemeUi } from './theme';
 import { colors, fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from './tokens';
 
 export interface CoinBadgeProps {
@@ -16,6 +16,9 @@ export interface CoinBadgeProps {
   /** False inside the Shop itself: the balance is shown but does not open the Shop again. */
   interactive?: boolean;
 }
+
+/** Visual height of the balance pill; `hitSlop` keeps a 44 dp touch target. */
+const BADGE_HEIGHT = 36;
 
 /** Coin glyph drawn with views (no image). */
 export const CoinGlyph = memo(({ size = 18 }: { size?: number }) => (
@@ -61,7 +64,10 @@ const CoinBadgeComponent = ({ source, interactive = true }: CoinBadgeProps) => {
       <View
         accessible
         accessibilityLabel={t('coins.balanceA11y', { count: coins })}
-        style={[styles.badge, { backgroundColor: ui.surface }]}
+        style={[
+          styles.badge,
+          { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+        ]}
       >
         {content}
       </View>
@@ -73,10 +79,10 @@ const CoinBadgeComponent = ({ source, interactive = true }: CoinBadgeProps) => {
       accessibilityRole="button"
       accessibilityLabel={t('coins.badgeA11y', { count: coins })}
       onPress={openShop}
-      hitSlop={4}
+      hitSlop={(MIN_TOUCH_TARGET - BADGE_HEIGHT) / 2}
       style={({ pressed }) => [
         styles.badge,
-        { backgroundColor: ui.surface },
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
         pressed && styles.pressed,
       ]}
     >
@@ -89,13 +95,15 @@ export const CoinBadge = memo(CoinBadgeComponent);
 
 const styles = StyleSheet.create({
   badge: {
-    minHeight: MIN_TOUCH_TARGET,
+    height: BADGE_HEIGHT,
     minWidth: MIN_TOUCH_TARGET,
-    paddingHorizontal: spacing.md,
+    paddingStart: spacing.sm,
+    paddingEnd: spacing.md,
     borderRadius: radii.pill,
+    borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.sm - spacing.xxs,
   },
   pressed: {
     opacity: 0.8,
@@ -112,8 +120,9 @@ const styles = StyleSheet.create({
     borderColor: colors.coinRim,
   },
   count: {
-    minWidth: 32,
-    fontSize: fontSizes.body,
+    minWidth: 28,
+    fontSize: fontSizes.callout,
     fontWeight: fontWeights.bold,
+    fontVariant: ['tabular-nums'],
   },
 });

@@ -1,6 +1,8 @@
 import { memo } from 'react';
 import { useTranslation } from 'react-i18next';
 
+import { formatNumber } from '@/i18n/format';
+
 import type { PowerUp } from '@/game/economy';
 import type { ThemeUi } from '@/render/themes';
 import { Button } from '@/ui/Button';
@@ -15,10 +17,13 @@ interface CommonProps {
   onClose: () => void;
 }
 
-/** A power-up: the matching rewarded ad is offered next to the Shop. */
+/**
+ * A power-up: the matching rewarded ad is offered next to the Shop. Without `onWatchAd` (the +Tube
+ * after the level's one ad tube is used) only the Shop is offered.
+ */
 interface PowerUpProps extends CommonProps {
   powerUp: PowerUp;
-  onWatchAd: () => void;
+  onWatchAd?: () => void;
 }
 
 /** Anything else bought with coins (a theme): only the Shop is offered. */
@@ -37,38 +42,46 @@ const ITEM_KEYS = {
 
 /**
  * Shown when coins do not cover a purchase: a power-up offers its rewarded ad (matching placement)
- * and the Shop; other items offer the Shop only.
+ * when it has one left, and the Shop; other items offer the Shop only.
  */
 const NotEnoughCoinsOverlayComponent = (props: NotEnoughCoinsOverlayProps) => {
   const { ui, cost, coins, busy, onShop, onClose } = props;
   const { t } = useTranslation();
   const isPowerUp = 'powerUp' in props;
   const item = isPowerUp ? t(ITEM_KEYS[props.powerUp]) : props.itemName;
+  const onWatchAd = isPowerUp ? props.onWatchAd : undefined;
   return (
     <Overlay
       title={t('notEnough.title')}
-      message={t('notEnough.message', { item, cost, coins })}
+      message={t('notEnough.message', {
+        item,
+        count: cost,
+        value: formatNumber(cost),
+        balance: formatNumber(coins),
+      })}
       onBackdropPress={onClose}
+      icon="wallet-outline"
+      iconTone="gold"
       testID="not-enough-overlay"
     >
-      {isPowerUp ? (
+      {onWatchAd !== undefined ? (
         <Button
           variant="primary"
           label={t('notEnough.watchAd')}
           accessibilityLabel={t('notEnough.watchAdA11y', { item: item.toLowerCase() })}
-          onPress={props.onWatchAd}
+          onPress={onWatchAd}
           disabled={busy}
           icon="play"
           ui={ui}
         />
       ) : null}
       <Button
-        variant={isPowerUp ? 'secondary' : 'primary'}
+        variant={onWatchAd !== undefined ? 'secondary' : 'primary'}
         label={t('notEnough.shop')}
         onPress={onShop}
         ui={ui}
       />
-      <Button label={t('common.close')} onPress={onClose} ui={ui} />
+      <Button variant="ghost" label={t('common.close')} onPress={onClose} ui={ui} />
     </Overlay>
   );
 };

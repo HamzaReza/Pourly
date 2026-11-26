@@ -25,7 +25,7 @@ export const SECOND_PROMPT_LEVEL = 15;
 export const MAX_PROMPTS = 2;
 
 export interface NotificationPromptInput {
-  readonly mode: 'level' | 'daily';
+  readonly mode: 'level' | 'daily' | 'replay';
   /** The level that was just finished. */
   readonly level: number;
   /** Finished with the SKIP_LEVEL ad (not a win). */

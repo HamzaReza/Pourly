@@ -1,5 +1,5 @@
 import { memo, useEffect, useRef, useSyncExternalStore, type ComponentRef } from 'react';
-import { AccessibilityInfo, Modal, Pressable, StyleSheet, Text, View } from 'react-native';
+import { AccessibilityInfo, Modal, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -12,6 +12,7 @@ import {
 } from '@/services/iap.mock';
 
 import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from './tokens';
+import { Text } from '@/ui/Text';
 
 /** Fixed test-tool colors: the sheet must never look like the real Google Play sheet. */
 const SHEET_BACKGROUND = '#1B1B1B';

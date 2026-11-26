@@ -3,7 +3,9 @@
  * `gameStore.ts` wraps these in a Zustand store; everything here is pure and takes the clock as an
  * argument, so it is testable without React or storage.
  */
-import { PALETTE_SIZE } from '@/config/game';
+import { ECONOMY } from '@/config/economy';
+import { MAX_TUBES as MAX_LEVEL_TUBES, PALETTE_SIZE } from '@/config/game';
+import { extraTubesLeft } from '@/game/economy';
 import {
   addEmptyTube,
   applyPour,
@@ -19,7 +21,12 @@ import type { Board, Level, Move, PourOutcome, Segment, Tube } from '@/game/type
 
 import type { StarCount } from './progressModel';
 
-export type GameMode = 'level' | 'daily';
+/**
+ * `level`: the player's progression. `daily`: the daily challenge. `replay`: a completed level
+ * played again from the Levels screen; it never touches the other two slots or `progress.level`
+ * and is never persisted (leaving a replay discards it).
+ */
+export type GameMode = 'level' | 'daily' | 'replay';
 
 export type GameStatus = 'playing' | 'won' | 'stuck' | 'paused';
 
@@ -36,6 +43,16 @@ export interface LevelResult {
   readonly doubled: boolean;
   /** Daily mode only: the streak after this win and whether the day's reward was granted. */
   readonly daily?: DailyWinInfo;
+  /** Replay mode only: the best stars before this win and whether this win beat them. */
+  readonly replay?: ReplayWinInfo;
+  /** The chapter this win's stars just opened (P12.7), if any. */
+  readonly chapterUnlocked?: number;
+}
+
+export interface ReplayWinInfo {
+  /** Best stars stored before the replay (null when the level had none). */
+  readonly previousStars: StarCount | null;
+  readonly improved: boolean;
 }
 
 export interface DailyWinInfo {
@@ -52,7 +69,7 @@ export interface GameSession {
   readonly levelNumber: number;
   readonly par: number;
   readonly hard: boolean;
-  /** The level's opening board (restart target), without the extra tube. */
+  /** The level's opening board, without extra tubes (a restart re-adds `extraTubesAdded`). */
   readonly initialBoard: Board;
   readonly history: History;
   /** Pours on the current line of play (an undo takes one back); drives the stars. */
@@ -61,8 +78,13 @@ export interface GameSession {
   readonly undosUsed: number;
   /** Hints shown on this level, across restarts. */
   readonly hintsUsed: number;
-  /** The +Tube power-up is in use this attempt. */
-  readonly extraTubeUsed: boolean;
+  /**
+   * Extra empty tubes added on this level (capped at `maxExtraTubesPerLevel`). Per level, not per
+   * attempt: kept across restarts and resumes, reset only when another level starts.
+   */
+  readonly extraTubesAdded: number;
+  /** The level's one rewarded-ad +Tube was earned (used or banked). Per level, like the count. */
+  readonly adTubeUsed: boolean;
   readonly restartsThisLevel: number;
   /** Inventory, coins or an ad were spent this attempt (restart then asks for confirmation). */
   readonly paidResourceUsedThisAttempt: boolean;
@@ -98,7 +120,7 @@ const stopClock = (session: GameSession, now: number): GameSession =>
 export const createSession = (level: Level, mode: GameMode, now: number): GameSession => ({
   mode,
   levelId: level.id,
-  levelNumber: mode === 'level' ? level.config.level : 0,
+  levelNumber: mode === 'daily' ? 0 : level.config.level,
   par: level.par,
   hard: level.config.hard,
   initialBoard: level.board,
@@ -106,7 +128,8 @@ export const createSession = (level: Level, mode: GameMode, now: number): GameSe
   moves: 0,
   undosUsed: 0,
   hintsUsed: 0,
-  extraTubeUsed: false,
+  extraTubesAdded: 0,
+  adTubeUsed: false,
   restartsThisLevel: 0,
   paidResourceUsedThisAttempt: false,
   startedAt: now,
@@ -154,41 +177,55 @@ export const reduceUndo = (session: GameSession, paid: boolean): GameSession | n
   };
 };
 
+/** The opening board with `count` extra empty tubes appended (the restart target). */
+export const withExtraTubes = (board: Board, count: number): Board => {
+  let out = board;
+  for (let i = 0; i < count; i += 1) out = addEmptyTube(out);
+  return out;
+};
+
 /**
- * Back to the opening board. The attempt's counters (moves, undos, extra tube, paid flag) reset;
- * time on the level and hints used carry over. Allowed while live or paused.
+ * Back to the opening colours. The board keeps the extra tubes already added on this level, so
+ * nothing paid for is lost; the cap and the ad flag keep counting. The attempt's counters (moves,
+ * undos, paid flag) reset; time on the level and hints used carry over. Allowed while live or
+ * paused.
  */
 export const reduceRestart = (session: GameSession, now: number): GameSession | null => {
   if (session.status === 'won') return null;
+  const board = withExtraTubes(session.initialBoard, session.extraTubesAdded);
   return {
     ...session,
-    history: createHistory(session.initialBoard),
+    history: createHistory(board),
     moves: 0,
     undosUsed: 0,
-    extraTubeUsed: false,
     paidResourceUsedThisAttempt: false,
     restartsThisLevel: session.restartsThisLevel + 1,
     runningSince: session.runningSince ?? now,
-    status: boardStatus(session.initialBoard),
+    status: boardStatus(board),
     pausedFrom: null,
   };
 };
 
 /**
- * Adds the extra empty tube to the current board and to every earlier snapshot, so an undo never
- * removes it. Once per attempt. Always counts as a paid resource.
+ * Adds an extra empty tube to the current board and to every earlier snapshot, so an undo never
+ * removes it. At most `maxExtraTubesPerLevel` per level; `viaAd` also spends the level's ad tube.
+ * Not a paid resource for the restart confirmation: a restart keeps the tube.
  */
-export const reduceAddTube = (session: GameSession): GameSession | null => {
-  if (!isActive(session.status) || session.extraTubeUsed) return null;
+export const reduceAddTube = (session: GameSession, viaAd = false): GameSession | null => {
+  if (!isActive(session.status) || extraTubesLeft(session.extraTubesAdded) <= 0) return null;
   const current = addEmptyTube(session.history.current);
   return {
     ...session,
     history: { current, past: session.history.past.map(addEmptyTube) },
-    extraTubeUsed: true,
-    paidResourceUsedThisAttempt: true,
+    extraTubesAdded: session.extraTubesAdded + 1,
+    adTubeUsed: session.adTubeUsed || viaAd,
     status: boardStatus(current),
   };
 };
+
+/** Spends the level's ad tube without adding one (the earned unit went to the inventory). */
+export const reduceMarkAdTubeUsed = (session: GameSession): GameSession | null =>
+  session.adTubeUsed ? null : { ...session, adTubeUsed: true };
 
 /** A hint was shown (always a paid resource). */
 export const reduceHintUsed = (session: GameSession): GameSession => ({
@@ -249,11 +286,13 @@ export const isResumable = (
 // Resume snapshot
 // ---------------------------------------------------------------------------------------------
 
-export const SNAPSHOT_VERSION = 1;
+/** Version 2 replaced the per-attempt `extraTubeUsed` flag with the per-level tube count and ad flag. */
+export const SNAPSHOT_VERSION = 2;
 
-/** Largest capacity and history the decoder accepts (guards against corrupt data). */
+/** Largest capacity, board, extra tubes and history the decoder accepts (guards against corrupt data). */
 const MAX_CAPACITY = 8;
-const MAX_TUBES = 17;
+const MAX_INITIAL_TUBES = MAX_LEVEL_TUBES;
+const MAX_EXTRA_TUBES = ECONOMY.maxExtraTubesPerLevel;
 const MAX_HISTORY = 5000;
 
 /** Compact board: one string per tube, `a..n` revealed and `A..N` hidden (see `tubeKey`). */
@@ -272,7 +311,8 @@ export interface WireSession {
   readonly moves: number;
   readonly undosUsed: number;
   readonly hintsUsed: number;
-  readonly extraTubeUsed: boolean;
+  readonly extraTubesAdded: number;
+  readonly adTubeUsed: boolean;
   readonly restartsThisLevel: number;
   readonly paidResourceUsedThisAttempt: boolean;
   readonly startedAt: number;
@@ -297,7 +337,7 @@ export const encodeBoard = (board: Board): WireBoard => {
  * banked into `elapsedMs`; a restored session starts with its clock stopped.
  */
 export const encodeSession = (session: GameSession | null, now: number): WireSession | null => {
-  if (session === null || session.status === 'won') return null;
+  if (session === null || session.status === 'won' || session.mode === 'replay') return null;
   return {
     mode: session.mode,
     levelId: session.levelId,
@@ -311,7 +351,8 @@ export const encodeSession = (session: GameSession | null, now: number): WireSes
     moves: session.moves,
     undosUsed: session.undosUsed,
     hintsUsed: session.hintsUsed,
-    extraTubeUsed: session.extraTubeUsed,
+    extraTubesAdded: session.extraTubesAdded,
+    adTubeUsed: session.adTubeUsed,
     restartsThisLevel: session.restartsThisLevel,
     paidResourceUsedThisAttempt: session.paidResourceUsedThisAttempt,
     startedAt: session.startedAt,
@@ -369,6 +410,7 @@ const decodeBoard = (value: unknown, capacity: number, tubeCount: number): Board
   return { tubes, capacity };
 };
 
+/** Replays are never persisted, so a stored session is always a level or a daily game. */
 const isMode = (value: unknown): value is GameMode => value === 'level' || value === 'daily';
 
 const isActiveStatus = (value: unknown): value is ActiveStatus =>
@@ -376,7 +418,7 @@ const isActiveStatus = (value: unknown): value is ActiveStatus =>
 
 /**
  * Validates a stored snapshot and rebuilds the session. Every board must have the opening
- * board's tube count (plus one with the extra tube) and exactly its colors; anything malformed
+ * board's tube count plus the extra tubes added and exactly its colors; anything malformed
  * yields null so the player simply starts the level fresh.
  */
 export const decodeSession = (value: unknown): GameSession | null => {
@@ -387,11 +429,13 @@ export const decodeSession = (value: unknown): GameSession | null => {
     return null;
   }
   if (!isCount(capacity) || capacity < 1 || capacity > MAX_CAPACITY) return null;
-  if (!Array.isArray(value.initial) || value.initial.length > MAX_TUBES - 1) return null;
+  if (!Array.isArray(value.initial) || value.initial.length > MAX_INITIAL_TUBES) return null;
   const initial = decodeBoard(value.initial, capacity, value.initial.length);
   if (initial === null || initial.tubes.length === 0) return null;
-  if (typeof value.extraTubeUsed !== 'boolean') return null;
-  const tubeCount = initial.tubes.length + (value.extraTubeUsed ? 1 : 0);
+  const { extraTubesAdded, adTubeUsed } = value;
+  if (!isCount(extraTubesAdded) || extraTubesAdded > MAX_EXTRA_TUBES) return null;
+  if (typeof adTubeUsed !== 'boolean') return null;
+  const tubeCount = initial.tubes.length + extraTubesAdded;
   const colors = colorCounts(initial);
   const decodeLive = (wire: unknown): Board | null => {
     const board = decodeBoard(wire, capacity, tubeCount);
@@ -427,7 +471,8 @@ export const decodeSession = (value: unknown): GameSession | null => {
     moves,
     undosUsed,
     hintsUsed,
-    extraTubeUsed: value.extraTubeUsed,
+    extraTubesAdded,
+    adTubeUsed,
     restartsThisLevel,
     paidResourceUsedThisAttempt: value.paidResourceUsedThisAttempt,
     startedAt: value.startedAt,
@@ -497,13 +542,57 @@ export const switchSessionMode = (
   return { session: slots.parked, parked: park(slots.session, now) };
 };
 
+/**
+ * The slots while a replay is on screen: the replay is the active session and the player's real
+ * slots (level and daily, active and parked) wait untouched in `stashed`.
+ */
+export interface ReplaySlots extends SessionSlots {
+  readonly stashed: SessionSlots | null;
+}
+
+const NO_SLOTS: SessionSlots = { session: null, parked: null };
+
+/** The player's real slots: the stash during a replay, else the slots themselves. */
+export const mainSlots = (slots: ReplaySlots): SessionSlots =>
+  slots.session?.mode === 'replay' ? (slots.stashed ?? NO_SLOTS) : slots;
+
+/**
+ * Starts a replay. The real slots move to the stash untouched (the active one paused, as when
+ * parked); a replay already on screen is replaced and the existing stash is kept.
+ */
+export const enterReplay = (slots: ReplaySlots, replay: GameSession, now: number): ReplaySlots => {
+  const main = mainSlots(slots);
+  return {
+    session: replay,
+    parked: null,
+    stashed: { session: park(main.session, now), parked: main.parked },
+  };
+};
+
+/** Ends a replay: the replay is dropped and the stashed slots come back. No-op otherwise. */
+export const leaveReplay = (slots: ReplaySlots): ReplaySlots =>
+  slots.session?.mode === 'replay' ? { ...mainSlots(slots), stashed: null } : slots;
+
 type SnapshotStep = (state: UnknownRecord) => UnknownRecord;
+
+/** v1 → v2 for one wire session: the per-attempt flag becomes a count of 0 or 1, ad unused. */
+const upgradeWireV1 = (wire: unknown): unknown => {
+  if (!isRecord(wire)) return wire;
+  const { extraTubeUsed, ...rest } = wire;
+  return { ...rest, extraTubesAdded: extraTubeUsed === true ? 1 : 0, adTubeUsed: false };
+};
 
 /**
  * Structural snapshot migrations keyed by the version they upgrade FROM. Version 1 is the first
  * shape; add `n: (s) => ...` when version n+1 changes it. Unknown versions are dropped.
  */
-const SNAPSHOT_STEPS: Readonly<Record<number, SnapshotStep>> = {};
+const SNAPSHOT_STEPS: Readonly<Record<number, SnapshotStep>> = {
+  1: (state) => ({
+    ...state,
+    snapshot: upgradeWireV1(state.snapshot),
+    parked: upgradeWireV1(state.parked),
+  }),
+};
 
 /** Upgrades a stored snapshot to `SNAPSHOT_VERSION`; anything unreadable becomes no snapshot. */
 export const migrateGamePersisted = (persisted: unknown, fromVersion: number): PersistedGame => {

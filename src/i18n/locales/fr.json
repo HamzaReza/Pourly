@@ -18,11 +18,12 @@
   "home": {
     "play": "Niveau {{n}}",
     "playA11y": "Jouer au niveau {{n}}",
-    "resume": "Reprendre niv. {{n}}",
+    "continue": "Continuer le niveau {{n}}",
     "resumeA11y": "Reprendre le niveau {{n}} là où tu t'es arrêté",
     "shop": "Boutique",
     "themes": "Thèmes",
     "settings": "Réglages",
+    "levels": "Niveaux",
     "playHardA11y": "Jouer au niveau {{n}}, niveau difficile",
     "signInCard": {
       "title": "Connecte-toi pour sauvegarder ta progression",
@@ -91,7 +92,10 @@
     "costAd": "regarder une pub",
     "costUsed": "déjà utilisé",
     "dailyTitle": "Défi · {{date}}",
-    "dailyTitleA11y": "Défi du jour, {{date}}"
+    "dailyTitleA11y": "Défi du jour, {{date}}",
+    "costTubeLimit": "limite atteinte pour ce niveau",
+    "tubeAdUnavailable": "Aucune pub disponible pour l'instant. Tu peux obtenir le tube avec des pièces.",
+    "replayTitle": "Rejouer · Niveau {{n}}"
   },
   "coins": {
     "badgeA11y_many": "{{count}} pièces. Ouvrir la boutique",
@@ -129,14 +133,27 @@
     "streak_one": "Série de {{value}} jour",
     "streak_many": "Série de {{value}} de jours",
     "streak_other": "Série de {{value}} jours",
-    "dailyReplay": "Déjà fait aujourd'hui. Rejouer, c'est juste pour le plaisir."
+    "dailyReplay": "Déjà fait aujourd'hui. Rejouer, c'est juste pour le plaisir.",
+    "levels": "Niveaux",
+    "levelsA11y": "Retour à la liste des niveaux",
+    "newBest": "Nouveau record !",
+    "replayNote": "Battez votre record d’étoiles pour gagner des pièces.",
+    "perfectAgain": "Encore parfait ! Vous avez déjà toutes les étoiles."
   },
   "stuck": {
     "title": "Plus de coups",
     "message": "Annule un coup, ajoute un tube, recommence ou passe ce niveau.",
     "messageNoSkip": "Annule un coup, ajoute un tube ou recommence.",
     "undo": "Annuler",
-    "addTube": "+Tube",
+    "tubeUse_one": "Utiliser +Tube ({{count}} restant)",
+    "tubeUse_many": "Utiliser +Tube ({{count}} restants)",
+    "tubeUse_other": "Utiliser +Tube ({{count}} restants)",
+    "tubeAd": "Voir une pub : +1 tube",
+    "tubeAdA11y": "Regarder une pub pour ajouter un tube vide",
+    "tubeCoins_one": "+1 tube · {{count}} pièce",
+    "tubeCoins_many": "+1 tube · {{count}} pièces",
+    "tubeCoins_other": "+1 tube · {{count}} pièces",
+    "tubeLimit": "Limite de tubes atteinte pour ce niveau",
     "restart": "Rejouer",
     "skip": "Passer",
     "skipA11y": "Passer ce niveau en regardant une pub",
@@ -144,7 +161,9 @@
   },
   "notEnough": {
     "title": "Pas assez de pièces",
-    "message": "{{item}} coûte {{cost}} pièces. Tu en as {{coins}}.",
+    "message_one": "{{item}} coûte {{value}} pièce. Vous en avez {{balance}}.",
+    "message_many": "{{item}} coûte {{value}} de pièces. Vous en avez {{balance}}.",
+    "message_other": "{{item}} coûte {{value}} pièces. Vous en avez {{balance}}.",
     "watchAd": "Voir une pub",
     "watchAdA11y": "Regarde une pub pour obtenir {{item}}",
     "shop": "Boutique"
@@ -154,6 +173,18 @@
     "message": "Tu as utilisé un objet payant pendant cette partie. En recommençant, tu le perds.",
     "confirm": "Recommencer",
     "cancel": "Continuer"
+  },
+  "tubeConfirm": {
+    "useTitle": "Utiliser 1 +Tube ?",
+    "useMessage_one": "Tu as {{count}} +Tube. Le tube vide reste sur ce niveau, même si tu recommences.",
+    "useMessage_many": "Tu as {{count}} +Tubes. Le tube vide reste sur ce niveau, même si tu recommences.",
+    "useMessage_other": "Tu as {{count}} +Tubes. Le tube vide reste sur ce niveau, même si tu recommences.",
+    "useConfirm": "Ajouter le tube",
+    "buyTitle_one": "Dépenser {{count}} pièce pour +1 tube ?",
+    "buyTitle_many": "Dépenser {{count}} pièces pour +1 tube ?",
+    "buyTitle_other": "Dépenser {{count}} pièces pour +1 tube ?",
+    "buyMessage": "Le tube vide reste sur ce niveau, même si tu recommences.",
+    "buyConfirm": "Acheter le tube"
   },
   "reward": {
     "title": "Récompense",
@@ -245,6 +276,7 @@
     "freeCoins": {
       "title": "Pièces gratuites",
       "button": "Pièces gratuites",
+      "watch": "Regarder",
       "a11y_one": "Regarde une pub pour {{value}} pièce gratuite",
       "a11y_many": "Regarde une pub pour {{value}} de pièces gratuites",
       "a11y_other": "Regarde une pub pour {{value}} pièces gratuites",
@@ -309,7 +341,11 @@
     "thanksMessage": "Ton achat a été ajouté.",
     "alreadyOwnedTitle": "Déjà acheté",
     "alreadyOwnedMessage": "Ce compte Google Play le possède déjà. Restaure tes achats pour le récupérer.",
-    "restoreAction": "Restaurer les achats"
+    "restoreAction": "Restaurer les achats",
+    "tags": {
+      "popular": "Populaire",
+      "bestValue": "Meilleure offre"
+    }
   },
   "themes": {
     "title": "Thèmes",
@@ -490,5 +526,44 @@
     "comeback3Body": "Reviens quand tu veux : le niveau {{n}} t'attend.",
     "comeback4Title": "Une dernière partie ?",
     "comeback4Body": "C'est notre dernier rappel. Le niveau {{n}} est sauvegardé et t'attend quand tu veux."
+  },
+  "levels": {
+    "title": "Niveaux",
+    "starsA11y": "Étoiles obtenues : {{value}} sur {{max}}",
+    "cellA11y": "Niveau {{n}} : {{stars}} étoiles sur 3. Rejouer",
+    "currentA11y": "Niveau {{n}} : pas encore terminé. Jouer",
+    "hardA11y": "niveau difficile",
+    "lockedA11y": "Niveau {{n}}, verrouillé",
+    "chapter": "Niveaux {{from}}–{{to}}",
+    "chapterA11y": "Niveaux {{from}} à {{to}} : {{done}} sur {{total}} terminés, {{stars}} étoiles sur {{maxStars}}",
+    "completed_one": "{{value}} niveau terminé",
+    "completed_many": "{{value}} de niveaux terminés",
+    "completed_other": "{{value}} niveaux terminés"
+  },
+  "chapters": {
+    "gateTitle": "Le chapitre {{n}} est verrouillé",
+    "gateMessage": "Obtenez {{target}}★ dans le chapitre {{prev}} pour le déverrouiller.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} étoiles sur {{target}} dans le chapitre {{prev}}",
+    "replay": "Rejouer des niveaux",
+    "unlockCoins_one": "Déverrouiller pour {{value}} pièce",
+    "unlockCoins_many": "Déverrouiller pour {{value}} de pièces",
+    "unlockCoins_other": "Déverrouiller pour {{value}} pièces",
+    "confirmTitle_one": "Dépenser {{value}} pièce pour déverrouiller le chapitre {{n}} ?",
+    "confirmTitle_many": "Dépenser {{value}} de pièces pour déverrouiller le chapitre {{n}} ?",
+    "confirmTitle_other": "Dépenser {{value}} pièces pour déverrouiller le chapitre {{n}} ?",
+    "confirmMessage": "Vous pouvez aussi le déverrouiller gratuitement en gagnant des étoiles.",
+    "confirm": "Déverrouiller",
+    "unlocked": "Chapitre {{n}} déverrouillé !",
+    "homeCta": "Déverrouiller le chapitre {{n}}",
+    "homeCtaA11y": "Le chapitre {{n}} est verrouillé. Voir comment le déverrouiller",
+    "headerLocked": "{{stars}} / {{target}} ★ dans le chapitre {{prev}} pour déverrouiller",
+    "headerLockedA11y": "Le chapitre {{n}} est verrouillé : {{stars}} étoiles sur {{target}} dans le chapitre {{prev}}. Voir comment le déverrouiller",
+    "item": "Le déverrouillage du chapitre {{n}}",
+    "locked": "Verrouillé",
+    "headerToUnlock": "{{stars}}/{{target}}★ pour déverrouiller",
+    "balance_one": "Vous avez {{value}} pièce",
+    "balance_many": "Vous avez {{value}} de pièces",
+    "balance_other": "Vous avez {{value}} pièces"
   }
 }

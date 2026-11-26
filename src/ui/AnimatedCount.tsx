@@ -7,6 +7,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { useUiFontActive, withUiFont } from './fonts';
+
 const AnimatedTextInput = Animated.createAnimatedComponent(TextInput);
 
 export interface AnimatedCountProps {
@@ -35,6 +37,10 @@ const AnimatedCountComponent = ({
   style,
 }: AnimatedCountProps) => {
   const shown = useSharedValue(from ?? value);
+  const uiFont = useUiFontActive();
+  const textStyle = uiFont
+    ? withUiFont(StyleSheet.flatten([styles.text, style]) as TextStyle, true)
+    : [styles.text, style];
 
   useEffect(() => {
     shown.set(
@@ -56,7 +62,7 @@ const AnimatedCountComponent = ({
       underlineColorAndroid="transparent"
       defaultValue={`${prefix}${from ?? value}`}
       animatedProps={animatedProps}
-      style={[styles.text, style]}
+      style={textStyle}
     />
   );
 };

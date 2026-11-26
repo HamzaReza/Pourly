@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo, useEffect, useState } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View, type LayoutChangeEvent } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { dailyDateOf } from '@/game/daily';
@@ -11,10 +11,21 @@ import { useGameStore } from '@/state/gameStore';
 import { CoinBadge } from '@/ui/CoinBadge';
 import { IconButton } from '@/ui/IconButton';
 import { VipBadge } from '@/ui/VipBadge';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import { surfaceColors } from '@/ui/theme';
+import {
+  controlHeights,
+  fill,
+  fontSizes,
+  fontWeights,
+  MIN_TOUCH_TARGET,
+  radii,
+  spacing,
+  typography,
+} from '@/ui/tokens';
 import { parseLocalDate } from '@/utils/date';
 
 import { Crown } from './Crown';
+import { Text } from '@/ui/Text';
 
 export interface GameHudProps {
   ui: ThemeUi;
@@ -40,40 +51,80 @@ const GameHudComponent = ({
   const { t } = useTranslation();
   const levelNumber = useGameStore((state) => state.session?.levelNumber ?? 0);
   const hard = useGameStore((state) => state.session?.hard ?? false);
+  const [sides, setSides] = useState({ start: 0, end: 0 });
+  const replay = useGameStore((state) => state.session?.mode === 'replay');
   const dailyDate = useGameStore((state) =>
     state.session?.mode === 'daily' ? dailyDateOf(state.session.levelId) : null,
   );
   const day = dailyDate === null ? null : parseLocalDate(dailyDate);
   const dayLabel = day === null ? '' : formatDate(day, { month: 'short', day: 'numeric' });
   const title =
-    day === null ? t('game.title', { n: levelNumber }) : t('game.dailyTitle', { date: dayLabel });
+    day !== null
+      ? t('game.dailyTitle', { date: dayLabel })
+      : replay
+        ? t('game.replayTitle', { n: levelNumber })
+        : levelNumber > 0
+          ? t('game.title', { n: levelNumber })
+          : // No session (a locked chapter's gate is up): no title.
+            '';
   const titleA11y =
     day !== null
       ? t('game.dailyTitleA11y', { date: formatDate(day, { month: 'long', day: 'numeric' }) })
       : hard
-        ? t('game.hardTitleA11y', { n: levelNumber })
+        ? replay
+          ? `${title}, ${t('levels.hardA11y')}`
+          : t('game.hardTitleA11y', { n: levelNumber })
         : title;
+
+  /** The title is centred on the full bar, inset by the wider of the two side groups. */
+  const inset = Math.max(sides.start, sides.end) + spacing.sm;
+  const measure = (side: 'start' | 'end') => (event: LayoutChangeEvent) => {
+    const width = Math.ceil(event.nativeEvent.layout.width);
+    setSides((previous) => (previous[side] === width ? previous : { ...previous, [side]: width }));
+  };
 
   return (
     <View style={styles.bar} pointerEvents="box-none">
-      <IconButton
-        icon="pause"
-        accessibilityLabel={t('game.pause')}
-        onPress={onPause}
-        color={ui.text}
-      />
-      <Pressable
-        accessibilityRole="header"
-        accessibilityLabel={titleA11y}
-        onLongPress={onTitleLongPress}
-        style={styles.title}
+      <View
+        pointerEvents="box-none"
+        style={[styles.titleLayer, { paddingStart: inset, paddingEnd: inset }]}
       >
-        {hard && day === null ? <Crown /> : null}
-        <Text style={[styles.titleText, { color: ui.text }]}>{title}</Text>
-      </Pressable>
-      {day === null ? <SkipChip ui={ui} onSkip={onSkip} disabled={skipDisabled} /> : null}
-      <VipBadge />
-      <CoinBadge source="game" />
+        <Pressable
+          accessibilityRole="header"
+          accessibilityLabel={titleA11y}
+          onLongPress={onTitleLongPress}
+          style={styles.title}
+          testID="game-title"
+        >
+          {hard && day === null ? <Crown /> : null}
+          <Text
+            numberOfLines={1}
+            adjustsFontSizeToFit
+            minimumFontScale={0.8}
+            style={[styles.titleText, { color: ui.text }]}
+          >
+            {title}
+          </Text>
+        </Pressable>
+      </View>
+      <View onLayout={measure('start')} style={styles.side} testID="hud-start">
+        <IconButton
+          icon="pause"
+          accessibilityLabel={t('game.pause')}
+          onPress={onPause}
+          color={ui.text}
+          tone="filled"
+          ui={ui}
+        />
+      </View>
+      <View style={styles.spacer} pointerEvents="none" />
+      <View onLayout={measure('end')} style={styles.side} testID="hud-end">
+        {day === null && !replay ? (
+          <SkipChip ui={ui} onSkip={onSkip} disabled={skipDisabled} />
+        ) : null}
+        <VipBadge />
+        <CoinBadge source="game" />
+      </View>
     </View>
   );
 };
@@ -116,14 +167,15 @@ const SkipChipComponent = ({ ui, onSkip, disabled }: SkipChipProps) => {
       accessibilityState={{ disabled }}
       disabled={disabled}
       onPress={onSkip}
+      hitSlop={(MIN_TOUCH_TARGET - controlHeights.sm) / 2}
       style={({ pressed }) => [
         styles.skip,
-        { backgroundColor: ui.surface, borderColor: ui.textMuted },
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
         pressed && styles.pressed,
       ]}
     >
       <Text style={[styles.skipText, { color: ui.text }]}>{t('game.skip')}</Text>
-      <Ionicons name="play" size={14} color={ui.text} />
+      <Ionicons name="play" size={13} color={ui.accent} />
     </Pressable>
   );
 };
@@ -133,12 +185,26 @@ export const SkipChip = memo(SkipChipComponent);
 const styles = StyleSheet.create({
   bar: {
     flex: 1,
+    alignSelf: 'stretch',
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  titleLayer: {
+    ...fill,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  side: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.sm,
   },
-  title: {
+  spacer: {
     flex: 1,
+  },
+  title: {
+    flexShrink: 1,
+    maxWidth: '100%',
     minHeight: MIN_TOUCH_TARGET,
     flexDirection: 'row',
     gap: spacing.sm,
@@ -146,13 +212,12 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   titleText: {
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.bold,
+    ...typography.screenTitle,
   },
   skip: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: controlHeights.sm,
     minWidth: MIN_TOUCH_TARGET,
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
     borderWidth: StyleSheet.hairlineWidth,
     flexDirection: 'row',

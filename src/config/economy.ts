@@ -6,6 +6,8 @@ export const ECONOMY = {
   undoCost: 10,
   hintCoinCost: 25,
   extraTubeCost: 40,
+  /** Extra tubes one level (or daily board) can get in total: inventory, ad and coins together. */
+  maxExtraTubesPerLevel: 2,
   winBase: 10,
   winBonus2Star: 3,
   winBonus3Star: 6,
@@ -30,6 +32,14 @@ export const ECONOMY = {
   freeCoinsAdDailyMax: 5,
   doubleCoinsOnWin: true,
   themePrices: { ember: 300, sunset: 400, forest: 500, candy: 700, neon: 1000 },
+  /** Levels per chapter (P12.7). */
+  chapterSize: 20,
+  /** Best stars needed in chapter k (max 60) to open chapter k + 1. */
+  chapterStarTarget: 40,
+  /** Coin unlock price per missing star, clamped to `chapterUnlockMin`…`chapterUnlockMax`. */
+  chapterUnlockCoinsPerStar: 10,
+  chapterUnlockMin: 50,
+  chapterUnlockMax: 300,
 } as const;
 
 export type Economy = typeof ECONOMY;

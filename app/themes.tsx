@@ -1,7 +1,7 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { router } from 'expo-router';
 import { memo, useCallback, useState } from 'react';
-import { StyleSheet, Text, useWindowDimensions, View } from 'react-native';
+import { StyleSheet, useWindowDimensions, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { themeStatus, type ThemeStatus } from '@/game/themeUnlocks';
@@ -15,14 +15,15 @@ import { CoinBadge, CoinGlyph } from '@/ui/CoinBadge';
 import { NotEnoughCoinsOverlay } from '@/ui/game/overlays/NotEnoughCoinsOverlay';
 import { Overlay } from '@/ui/Overlay';
 import { Screen } from '@/ui/Screen';
-import { useActiveThemeId, useThemeUi } from '@/ui/theme';
+import { surfaceColors, useActiveThemeId, useThemeUi } from '@/ui/theme';
 import { ThemePreview } from '@/ui/themes/ThemePreview';
 import { showToast } from '@/ui/Toast';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import { controlHeights, radii, spacing, typography, withAlpha } from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 const COLUMNS = 2;
 const PREVIEW_RATIO = 0.62;
-const CARD_BORDER = 2;
+const CARD_BORDER = 1.5;
 
 type Modal =
   | { readonly kind: 'confirm'; readonly themeId: ThemeId; readonly price: number }
@@ -67,12 +68,13 @@ const ThemeCardComponent = ({
             accessibilityLabel={t('themes.inUseA11y', { name })}
             style={styles.inUse}
           >
-            <Ionicons name="checkmark-circle" size={20} color={ui.accent} />
+            <Ionicons name="checkmark-circle" size={16} color={ui.accent} />
             <Text style={[styles.inUseText, { color: ui.text }]}>{t('themes.inUse')}</Text>
           </View>
         ) : (
           <Button
             variant="primary"
+            size="sm"
             label={t('themes.apply')}
             accessibilityLabel={t('themes.applyA11y', { name })}
             onPress={() => onApply(themeId)}
@@ -82,6 +84,7 @@ const ThemeCardComponent = ({
       case 'coins':
         return (
           <Button
+            size="sm"
             label={formatNumber(status.price)}
             accessibilityLabel={t('themes.unlockA11y', { name, price: formatNumber(status.price) })}
             onPress={() => onUnlock(themeId, status.price)}
@@ -92,6 +95,7 @@ const ThemeCardComponent = ({
       case 'starterPack':
         return (
           <Button
+            size="sm"
             label={t('themes.starterPack')}
             accessibilityLabel={t('themes.starterPackA11y', { name })}
             onPress={() => openShop('themes_starter_pack')}
@@ -102,6 +106,7 @@ const ThemeCardComponent = ({
       case 'vip':
         return (
           <Button
+            size="sm"
             label={t('themes.vip')}
             accessibilityLabel={t('themes.vipA11y', { name })}
             onPress={() => openShop('themes_vip')}
@@ -116,7 +121,11 @@ const ThemeCardComponent = ({
     <View
       style={[
         styles.card,
-        { width, backgroundColor: ui.surface, borderColor: active ? ui.accent : ui.surface },
+        {
+          width,
+          backgroundColor: ui.surface,
+          borderColor: active ? ui.accent : surfaceColors(ui).hairline,
+        },
       ]}
       testID={`theme-card-${themeId}`}
     >
@@ -128,8 +137,8 @@ const ThemeCardComponent = ({
       >
         <ThemePreview theme={THEMES[themeId]} width={previewWidth} height={previewHeight} />
         {status.kind !== 'owned' ? (
-          <View style={[styles.lock, { backgroundColor: ui.surface }]}>
-            <Ionicons name="lock-closed" size={14} color={ui.text} />
+          <View style={[styles.lock, { backgroundColor: withAlpha(ui.surface, 0.85) }]}>
+            <Ionicons name="lock-closed" size={12} color={ui.text} />
           </View>
         ) : null}
       </View>
@@ -157,7 +166,7 @@ export default function ThemesScreen() {
   const [modal, setModal] = useState<Modal>(null);
 
   const cardWidth = Math.floor(
-    (Math.min(windowWidth, 560) - spacing.lg * 2 - spacing.md * (COLUMNS - 1)) / COLUMNS,
+    (Math.min(windowWidth, 560) - spacing.lg * 2 - spacing.sm * (COLUMNS - 1)) / COLUMNS,
   );
   const owner = { ownedThemes, entitlements: { noAds: false, vip }, starterPackPurchased };
 
@@ -201,10 +210,11 @@ export default function ThemesScreen() {
           coins: formatNumber(coins),
         })}
         onBackdropPress={closeModal}
+        icon="color-palette-outline"
         testID="theme-confirm"
       >
         <Button variant="primary" label={t('themes.confirm')} onPress={confirmUnlock} ui={ui} />
-        <Button label={t('common.notNow')} onPress={closeModal} ui={ui} />
+        <Button variant="ghost" label={t('common.notNow')} onPress={closeModal} ui={ui} />
       </Overlay>
     ) : modal?.kind === 'notEnough' ? (
       <NotEnoughCoinsOverlay
@@ -247,11 +257,11 @@ const styles = StyleSheet.create({
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: spacing.md,
+    gap: spacing.sm,
     justifyContent: 'center',
   },
   card: {
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
     borderWidth: CARD_BORDER,
     overflow: 'hidden',
   },
@@ -269,23 +279,22 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   cardBody: {
-    padding: spacing.sm,
+    padding: spacing.md,
+    paddingTop: spacing.sm,
     gap: spacing.sm,
   },
   name: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
     textAlign: 'center',
   },
   inUse: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: controlHeights.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: spacing.xs,
   },
   inUseText: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.semibold,
+    ...typography.control,
   },
 });

@@ -1,6 +1,6 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { ECONOMY } from '@/config/economy';
@@ -10,9 +10,22 @@ import type { ThemeUi } from '@/render/themes';
 import type { BillingPeriod } from '@/services/iapTypes';
 import { Button } from '@/ui/Button';
 import type { IconName } from '@/ui/IconButton';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import {
+  alphas,
+  colors,
+  fontSizes,
+  MIN_TOUCH_TARGET,
+  radii,
+  spacing,
+  typography,
+  withAlpha,
+} from '@/ui/tokens';
+
+import { Card } from '@/ui/Card';
+import { Tag } from '@/ui/Tag';
 
 import { PriceButton, type PriceState } from './PriceButton';
+import { Text } from '@/ui/Text';
 
 type BenefitKey = 'noInterstitials' | 'giftX2' | 'dailyBonus' | 'gold' | 'badge' | 'freeze';
 
@@ -76,10 +89,14 @@ const VipCardComponent = ({
   const periodText = (period: BillingPeriod | null): string =>
     period === null ? '' : t(`shop.vip.period.${period.unit}`, { count: period.count });
 
+  const gold = colors.coin;
+
   return (
-    <View style={[styles.card, { backgroundColor: ui.surface }]} testID="shop-vip">
+    <Card ui={ui} tone="gold" style={styles.card} testID="shop-vip">
       <View style={styles.header}>
-        <Ionicons name="diamond" size={26} color={ui.accent} />
+        <View style={[styles.iconTile, { backgroundColor: withAlpha(ui.text, alphas.subtle) }]}>
+          <Ionicons name="diamond" size={22} color={gold} />
+        </View>
         <View style={styles.headerTexts}>
           <Text accessibilityRole="header" style={[styles.title, { color: ui.text }]}>
             {t('shop.sections.vip')}
@@ -87,63 +104,78 @@ const VipCardComponent = ({
           <Text style={[styles.subtitle, { color: ui.textMuted }]}>{t('shop.vip.subtitle')}</Text>
         </View>
         {active ? (
-          <View
-            style={[styles.activePill, { backgroundColor: ui.accent }]}
-            accessible
+          <Tag
+            ui={ui}
+            icon="checkmark"
+            label={t('shop.vip.active')}
             accessibilityLabel={t('shop.vip.activeA11y')}
             testID="vip-active"
-          >
-            <Text style={[styles.activeText, { color: ui.onAccent }]}>{t('shop.vip.active')}</Text>
-          </View>
+          />
         ) : null}
       </View>
       <View style={styles.benefits}>
         {BENEFITS.map((benefit) => (
           <View key={benefit.key} style={styles.benefit}>
-            <Ionicons name={benefit.icon} size={18} color={ui.accent} />
+            <View
+              style={[styles.benefitIcon, { backgroundColor: withAlpha(ui.accent, alphas.tint) }]}
+            >
+              <Ionicons name={benefit.icon} size={13} color={ui.accent} />
+            </View>
             <Text style={[styles.benefitText, { color: ui.text }]}>{benefitText(benefit.key)}</Text>
           </View>
         ))}
       </View>
       {active ? (
-        <Button label={t('shop.manage')} icon="open-outline" onPress={onManage} ui={ui} />
+        <Button size="md" label={t('shop.manage')} icon="open-outline" onPress={onManage} ui={ui} />
       ) : (
-        VIP_PRODUCT_IDS.map((productId) => {
-          const price = priceOf(productId);
-          const name = t(`shop.names.${productId}`);
-          const ready = price.kind === 'ready' ? price.product : null;
-          const period = ready === null ? '' : periodText(ready.billingPeriod);
-          const planPrice =
-            ready === null
-              ? null
-              : period.length > 0
-                ? t('shop.vip.planPrice', { price: ready.priceString, period })
-                : ready.priceString;
-          return (
-            <View key={productId} style={styles.plan} testID={`vip-plan-${productId}`}>
-              <View style={styles.planTexts}>
-                <Text style={[styles.planName, { color: ui.text }]}>{name}</Text>
-                {planPrice !== null ? (
-                  <Text style={[styles.planPrice, { color: ui.textMuted }]}>{planPrice}</Text>
-                ) : null}
+        <View style={styles.plans}>
+          {VIP_PRODUCT_IDS.map((productId) => {
+            const price = priceOf(productId);
+            const name = t(`shop.names.${productId}`);
+            const ready = price.kind === 'ready' ? price.product : null;
+            const period = ready === null ? '' : periodText(ready.billingPeriod);
+            const planPrice =
+              ready === null
+                ? null
+                : period.length > 0
+                  ? t('shop.vip.planPrice', { price: ready.priceString, period })
+                  : ready.priceString;
+            return (
+              <View
+                key={productId}
+                style={[
+                  styles.plan,
+                  {
+                    backgroundColor: withAlpha(ui.text, alphas.wash),
+                    borderColor: withAlpha(ui.textMuted, alphas.hairline),
+                  },
+                ]}
+                testID={`vip-plan-${productId}`}
+              >
+                <View style={styles.planTexts}>
+                  <Text style={[styles.planName, { color: ui.text }]}>{name}</Text>
+                  {planPrice !== null ? (
+                    <Text style={[styles.planPrice, { color: ui.textMuted }]}>{planPrice}</Text>
+                  ) : null}
+                </View>
+                <PriceButton
+                  ui={ui}
+                  name={name}
+                  price={price}
+                  label={t('shop.vip.subscribe')}
+                  accessibilityLabel={
+                    ready === null
+                      ? undefined
+                      : t('shop.vip.subscribeA11y', { name, price: ready.priceString, period })
+                  }
+                  disabled={disabled}
+                  onBuy={() => onBuy(productId)}
+                  testID={`buy-${productId}`}
+                />
               </View>
-              <PriceButton
-                ui={ui}
-                name={name}
-                price={price}
-                label={t('shop.vip.subscribe')}
-                accessibilityLabel={
-                  ready === null
-                    ? undefined
-                    : t('shop.vip.subscribeA11y', { name, price: ready.priceString, period })
-                }
-                disabled={disabled}
-                onBuy={() => onBuy(productId)}
-                testID={`buy-${productId}`}
-              />
-            </View>
-          );
-        })
+            );
+          })}
+        </View>
       )}
       <Text style={[styles.note, { color: ui.textMuted }]}>{t('shop.vip.renewNote')}</Text>
       <View style={styles.links}>
@@ -151,29 +183,37 @@ const VipCardComponent = ({
           accessibilityRole="link"
           accessibilityLabel={t('shop.terms')}
           onPress={onTerms}
+          hitSlop={LINK_SLOP}
           style={({ pressed }) => [styles.link, pressed && styles.pressed]}
         >
           <Text style={[styles.linkText, { color: ui.accent }]}>{t('shop.terms')}</Text>
         </Pressable>
+        <Text style={[styles.dot, { color: ui.textMuted }]}>·</Text>
         <Pressable
           accessibilityRole="link"
           accessibilityLabel={t('shop.privacy')}
           onPress={onPrivacy}
+          hitSlop={LINK_SLOP}
           style={({ pressed }) => [styles.link, pressed && styles.pressed]}
         >
           <Text style={[styles.linkText, { color: ui.accent }]}>{t('shop.privacy')}</Text>
         </Pressable>
       </View>
-    </View>
+    </Card>
   );
 };
 
 export const VipCard = memo(VipCardComponent);
 
+const LINK_HEIGHT = 28;
+/** Grows the 28 dp links to a 44 dp touch target. */
+const LINK_SLOP = {
+  top: (MIN_TOUCH_TARGET - LINK_HEIGHT) / 2,
+  bottom: (MIN_TOUCH_TARGET - LINK_HEIGHT) / 2,
+};
+
 const styles = StyleSheet.create({
   card: {
-    borderRadius: radii.lg,
-    padding: spacing.md,
     gap: spacing.md,
   },
   header: {
@@ -181,24 +221,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: spacing.md,
   },
+  iconTile: {
+    width: 44,
+    height: 44,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   headerTexts: {
     flex: 1,
+    gap: spacing.xxs,
   },
   title: {
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.bold,
+    ...typography.cardTitle,
   },
   subtitle: {
-    fontSize: fontSizes.small,
-  },
-  activePill: {
-    borderRadius: radii.pill,
-    paddingHorizontal: spacing.md,
-    paddingVertical: spacing.xs,
-  },
-  activeText: {
-    fontSize: fontSizes.small,
-    fontWeight: fontWeights.heavy,
+    fontSize: fontSizes.footnote,
   },
   benefits: {
     gap: spacing.sm,
@@ -206,42 +244,59 @@ const styles = StyleSheet.create({
   benefit: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.sm,
+    gap: spacing.md,
+  },
+  benefitIcon: {
+    width: 22,
+    height: 22,
+    borderRadius: 11,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   benefitText: {
     flex: 1,
-    fontSize: fontSizes.small,
+    fontSize: fontSizes.footnote,
+  },
+  plans: {
+    gap: spacing.sm,
   },
   plan: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: spacing.md,
+    borderRadius: radii.md,
+    borderWidth: 1,
+    paddingStart: spacing.md,
+    paddingEnd: spacing.md,
+    paddingVertical: spacing.md,
   },
   planTexts: {
     flex: 1,
+    gap: 1,
   },
   planName: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   planPrice: {
-    fontSize: fontSizes.small,
+    fontSize: fontSizes.footnote,
   },
   note: {
-    fontSize: fontSizes.caption,
+    ...typography.fine,
   },
   links: {
     flexDirection: 'row',
-    gap: spacing.lg,
+    alignItems: 'center',
+    gap: spacing.sm,
   },
   link: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: LINK_HEIGHT,
     justifyContent: 'center',
   },
-  linkText: {
+  dot: {
     fontSize: fontSizes.small,
-    fontWeight: fontWeights.semibold,
-    textDecorationLine: 'underline',
+  },
+  linkText: {
+    ...typography.link,
   },
   pressed: {
     opacity: 0.7,

@@ -2,7 +2,7 @@ import Ionicons from '@expo/vector-icons/Ionicons';
 import { getCalendars } from 'expo-localization';
 import { router, useFocusEffect } from 'expo-router';
 import { memo, useCallback, useEffect, useMemo, useState } from 'react';
-import { I18nManager, StyleSheet, Text, View } from 'react-native';
+import { I18nManager, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import { currentStreak, isDailyDone } from '@/game/daily';
@@ -15,8 +15,17 @@ import { useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
 import { IconButton } from '@/ui/IconButton';
 import { Screen } from '@/ui/Screen';
-import { useThemeUi } from '@/ui/theme';
-import { colors, fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import { surfaceColors, useThemeUi } from '@/ui/theme';
+import {
+  alphas,
+  colors,
+  fontSizes,
+  fontWeights,
+  radii,
+  spacing,
+  typography,
+  withAlpha,
+} from '@/ui/tokens';
 import {
   addMonths,
   compareMonths,
@@ -30,6 +39,7 @@ import {
   type YearMonth,
 } from '@/utils/calendar';
 import { parseLocalDate } from '@/utils/date';
+import { Text } from '@/ui/Text';
 
 const GIFT_DAYS = CHEST_INDEX + 1;
 
@@ -45,6 +55,9 @@ const deviceWeekStart = (): Weekday => {
     return MONDAY;
   }
 };
+
+/** Diameter of a calendar day. */
+const DAY_SIZE = 36;
 
 interface MonthCalendarProps {
   ui: ThemeUi;
@@ -95,10 +108,16 @@ const MonthCalendarComponent = ({ ui, month, today, weekStart }: MonthCalendarPr
                   style={[
                     styles.day,
                     done && { backgroundColor: ui.accent },
-                    isToday && { borderColor: ui.text, borderWidth: 2 },
+                    isToday && { borderColor: ui.accent, borderWidth: 1.5 },
                   ]}
                 >
-                  <Text style={[styles.dayText, { color: done ? ui.onAccent : ui.text }]}>
+                  <Text
+                    style={[
+                      styles.dayText,
+                      { color: done ? ui.onAccent : ui.text },
+                      (done || isToday) && styles.dayTextStrong,
+                    ]}
+                  >
                     {formatNumber(day?.getDate() ?? 0)}
                   </Text>
                 </View>
@@ -123,6 +142,7 @@ interface StatProps {
 const Stat = ({ ui, label, value, icon }: StatProps) => {
   const { t } = useTranslation();
   const text = t('daily.days', { count: value, value: formatNumber(value) });
+  const tint = icon === 'flame' ? colors.flame : colors.coin;
   return (
     <View
       accessible
@@ -131,11 +151,22 @@ const Stat = ({ ui, label, value, icon }: StatProps) => {
         count: value,
         value: formatNumber(value),
       })}
-      style={[styles.stat, { backgroundColor: ui.surface }]}
+      style={[
+        styles.stat,
+        { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+      ]}
     >
-      <Ionicons name={icon} size={24} color={icon === 'flame' ? colors.flame : colors.coin} />
-      <Text style={[styles.statValue, { color: ui.text }]}>{text}</Text>
-      <Text style={[styles.statLabel, { color: ui.textMuted }]}>{label}</Text>
+      <View style={[styles.statIcon, { backgroundColor: withAlpha(tint, alphas.tint) }]}>
+        <Ionicons name={icon} size={18} color={tint} />
+      </View>
+      <View style={styles.statTexts}>
+        <Text style={[styles.statValue, { color: ui.text }]} numberOfLines={1}>
+          {text}
+        </Text>
+        <Text style={[styles.statLabel, { color: ui.textMuted }]} numberOfLines={1}>
+          {label}
+        </Text>
+      </View>
     </View>
   );
 };
@@ -188,7 +219,12 @@ export default function DailyScreen() {
         <Stat ui={ui} label={t('daily.currentStreak')} value={streak} icon="flame" />
         <Stat ui={ui} label={t('daily.bestStreak')} value={bestStreak} icon="trophy" />
       </View>
-      <View style={[styles.card, { backgroundColor: ui.surface }]}>
+      <View
+        style={[
+          styles.card,
+          { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+        ]}
+      >
         <View style={styles.monthRow}>
           {canPrev ? (
             <IconButton
@@ -223,6 +259,7 @@ export default function DailyScreen() {
             {t('daily.doneMessage')}
           </Text>
           <Button
+            size="md"
             label={t('daily.playAgain')}
             accessibilityLabel={t('daily.playAgainA11y')}
             onPress={openDaily}
@@ -235,7 +272,10 @@ export default function DailyScreen() {
       <View
         accessible
         accessibilityLabel={t('daily.chestA11y', { day: formatNumber(giftDay) })}
-        style={[styles.card, { backgroundColor: ui.surface }]}
+        style={[
+          styles.card,
+          { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
+        ]}
       >
         <Text style={[styles.chestTitle, { color: ui.text }]}>{t('daily.chestTitle')}</Text>
         <View style={styles.chestRow}>
@@ -248,13 +288,14 @@ export default function DailyScreen() {
                 key={index}
                 style={[
                   styles.step,
-                  { borderColor: next ? ui.accent : ui.textMuted },
+                  { borderColor: next ? ui.accent : surfaceColors(ui).hairline },
+                  chest && !reached && { backgroundColor: withAlpha(colors.coin, alphas.subtle) },
                   reached && { backgroundColor: ui.accent, borderColor: ui.accent },
                 ]}
               >
                 <Ionicons
                   name={chest ? 'cube' : reached ? 'checkmark' : 'gift-outline'}
-                  size={chest ? 20 : 16}
+                  size={chest ? 18 : 15}
                   color={reached ? ui.onAccent : chest ? colors.coin : ui.textMuted}
                 />
               </View>
@@ -272,25 +313,38 @@ export default function DailyScreen() {
 const styles = StyleSheet.create({
   stats: {
     flexDirection: 'row',
-    gap: spacing.md,
+    gap: spacing.sm,
   },
   stat: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: 'center',
-    gap: spacing.xs,
+    gap: spacing.md,
     padding: spacing.md,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
+  },
+  statIcon: {
+    width: 36,
+    height: 36,
+    borderRadius: radii.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  statTexts: {
+    flex: 1,
   },
   statValue: {
-    fontSize: fontSizes.title,
+    fontSize: fontSizes.body + 1,
     fontWeight: fontWeights.heavy,
   },
   statLabel: {
-    fontSize: fontSizes.small,
+    ...typography.fine,
   },
   card: {
     padding: spacing.md,
-    borderRadius: radii.lg,
+    borderRadius: radii.card,
+    borderWidth: StyleSheet.hairlineWidth,
     gap: spacing.sm,
   },
   monthRow: {
@@ -303,8 +357,7 @@ const styles = StyleSheet.create({
   monthTitle: {
     flex: 1,
     textAlign: 'center',
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   calendar: {
     gap: spacing.xs,
@@ -315,56 +368,57 @@ const styles = StyleSheet.create({
   weekday: {
     flex: 1,
     textAlign: 'center',
-    fontSize: fontSizes.caption,
-    fontWeight: fontWeights.semibold,
+    ...typography.sectionLabel,
+    letterSpacing: 0,
   },
   cell: {
     flex: 1,
-    aspectRatio: 1,
+    height: DAY_SIZE + spacing.xs,
     alignItems: 'center',
     justifyContent: 'center',
   },
   day: {
-    width: '82%',
-    height: '82%',
+    width: DAY_SIZE,
+    height: DAY_SIZE,
     borderRadius: radii.pill,
     alignItems: 'center',
     justifyContent: 'center',
   },
   dayText: {
     fontSize: fontSizes.small,
-    fontWeight: fontWeights.semibold,
+    fontWeight: fontWeights.medium,
+    fontVariant: ['tabular-nums'],
+  },
+  dayTextStrong: {
+    fontWeight: fontWeights.bold,
   },
   doneBox: {
     alignItems: 'stretch',
     gap: spacing.sm,
   },
   doneTitle: {
-    fontSize: fontSizes.title,
-    fontWeight: fontWeights.heavy,
+    ...typography.cardTitle,
     textAlign: 'center',
   },
   doneMessage: {
-    fontSize: fontSizes.body,
-    textAlign: 'center',
+    ...typography.dialogBody,
   },
   chestTitle: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.bold,
+    ...typography.rowTitleStrong,
   },
   chestRow: {
     flexDirection: 'row',
     justifyContent: 'space-between',
   },
   step: {
-    width: 36,
-    height: 36,
+    width: 34,
+    height: 34,
     borderRadius: radii.pill,
-    borderWidth: 1.5,
+    borderWidth: 1,
     alignItems: 'center',
     justifyContent: 'center',
   },
   chestProgress: {
-    fontSize: fontSizes.small,
+    ...typography.rowHint,
   },
 });

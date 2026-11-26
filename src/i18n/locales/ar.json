@@ -18,11 +18,12 @@
   "home": {
     "play": "المستوى {{n}}",
     "playA11y": "العب المستوى {{n}}",
-    "resume": "تابع المستوى {{n}}",
+    "continue": "متابعة المستوى {{n}}",
     "resumeA11y": "تابع المستوى {{n}} من حيث توقفت",
     "shop": "المتجر",
     "themes": "المظاهر",
     "settings": "الإعدادات",
+    "levels": "المستويات",
     "playHardA11y": "العب المستوى {{n}}، مستوى صعب",
     "signInCard": {
       "title": "سجّل الدخول لحفظ تقدّمك",
@@ -97,7 +98,10 @@
     "costAd": "شاهد إعلانًا",
     "costUsed": "مستخدم بالفعل",
     "dailyTitle": "اليومي · {{date}}",
-    "dailyTitleA11y": "التحدي اليومي، {{date}}"
+    "dailyTitleA11y": "التحدي اليومي، {{date}}",
+    "costTubeLimit": "تم بلوغ الحد في هذا المستوى",
+    "tubeAdUnavailable": "لا يتوفر إعلان الآن. يمكنك الحصول على الأنبوب بالعملات بدلًا من ذلك.",
+    "replayTitle": "إعادة · المستوى {{n}}"
   },
   "coins": {
     "badgeA11y_few": "{{count}} عملة. افتح المتجر",
@@ -147,14 +151,33 @@
     "streak_few": "سلسلة {{value}} أيام",
     "streak_many": "سلسلة {{value}} يومًا",
     "streak_other": "سلسلة {{value}} يوم",
-    "dailyReplay": "أكملته اليوم بالفعل. الإعادة للمتعة فقط."
+    "dailyReplay": "أكملته اليوم بالفعل. الإعادة للمتعة فقط.",
+    "levels": "المستويات",
+    "levelsA11y": "العودة إلى قائمة المستويات",
+    "newBest": "رقم قياسي جديد!",
+    "replayNote": "تجاوز أفضل نجومك لتربح عملات.",
+    "perfectAgain": "مثالي مجددًا! لديك كل النجوم بالفعل."
   },
   "stuck": {
     "title": "لا حركات متبقية",
     "message": "تراجع عن حركة، أو أضف أنبوبًا، أو أعد المحاولة، أو تخطَّ هذا المستوى.",
     "messageNoSkip": "تراجع عن حركة، أو أضف أنبوبًا، أو أعد المحاولة.",
     "undo": "تراجع",
-    "addTube": "+أنبوب",
+    "tubeUse_zero": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeUse_one": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeUse_two": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeUse_few": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeUse_many": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeUse_other": "استخدم +أنبوب (المتبقي: {{count}})",
+    "tubeAd": "شاهد إعلانًا: +1 أنبوب",
+    "tubeAdA11y": "شاهد إعلانًا لإضافة أنبوب فارغ",
+    "tubeCoins_zero": "+1 أنبوب · {{count}} عملة",
+    "tubeCoins_one": "+1 أنبوب · عملة واحدة",
+    "tubeCoins_two": "+1 أنبوب · عملتان",
+    "tubeCoins_few": "+1 أنبوب · {{count}} عملات",
+    "tubeCoins_many": "+1 أنبوب · {{count}} عملة",
+    "tubeCoins_other": "+1 أنبوب · {{count}} عملة",
+    "tubeLimit": "تم بلوغ حد الأنابيب في هذا المستوى",
     "restart": "إعادة",
     "skip": "تخطَّ المستوى",
     "skipA11y": "تخطَّ هذا المستوى بمشاهدة إعلان",
@@ -162,7 +185,12 @@
   },
   "notEnough": {
     "title": "العملات غير كافية",
-    "message": "سعر {{item}} هو {{cost}} عملة. لديك {{coins}}.",
+    "message_zero": "سعر {{item}} هو {{value}} عملة. لديك {{balance}}.",
+    "message_one": "سعر {{item}} هو {{value}} عملة. لديك {{balance}}.",
+    "message_two": "سعر {{item}} هو {{value}} عملتان. لديك {{balance}}.",
+    "message_few": "سعر {{item}} هو {{value}} عملات. لديك {{balance}}.",
+    "message_many": "سعر {{item}} هو {{value}} عملة. لديك {{balance}}.",
+    "message_other": "سعر {{item}} هو {{value}} عملة. لديك {{balance}}.",
     "watchAd": "شاهد إعلانًا",
     "watchAdA11y": "شاهد إعلانًا للحصول على {{item}}",
     "shop": "المتجر"
@@ -172,6 +200,24 @@
     "message": "استخدمت عنصرًا مدفوعًا في هذه المحاولة. الإعادة ستُفقدك إياه.",
     "confirm": "أعد على أي حال",
     "cancel": "واصل اللعب"
+  },
+  "tubeConfirm": {
+    "useTitle": "هل تستخدم +أنبوب واحدًا؟",
+    "useMessage_zero": "لديك {{count}} +أنبوب. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useMessage_one": "لديك +أنبوب واحد. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useMessage_two": "لديك +أنبوبان. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useMessage_few": "لديك {{count}} +أنابيب. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useMessage_many": "لديك {{count}} +أنبوب. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useMessage_other": "لديك {{count}} +أنبوب. يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "useConfirm": "أضف الأنبوب",
+    "buyTitle_zero": "هل تنفق {{count}} عملة مقابل +1 أنبوب؟",
+    "buyTitle_one": "هل تنفق عملة واحدة مقابل +1 أنبوب؟",
+    "buyTitle_two": "هل تنفق عملتين مقابل +1 أنبوب؟",
+    "buyTitle_few": "هل تنفق {{count}} عملات مقابل +1 أنبوب؟",
+    "buyTitle_many": "هل تنفق {{count}} عملة مقابل +1 أنبوب؟",
+    "buyTitle_other": "هل تنفق {{count}} عملة مقابل +1 أنبوب؟",
+    "buyMessage": "يبقى الأنبوب الفارغ في هذا المستوى حتى لو أعدت المحاولة.",
+    "buyConfirm": "اشترِ الأنبوب"
   },
   "reward": {
     "title": "مكافأة",
@@ -284,6 +330,7 @@
     "freeCoins": {
       "title": "عملات مجانية",
       "button": "عملات مجانية",
+      "watch": "شاهد",
       "a11y_zero": "شاهد إعلانًا لتحصل على {{value}} عملة مجانية",
       "a11y_one": "شاهد إعلانًا لتحصل على {{value}} عملة مجانية",
       "a11y_two": "شاهد إعلانًا لتحصل على {{value}} عملتين مجانيتين",
@@ -372,7 +419,11 @@
     "thanksMessage": "تمت إضافة مشترياتك.",
     "alreadyOwnedTitle": "تم الشراء مسبقًا",
     "alreadyOwnedMessage": "حساب Google Play هذا يملك هذا العنصر بالفعل. استعد مشترياتك لاسترجاعه.",
-    "restoreAction": "استعادة المشتريات"
+    "restoreAction": "استعادة المشتريات",
+    "tags": {
+      "popular": "الأكثر رواجًا",
+      "bestValue": "أفضل قيمة"
+    }
   },
   "themes": {
     "title": "المظاهر",
@@ -553,5 +604,56 @@
     "comeback3Body": "عُد إلى اللعب: المستوى {{n}} جاهز متى شئت.",
     "comeback4Title": "سكبة أخيرة؟",
     "comeback4Body": "هذا تذكيرنا الأخير. المستوى {{n}} محفوظ وبانتظارك متى كنت مستعدًا."
+  },
+  "levels": {
+    "title": "المستويات",
+    "starsA11y": "النجوم المجمّعة: {{value}} من {{max}}",
+    "cellA11y": "المستوى {{n}}: {{stars}} من 3 نجوم. إعادة اللعب",
+    "currentA11y": "المستوى {{n}}: لم يكتمل بعد. العب",
+    "hardA11y": "مستوى صعب",
+    "lockedA11y": "المستوى {{n}}، مقفل",
+    "chapter": "المستويات {{from}}–{{to}}",
+    "chapterA11y": "المستويات من {{from}} إلى {{to}}: اكتمل {{done}} من {{total}}، {{stars}} من {{maxStars}} نجمة",
+    "completed_zero": "اكتمل {{value}} مستوى",
+    "completed_one": "اكتمل {{value}} مستوى",
+    "completed_two": "اكتمل {{value}} مستويان",
+    "completed_few": "اكتملت {{value}} مستويات",
+    "completed_many": "اكتمل {{value}} مستوى",
+    "completed_other": "اكتمل {{value}} مستوى"
+  },
+  "chapters": {
+    "gateTitle": "الفصل {{n}} مقفل",
+    "gateMessage": "اجمع {{target}}★ في الفصل {{prev}} لفتحه.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} من {{target}} نجمة في الفصل {{prev}}",
+    "replay": "أعد لعب المستويات",
+    "unlockCoins_zero": "افتحه مقابل {{value}} عملة",
+    "unlockCoins_one": "افتحه مقابل {{value}} عملة",
+    "unlockCoins_two": "افتحه مقابل {{value}} عملتين",
+    "unlockCoins_few": "افتحه مقابل {{value}} عملات",
+    "unlockCoins_many": "افتحه مقابل {{value}} عملة",
+    "unlockCoins_other": "افتحه مقابل {{value}} عملة",
+    "confirmTitle_zero": "أتنفق {{value}} عملة لفتح الفصل {{n}}؟",
+    "confirmTitle_one": "أتنفق {{value}} عملة لفتح الفصل {{n}}؟",
+    "confirmTitle_two": "أتنفق {{value}} عملتين لفتح الفصل {{n}}؟",
+    "confirmTitle_few": "أتنفق {{value}} عملات لفتح الفصل {{n}}؟",
+    "confirmTitle_many": "أتنفق {{value}} عملة لفتح الفصل {{n}}؟",
+    "confirmTitle_other": "أتنفق {{value}} عملة لفتح الفصل {{n}}؟",
+    "confirmMessage": "يمكنك أيضًا فتحه مجانًا بجمع النجوم.",
+    "confirm": "افتح",
+    "unlocked": "تم فتح الفصل {{n}}!",
+    "homeCta": "افتح الفصل {{n}}",
+    "homeCtaA11y": "الفصل {{n}} مقفل. اعرف كيف تفتحه",
+    "headerLocked": "{{stars}} / {{target}} ★ في الفصل {{prev}} للفتح",
+    "headerLockedA11y": "الفصل {{n}} مقفل: {{stars}} من {{target}} نجمة في الفصل {{prev}}. اعرف كيف تفتحه",
+    "item": "فتح الفصل {{n}}",
+    "locked": "مقفل",
+    "headerToUnlock": "{{stars}}/{{target}}★ للفتح",
+    "balance_zero": "لديك {{value}} عملة",
+    "balance_one": "لديك {{value}} عملة",
+    "balance_two": "لديك {{value}} عملتان",
+    "balance_few": "لديك {{value}} عملات",
+    "balance_many": "لديك {{value}} عملة",
+    "balance_other": "لديك {{value}} عملة"
   }
 }

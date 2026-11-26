@@ -18,11 +18,12 @@
   "home": {
     "play": "Level {{n}}",
     "playA11y": "Play level {{n}}",
-    "resume": "Resume level {{n}}",
+    "continue": "Continue level {{n}}",
     "resumeA11y": "Resume level {{n}} where you left off",
     "shop": "Shop",
     "themes": "Themes",
     "settings": "Settings",
+    "levels": "Levels",
     "playHardA11y": "Play level {{n}}, hard level",
     "signInCard": {
       "title": "Sign in to save your progress",
@@ -89,7 +90,10 @@
     "costAd": "watch an ad",
     "costUsed": "already used",
     "dailyTitle": "Daily · {{date}}",
-    "dailyTitleA11y": "Daily challenge, {{date}}"
+    "dailyTitleA11y": "Daily challenge, {{date}}",
+    "costTubeLimit": "limit reached for this level",
+    "tubeAdUnavailable": "No ad available right now. You can get the tube with coins instead.",
+    "replayTitle": "Replay · Level {{n}}"
   },
   "coins": {
     "badgeA11y_one": "{{count}} coin. Open the shop",
@@ -123,14 +127,25 @@
     "dailyTitle": "Daily complete!",
     "streak_one": "{{value}} day streak",
     "streak_other": "{{value}} day streak",
-    "dailyReplay": "Already done today. Replays are just for fun."
+    "dailyReplay": "Already done today. Replays are just for fun.",
+    "levels": "Levels",
+    "levelsA11y": "Back to the level list",
+    "newBest": "New best!",
+    "replayNote": "Beat your best stars to earn coins.",
+    "perfectAgain": "Perfect again! You already have every star."
   },
   "stuck": {
     "title": "No moves left",
     "message": "Undo a move, add a tube, restart, or skip this level.",
     "messageNoSkip": "Undo a move, add a tube or restart.",
     "undo": "Undo",
-    "addTube": "+Tube",
+    "tubeUse_one": "Use +Tube ({{count}} left)",
+    "tubeUse_other": "Use +Tube ({{count}} left)",
+    "tubeAd": "Watch ad: +1 Tube",
+    "tubeAdA11y": "Watch an ad to add an empty tube",
+    "tubeCoins_one": "+1 Tube · {{count}} coin",
+    "tubeCoins_other": "+1 Tube · {{count}} coins",
+    "tubeLimit": "Tube limit reached for this level",
     "restart": "Restart",
     "skip": "Skip level",
     "skipA11y": "Skip this level by watching an ad",
@@ -138,7 +153,8 @@
   },
   "notEnough": {
     "title": "Not enough coins",
-    "message": "{{item}} costs {{cost}} coins. You have {{coins}}.",
+    "message_one": "{{item}} costs {{value}} coin. You have {{balance}}.",
+    "message_other": "{{item}} costs {{value}} coins. You have {{balance}}.",
     "watchAd": "Watch ad",
     "watchAdA11y": "Watch an ad to get {{item}}",
     "shop": "Shop"
@@ -148,6 +164,16 @@
     "message": "You used a paid item on this attempt. Restarting gives it up.",
     "confirm": "Restart anyway",
     "cancel": "Keep playing"
+  },
+  "tubeConfirm": {
+    "useTitle": "Use 1 +Tube?",
+    "useMessage_one": "You have {{count}} +Tube. The empty tube stays on this level, even if you restart.",
+    "useMessage_other": "You have {{count}} +Tubes. The empty tube stays on this level, even if you restart.",
+    "useConfirm": "Add tube",
+    "buyTitle_one": "Spend {{count}} coin for +1 Tube?",
+    "buyTitle_other": "Spend {{count}} coins for +1 Tube?",
+    "buyMessage": "The empty tube stays on this level, even if you restart.",
+    "buyConfirm": "Buy tube"
   },
   "reward": {
     "title": "Reward",
@@ -232,6 +258,7 @@
     "freeCoins": {
       "title": "Free coins",
       "button": "Free coins",
+      "watch": "Watch",
       "a11y_one": "Watch an ad for {{value}} free coin",
       "a11y_other": "Watch an ad for {{value}} free coins",
       "reward_one": "+{{value}} coin for a short ad",
@@ -288,7 +315,11 @@
     "thanksMessage": "Your purchase has been added.",
     "alreadyOwnedTitle": "Already purchased",
     "alreadyOwnedMessage": "This Google Play account already owns it. Restore your purchases to get it back.",
-    "restoreAction": "Restore purchases"
+    "restoreAction": "Restore purchases",
+    "tags": {
+      "popular": "Popular",
+      "bestValue": "Best value"
+    }
   },
   "themes": {
     "title": "Themes",
@@ -469,5 +500,40 @@
     "comeback3Body": "Jump back in: level {{n}} is ready when you are.",
     "comeback4Title": "One last pour?",
     "comeback4Body": "This is our last reminder. Level {{n}} is saved and waiting whenever you're ready."
+  },
+  "levels": {
+    "title": "Levels",
+    "starsA11y": "Stars collected: {{value}} of {{max}}",
+    "cellA11y": "Level {{n}}: {{stars}} of 3 stars. Replay",
+    "currentA11y": "Level {{n}}: not completed yet. Play",
+    "hardA11y": "hard level",
+    "lockedA11y": "Level {{n}}, locked",
+    "chapter": "Levels {{from}}–{{to}}",
+    "chapterA11y": "Levels {{from}} to {{to}}: {{done}} of {{total}} completed, {{stars}} of {{maxStars}} stars",
+    "completed_one": "{{value}} level completed",
+    "completed_other": "{{value}} levels completed"
+  },
+  "chapters": {
+    "gateTitle": "Chapter {{n}} is locked",
+    "gateMessage": "Collect {{target}}★ in chapter {{prev}} to unlock it.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{stars}} of {{target}} stars in chapter {{prev}}",
+    "replay": "Replay levels",
+    "unlockCoins_one": "Unlock for {{value}} coin",
+    "unlockCoins_other": "Unlock for {{value}} coins",
+    "confirmTitle_one": "Spend {{value}} coin to unlock chapter {{n}}?",
+    "confirmTitle_other": "Spend {{value}} coins to unlock chapter {{n}}?",
+    "confirmMessage": "You can also unlock it for free by collecting stars.",
+    "confirm": "Unlock",
+    "unlocked": "Chapter {{n}} unlocked!",
+    "homeCta": "Unlock chapter {{n}}",
+    "homeCtaA11y": "Chapter {{n}} is locked. See how to unlock it",
+    "headerLocked": "{{stars}} / {{target}} ★ in chapter {{prev}} to unlock",
+    "headerLockedA11y": "Chapter {{n}} is locked: {{stars}} of {{target}} stars in chapter {{prev}}. See how to unlock it",
+    "item": "Unlocking chapter {{n}}",
+    "locked": "Locked",
+    "headerToUnlock": "{{stars}}/{{target}}★ to unlock",
+    "balance_one": "You have {{value}} coin",
+    "balance_other": "You have {{value}} coins"
   }
 }

@@ -23,6 +23,7 @@ const RestartConfirmOverlayComponent = ({
       title={t('restartConfirm.title')}
       message={t('restartConfirm.message')}
       onBackdropPress={onCancel}
+      icon="refresh"
       testID="restart-confirm-overlay"
     >
       <Button variant="primary" label={t('restartConfirm.cancel')} onPress={onCancel} ui={ui} />

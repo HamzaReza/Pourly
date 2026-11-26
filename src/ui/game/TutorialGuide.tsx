@@ -1,5 +1,5 @@
 import { memo, useEffect, useMemo, useRef, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -24,9 +24,11 @@ import { computeBoardLayout, type Rect } from '@/render/layout';
 import type { ThemeUi } from '@/render/themes';
 import { useHintSearch } from '@/render/useHint';
 import { track } from '@/services/analytics';
-import { colors, fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
+import { surfaceColors } from '@/ui/theme';
+import { fontSizes, fontWeights, radii, spacing } from '@/ui/tokens';
 
 import type { BoardEvents } from './boardEvents';
+import { Text } from '@/ui/Text';
 
 const CAPTIONS = {
   1: 'tutorial.level1',
@@ -243,7 +245,16 @@ const TutorialGuideComponent = ({
   return (
     <View pointerEvents="none" style={styles.root}>
       {caption !== undefined ? (
-        <View style={[styles.caption, { top: area.y + spacing.sm, backgroundColor: ui.surface }]}>
+        <View
+          style={[
+            styles.caption,
+            {
+              top: area.y + spacing.sm,
+              backgroundColor: ui.surface,
+              borderColor: surfaceColors(ui).accentBorder,
+            },
+          ]}
+        >
           <Text
             accessibilityRole="text"
             accessibilityLiveRegion="polite"
@@ -258,7 +269,7 @@ const TutorialGuideComponent = ({
         importantForAccessibility="no-hide-descendants"
         style={[styles.finger, fingerStyle]}
       >
-        <Animated.View style={[styles.ring, ringStyle]} />
+        <Animated.View style={[styles.ring, { borderColor: ui.accent }, ringStyle]} />
         <View style={styles.fingerBody}>
           <View style={styles.nail} />
         </View>
@@ -285,12 +296,12 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignSelf: 'center',
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
-    borderRadius: radii.lg,
-    opacity: 0.92,
+    paddingVertical: spacing.sm + spacing.xxs,
+    borderRadius: radii.card,
+    borderWidth: 1,
   },
   captionText: {
-    fontSize: fontSizes.body,
+    fontSize: fontSizes.callout,
     fontWeight: fontWeights.semibold,
     textAlign: 'center',
   },
@@ -309,7 +320,6 @@ const styles = StyleSheet.create({
     height: RING_SIZE,
     borderRadius: RING_SIZE / 2,
     borderWidth: 3,
-    borderColor: colors.star,
   },
   fingerBody: {
     position: 'absolute',

@@ -76,19 +76,19 @@ describe('resolveHintCost', () => {
 });
 
 describe('resolveExtraTubeCost', () => {
-  it('is unavailable once used, otherwise inventory, coins, ad', () => {
-    expect(resolveExtraTubeCost({ extraTubeUsed: true, inventory: 5, coins: 999 })).toEqual({
+  it('is unavailable at the cap, otherwise inventory, the one ad, coins, then the Shop', () => {
+    const input = { tubesAdded: 0, adTubeUsed: false, inventory: 0, coins: 0 };
+    expect(resolveExtraTubeCost({ ...input, tubesAdded: 2, inventory: 5, coins: 999 })).toEqual({
       kind: 'unavailable',
     });
-    expect(resolveExtraTubeCost({ extraTubeUsed: false, inventory: 1, coins: 0 }).kind).toBe(
-      'inventory',
-    );
-    expect(resolveExtraTubeCost({ extraTubeUsed: false, inventory: 0, coins: 40 })).toEqual({
+    expect(resolveExtraTubeCost({ ...input, inventory: 1 }).kind).toBe('inventory');
+    expect(resolveExtraTubeCost({ ...input, coins: 999 })).toEqual({ kind: 'ad' });
+    expect(resolveExtraTubeCost({ ...input, adTubeUsed: true, coins: 40 })).toEqual({
       kind: 'coins',
       cost: 40,
     });
-    expect(resolveExtraTubeCost({ extraTubeUsed: false, inventory: 0, coins: 39 })).toEqual({
-      kind: 'adOrShop',
+    expect(resolveExtraTubeCost({ ...input, adTubeUsed: true, coins: 39 })).toEqual({
+      kind: 'shop',
       cost: 40,
     });
   });

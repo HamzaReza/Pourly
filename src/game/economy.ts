@@ -30,6 +30,28 @@ export const winReward = ({ stars, hard, isVip, doubled }: WinRewardInput): numb
   return coins;
 };
 
+export interface ReplayRewardInput {
+  /** Best stars before the replay (null when the level had none). */
+  readonly previousStars: StarCount | null;
+  readonly stars: StarCount;
+  readonly hard: boolean;
+  readonly isVip: boolean;
+}
+
+/**
+ * Coins for a replay win: only the star bonus the player had not earned yet, with the same hard
+ * and VIP multipliers as a normal win and no `winBase`. Nothing when the best is not beaten.
+ * Example: 1★ → 3★ on a hard level = (6 − 0) × 2 = 12 coins; 2★ → 3★ = 6 − 3 = 3 coins.
+ */
+export const replayReward = ({ previousStars, stars, hard, isVip }: ReplayRewardInput): number => {
+  if (previousStars !== null && stars <= previousStars) return 0;
+  let coins = starBonus(stars) - (previousStars === null ? 0 : starBonus(previousStars));
+  if (coins <= 0) return 0;
+  if (hard) coins *= ECONOMY.hardLevelMultiplier;
+  if (isVip) coins *= ECONOMY.vipMultiplier;
+  return coins;
+};
+
 /** Whole, non-negative count (bad input counts as 0). */
 const wholeCount = (value: number | undefined): number =>
   value === undefined || !Number.isFinite(value) ? 0 : Math.max(0, Math.floor(value));
@@ -73,15 +95,19 @@ export type PowerUp = 'undo' | 'hint' | 'extraTube';
  * How a power-up would be paid for right now, in priority order:
  * - `free`: one of the level's free undos (undo only);
  * - `inventory`: one item from the player's inventory;
+ * - `ad`: the level's one rewarded-ad +Tube (extra tube only, before coins);
  * - `coins`: the coin price, which the player can afford;
  * - `adOrShop`: nothing else works; offer a rewarded ad or the Shop;
- * - `unavailable`: cannot be used at all (the extra tube was already added this attempt).
+ * - `shop`: coins are short and no ad is left (extra tube only); offer the Shop;
+ * - `unavailable`: cannot be used at all (the level's extra-tube cap is reached).
  */
 export type CostDecision =
   | { readonly kind: 'free'; readonly freeLeft: number }
   | { readonly kind: 'inventory'; readonly item: InventoryItem; readonly owned: number }
+  | { readonly kind: 'ad' }
   | { readonly kind: 'coins'; readonly cost: number }
   | { readonly kind: 'adOrShop'; readonly cost: number }
+  | { readonly kind: 'shop'; readonly cost: number }
   | { readonly kind: 'unavailable' };
 
 export const freeUndosLeft = (undosUsed: number): number =>
@@ -124,20 +150,35 @@ export const resolveHintCost = ({ inventory, coins }: HintCostInput): CostDecisi
   paidDecision('hints', inventory, coins, ECONOMY.hintCoinCost);
 
 export interface ExtraTubeCostInput {
-  readonly extraTubeUsed: boolean;
+  /** Extra tubes already added on this level (across restarts and resumes). */
+  readonly tubesAdded: number;
+  /** The level's one rewarded-ad +Tube was already earned. */
+  readonly adTubeUsed: boolean;
   /** `progress.extraTubes`. */
   readonly inventory: number;
   readonly coins: number;
 }
 
-/** Once per attempt: inventory extra tubes first, then `extraTubeCost` coins, then an ad. */
+/** Extra tubes still allowed on a level that already got `tubesAdded`. */
+export const extraTubesLeft = (tubesAdded: number): number =>
+  Math.max(0, ECONOMY.maxExtraTubesPerLevel - wholeCount(tubesAdded));
+
+/**
+ * Up to `maxExtraTubesPerLevel` per level: inventory extra tubes first, then the level's one
+ * rewarded ad, then `extraTubeCost` coins, then the Shop (no second ad).
+ */
 export const resolveExtraTubeCost = ({
-  extraTubeUsed,
+  tubesAdded,
+  adTubeUsed,
   inventory,
   coins,
 }: ExtraTubeCostInput): CostDecision => {
-  if (extraTubeUsed) return { kind: 'unavailable' };
-  return paidDecision('extraTubes', inventory, coins, ECONOMY.extraTubeCost);
+  if (extraTubesLeft(tubesAdded) <= 0) return { kind: 'unavailable' };
+  if (inventory > 0) return { kind: 'inventory', item: 'extraTubes', owned: inventory };
+  if (!adTubeUsed) return { kind: 'ad' };
+  if (canAfford(coins, ECONOMY.extraTubeCost))
+    return { kind: 'coins', cost: ECONOMY.extraTubeCost };
+  return { kind: 'shop', cost: ECONOMY.extraTubeCost };
 };
 
 /** Restarts of the same level after which SKIP_LEVEL is offered (spec §13). */

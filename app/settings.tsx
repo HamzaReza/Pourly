@@ -1,7 +1,8 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import * as Application from 'expo-application';
 import { router } from 'expo-router';
 import { useCallback, useEffect, useState, useSyncExternalStore } from 'react';
-import { Linking, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Linking, Pressable, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import {
@@ -43,8 +44,17 @@ import { ChoiceRow, InfoRow, LinkRow, SettingsSection, ToggleRow } from '@/ui/se
 import { Sheet } from '@/ui/Sheet';
 import { useThemeUi } from '@/ui/theme';
 import { showToast } from '@/ui/Toast';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import {
+  alphas,
+  fontSizes,
+  fontWeights,
+  MIN_TOUCH_TARGET,
+  radii,
+  spacing,
+  withAlpha,
+} from '@/ui/tokens';
 import { logger } from '@/utils/logger';
+import { Text } from '@/ui/Text';
 
 type Modal = 'language' | 'reset' | 'resetConfirm' | 'delete' | 'deleteConfirm' | null;
 
@@ -193,22 +203,34 @@ export default function SettingsScreen() {
                 onPress={() => onLanguage(choice.value)}
                 style={({ pressed }) => [
                   styles.languageRow,
-                  { borderColor: selected ? ui.accent : ui.textMuted },
+                  selected && { backgroundColor: withAlpha(ui.accent, alphas.tint) },
                   pressed && styles.pressed,
                 ]}
               >
-                <Text style={[styles.languageText, { color: ui.text }]}>{choice.label}</Text>
+                <Text
+                  numberOfLines={1}
+                  style={[
+                    styles.languageText,
+                    { color: selected ? ui.accent : ui.text },
+                    selected && styles.languageSelected,
+                  ]}
+                >
+                  {choice.label}
+                </Text>
+                {selected ? <Ionicons name="checkmark" size={18} color={ui.accent} /> : null}
               </Pressable>
             );
           })}
         </View>
-        <Button label={t('common.close')} onPress={closeModal} ui={ui} />
+        <Button variant="ghost" label={t('common.close')} onPress={closeModal} ui={ui} />
       </Sheet>
     ) : modal === 'reset' ? (
       <Overlay
         title={t('settings.resetTitle')}
         message={t('settings.resetMessage')}
         onBackdropPress={closeModal}
+        icon="warning-outline"
+        iconTone="danger"
         testID="reset-step-1"
       >
         <Button
@@ -223,6 +245,8 @@ export default function SettingsScreen() {
         title={t('settings.resetConfirmTitle')}
         message={t('settings.resetConfirmMessage')}
         onBackdropPress={closeModal}
+        icon="warning-outline"
+        iconTone="danger"
         testID="reset-step-2"
       >
         <Button
@@ -239,6 +263,8 @@ export default function SettingsScreen() {
         title={t('account.deleteTitle')}
         message={t('account.deleteMessage')}
         onBackdropPress={closeModal}
+        icon="warning-outline"
+        iconTone="danger"
         testID="delete-step-1"
       >
         <Button
@@ -253,6 +279,8 @@ export default function SettingsScreen() {
         title={t('account.deleteConfirmTitle')}
         message={t('account.deleteConfirmMessage')}
         onBackdropPress={closeModal}
+        icon="warning-outline"
+        iconTone="danger"
         testID="delete-step-2"
       >
         <Button
@@ -271,7 +299,7 @@ export default function SettingsScreen() {
       <SettingsSection ui={ui} title={t('settings.sections.sound')}>
         <ToggleRow
           ui={ui}
-          icon={sound ? 'volume-high' : 'volume-mute'}
+          icon={sound ? 'volume-high-outline' : 'volume-mute-outline'}
           label={t('settings.sound')}
           value={sound}
           onChange={(value) => {
@@ -281,7 +309,7 @@ export default function SettingsScreen() {
         />
         <ToggleRow
           ui={ui}
-          icon="phone-portrait"
+          icon="phone-portrait-outline"
           label={t('settings.haptics')}
           value={haptics}
           onChange={(value) => {
@@ -293,7 +321,7 @@ export default function SettingsScreen() {
       <SettingsSection ui={ui} title={t('settings.sections.notifications')}>
         <ToggleRow
           ui={ui}
-          icon="notifications"
+          icon="notifications-outline"
           label={t('settings.dailyReminders')}
           hint={t('settings.dailyRemindersHint')}
           value={notificationsAllowed && notifications.dailyEnabled}
@@ -302,7 +330,7 @@ export default function SettingsScreen() {
         />
         <ToggleRow
           ui={ui}
-          icon="flame"
+          icon="flame-outline"
           label={t('settings.streakReminders')}
           hint={t('settings.streakRemindersHint')}
           value={notificationsAllowed && notifications.streakEnabled}
@@ -312,6 +340,7 @@ export default function SettingsScreen() {
         {notificationsAllowed ? null : (
           <InfoRow
             ui={ui}
+            icon="information-circle-outline"
             text={t(
               notificationsBlocked ? 'settings.notificationsBlocked' : 'settings.notificationsOff',
             )}
@@ -321,7 +350,7 @@ export default function SettingsScreen() {
       <SettingsSection ui={ui} title={t('settings.sections.display')}>
         <ToggleRow
           ui={ui}
-          icon="shapes"
+          icon="shapes-outline"
           label={t('settings.colorBlind')}
           hint={t('settings.colorBlindHint')}
           value={colorBlind}
@@ -333,7 +362,7 @@ export default function SettingsScreen() {
         />
         <ChoiceRow
           ui={ui}
-          icon="walk"
+          icon="walk-outline"
           label={t('settings.reducedMotion')}
           options={MOTION_OPTIONS.map((value) => ({ value, label: t(`settings.motion.${value}`) }))}
           value={reducedMotion}
@@ -347,7 +376,7 @@ export default function SettingsScreen() {
         />
         <ChoiceRow
           ui={ui}
-          icon="speedometer"
+          icon="speedometer-outline"
           label={t('settings.quality')}
           hint={quality === 'auto' && downgraded ? t('settings.qualityLowered') : undefined}
           options={QUALITY_OPTIONS.map((value) => ({
@@ -367,19 +396,21 @@ export default function SettingsScreen() {
       <SettingsSection ui={ui} title={t('settings.sections.language')}>
         <LinkRow
           ui={ui}
-          icon="language"
+          icon="language-outline"
           label={t('settings.language')}
           value={languageName}
           accessibilityLabel={t('settings.languageA11y', { name: languageName })}
           onPress={() => setModal('language')}
           testID="setting-language"
         />
-        {restartNeeded ? <InfoRow ui={ui} text={t('settings.rtlRestart')} /> : null}
+        {restartNeeded ? (
+          <InfoRow ui={ui} icon="information-circle-outline" text={t('settings.rtlRestart')} />
+        ) : null}
       </SettingsSection>
       <SettingsSection ui={ui} title={t('settings.sections.purchases')}>
         <LinkRow
           ui={ui}
-          icon="refresh"
+          icon="refresh-outline"
           label={t('settings.restorePurchases')}
           hint={t('settings.restoreHint')}
           disabled={restoring}
@@ -388,7 +419,7 @@ export default function SettingsScreen() {
         />
         <LinkRow
           ui={ui}
-          icon="card"
+          icon="card-outline"
           label={t('settings.manageSubscription')}
           external
           onPress={() => openLink(MANAGE_SUBSCRIPTIONS_URL)}
@@ -398,14 +429,14 @@ export default function SettingsScreen() {
       <SettingsSection ui={ui} title={t('settings.sections.about')}>
         <LinkRow
           ui={ui}
-          icon="shield-checkmark"
+          icon="shield-checkmark-outline"
           label={t('settings.privacy')}
           external
           onPress={() => openLink(PRIVACY_URL)}
         />
         <LinkRow
           ui={ui}
-          icon="document-text"
+          icon="document-text-outline"
           label={t('settings.terms')}
           external
           onPress={() => openLink(TERMS_URL)}
@@ -413,7 +444,7 @@ export default function SettingsScreen() {
         {privacyOptionsRequired ? (
           <LinkRow
             ui={ui}
-            icon="options"
+            icon="options-outline"
             label={t('settings.adPrivacy')}
             hint={t('settings.adPrivacyHint')}
             onPress={onAdPrivacy}
@@ -422,43 +453,56 @@ export default function SettingsScreen() {
         ) : null}
         <LinkRow
           ui={ui}
-          icon="mail"
+          icon="mail-outline"
           label={t('settings.support')}
           external
           onPress={() => openLink(SUPPORT_MAILTO)}
         />
-        {versionInfo !== null ? (
-          <InfoRow ui={ui} text={t('settings.version', versionInfo)} />
-        ) : null}
       </SettingsSection>
       <SettingsSection ui={ui} title={t('settings.sections.progress')}>
         <LinkRow
           ui={ui}
-          icon="refresh"
+          icon="trash-bin-outline"
+          tone="danger"
           label={t('settings.reset')}
           hint={t('settings.resetHint')}
           onPress={() => setModal('reset')}
           testID="setting-reset"
         />
       </SettingsSection>
+      {versionInfo !== null ? (
+        <Text style={[styles.version, { color: ui.textMuted }]}>
+          {t('settings.version', versionInfo)}
+        </Text>
+      ) : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
   languages: {
-    gap: spacing.sm,
+    gap: spacing.xxs,
   },
   languageRow: {
     minHeight: MIN_TOUCH_TARGET,
-    borderRadius: radii.lg,
-    borderWidth: 1,
+    borderRadius: radii.md,
     paddingHorizontal: spacing.lg,
-    justifyContent: 'center',
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
   },
   languageText: {
-    fontSize: fontSizes.body,
-    fontWeight: fontWeights.semibold,
+    flex: 1,
+    fontSize: fontSizes.callout,
+    fontWeight: fontWeights.medium,
+  },
+  languageSelected: {
+    fontWeight: fontWeights.bold,
+  },
+  version: {
+    textAlign: 'center',
+    fontSize: fontSizes.caption,
+    paddingTop: spacing.xs,
   },
   pressed: {
     opacity: 0.7,

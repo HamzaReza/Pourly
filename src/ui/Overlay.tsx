@@ -1,5 +1,15 @@
-import { memo, useEffect, useRef, type ComponentRef, type ReactNode } from 'react';
-import { AccessibilityInfo, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Children,
+  isValidElement,
+  memo,
+  useEffect,
+  useRef,
+  type ComponentRef,
+  type ReactNode,
+} from 'react';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { AccessibilityInfo, Pressable, StyleSheet, View } from 'react-native';
 import Animated, {
   FadeIn,
   FadeInDown,
@@ -9,19 +19,28 @@ import Animated, {
   ZoomIn,
 } from 'react-native-reanimated';
 
-import { useReducedMotionPref, useThemeUi } from './theme';
-import { colors, fill, fontSizes, fontWeights, radii, spacing, zIndex } from './tokens';
+import type { IconName } from './IconButton';
+
+import { useReducedMotionPref, useThemeUi, surfaceColors } from './theme';
+import { alphas, colors, fill, radii, spacing, typography, withAlpha, zIndex } from './tokens';
+import { Text } from '@/ui/Text';
 
 export type OverlayPlacement = 'center' | 'bottom';
 
+/** Tint of the optional icon above the title. */
+export type OverlayIconTone = 'accent' | 'gold' | 'danger';
+
 export interface OverlayProps {
   title: string;
-  /** Optional line under the title. */
-  message?: string;
+  /** Optional line under the title (a string, or spans such as gold stars). */
+  message?: ReactNode;
   children?: ReactNode;
   /** Backdrop tap; omit to make the backdrop inert. */
   onBackdropPress?: () => void;
   placement?: OverlayPlacement;
+  /** Optional glyph in a tinted circle above the title. */
+  icon?: IconName;
+  iconTone?: OverlayIconTone;
   testID?: string;
 }
 
@@ -40,9 +59,13 @@ const OverlayComponent = ({
   children,
   onBackdropPress,
   placement = 'center',
+  icon,
+  iconTone = 'accent',
   testID,
 }: OverlayProps) => {
   const ui = useThemeUi();
+  /** The sheet sits on the screen edge: its padding clears the gesture bar. */
+  const insets = useSafeAreaInsets();
   const reducedMotion = useReducedMotionPref();
   const titleRef = useRef<ComponentRef<typeof Text>>(null);
 
@@ -52,6 +75,16 @@ const OverlayComponent = ({
   }, []);
 
   const bottom = placement === 'bottom';
+  /**
+   * A text-only (ghost) last action already has empty space under its label, so the card's own
+   * bottom padding shrinks to keep the space below the last label equal to the space above the
+   * title.
+   */
+  const actions = Children.toArray(children).filter(isValidElement);
+  const lastAction = actions[actions.length - 1] as { props?: { variant?: string } } | undefined;
+  const ghostLast = lastAction?.props?.variant === 'ghost';
+  const iconColor =
+    iconTone === 'gold' ? colors.coin : iconTone === 'danger' ? colors.danger : ui.accent;
   const cardEntering = reducedMotion
     ? FadeIn.duration(ENTER_MS)
     : bottom
@@ -81,14 +114,39 @@ const OverlayComponent = ({
         style={[
           styles.card,
           bottom ? styles.sheetCard : styles.centerCard,
-          { backgroundColor: ui.surface },
+          !bottom && ghostLast && styles.ghostLast,
+          bottom && { paddingBottom: insets.bottom + spacing.xl },
+          { backgroundColor: ui.surface, borderColor: surfaceColors(ui).hairline },
         ]}
       >
+        {bottom ? (
+          <View style={[styles.handle, { backgroundColor: withAlpha(ui.textMuted, 0.4) }]} />
+        ) : null}
+        {icon !== undefined ? (
+          <View
+            accessible={false}
+            importantForAccessibility="no-hide-descendants"
+            style={[
+              styles.icon,
+              {
+                // Gold on navy turns olive at the usual tint, so gold badges use a lighter one.
+                backgroundColor: withAlpha(
+                  iconColor,
+                  iconTone === 'gold' ? alphas.subtle : alphas.tint,
+                ),
+              },
+            ]}
+          >
+            <Ionicons name={icon} size={26} color={iconColor} />
+          </View>
+        ) : null}
         <Text ref={titleRef} accessibilityRole="header" style={[styles.title, { color: ui.text }]}>
           {title}
         </Text>
         {message !== undefined ? (
-          <Text style={[styles.message, { color: ui.textMuted }]}>{message}</Text>
+          <Text textBreakStrategy="balanced" style={[styles.message, { color: ui.textMuted }]}>
+            {message}
+          </Text>
         ) : null}
         <View style={styles.body}>{children}</View>
       </Animated.View>
@@ -121,30 +179,49 @@ const styles = StyleSheet.create({
   },
   card: {
     padding: spacing.xl,
-    gap: spacing.md,
+    gap: spacing.sm,
+    borderWidth: StyleSheet.hairlineWidth,
   },
   centerCard: {
     width: '100%',
-    maxWidth: 380,
-    borderRadius: radii.xl,
+    maxWidth: 360,
+    borderRadius: radii.dialog,
+    paddingBottom: spacing.xl,
+  },
+  ghostLast: {
+    paddingBottom: spacing.md,
   },
   sheetCard: {
     width: '100%',
-    borderTopStartRadius: radii.xl,
-    borderTopEndRadius: radii.xl,
-    paddingBottom: spacing.xxxl,
+    borderTopStartRadius: radii.dialog,
+    borderTopEndRadius: radii.dialog,
+    borderBottomWidth: 0,
+    paddingTop: spacing.md,
+  },
+  handle: {
+    alignSelf: 'center',
+    width: 36,
+    height: 4,
+    borderRadius: radii.pill,
+    marginBottom: spacing.sm,
+  },
+  icon: {
+    alignSelf: 'center',
+    width: 52,
+    height: 52,
+    borderRadius: radii.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xs,
   },
   title: {
-    fontSize: fontSizes.heading,
-    fontWeight: fontWeights.heavy,
-    textAlign: 'center',
+    ...typography.dialogTitle,
   },
   message: {
-    fontSize: fontSizes.body,
-    textAlign: 'center',
+    ...typography.dialogBody,
   },
   body: {
-    gap: spacing.md,
-    marginTop: spacing.sm,
+    gap: spacing.sm,
+    marginTop: spacing.md,
   },
 });

@@ -164,21 +164,18 @@ describe('power-ups', () => {
     expect(activatePowerUp('hint', move).kind).toBe('needsPayment');
   });
 
-  it('extra tube: once per attempt, a restart frees it again', () => {
+  it('extra tube: inventory first, then the level ad; a restart keeps the tube', () => {
     setProgress({ extraTubes: 1, coins: 0 });
     load(4);
+    const tubes = session().history.current.tubes.length;
     expect(costOf('extraTube').kind).toBe('inventory');
     expect(activatePowerUp('extraTube')).toEqual({ kind: 'applied', source: 'inventory' });
-    expect(activatePowerUp('extraTube')).toEqual({ kind: 'unavailable' });
-    expect(restartNeedsConfirm()).toBe(true);
+    expect(activatePowerUp('extraTube')).toEqual({ kind: 'needsAd', powerUp: 'extraTube' });
+    expect(restartNeedsConfirm()).toBe(false);
     expect(restartLevel(NOW)).toBe(true);
     expect(track).toHaveBeenCalledWith('level_restart', { level: 4, restarts: 1 });
-    expect(restartNeedsConfirm()).toBe(false);
-    expect(activatePowerUp('extraTube')).toEqual({
-      kind: 'needsPayment',
-      powerUp: 'extraTube',
-      cost: ECONOMY.extraTubeCost,
-    });
+    expect(session().history.current.tubes).toHaveLength(tubes + 1);
+    expect(session().extraTubesAdded).toBe(1);
   });
 
   it('applies a power-up bought with an ad only when earned', async () => {
@@ -186,7 +183,7 @@ describe('power-ups', () => {
     const board = session().history.current;
     adResult('dismissed');
     await expect(buyPowerUpWithAd('extraTube', null, null)).resolves.toEqual({ kind: 'none' });
-    expect(session().extraTubeUsed).toBe(false);
+    expect(session().extraTubesAdded).toBe(0);
     adResult('earned');
     await expect(buyPowerUpWithAd('hint', { from: 0, to: 2 }, board)).resolves.toEqual({
       kind: 'applied',

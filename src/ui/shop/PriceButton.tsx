@@ -1,12 +1,22 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
 
 import type { ThemeUi } from '@/render/themes';
 import type { StoreProduct } from '@/services/iapTypes';
 import { Button } from '@/ui/Button';
-import { fontSizes, fontWeights, MIN_TOUCH_TARGET, radii, spacing } from '@/ui/tokens';
+import {
+  alphas,
+  COMPACT_CONTROL,
+  fontSizes,
+  fontWeights,
+  MIN_TOUCH_TARGET,
+  radii,
+  spacing,
+  withAlpha,
+} from '@/ui/tokens';
+import { Text } from '@/ui/Text';
 
 /** What the Shop knows about a product's price right now. */
 export type PriceState =
@@ -26,6 +36,8 @@ export interface PriceButtonProps {
   accessibilityLabel?: string;
   disabled: boolean;
   onBuy: () => void;
+  /** Stretches the pill to the parent's width (coin pack tiles). */
+  fill?: boolean;
   testID?: string;
 }
 
@@ -41,6 +53,7 @@ const PriceButtonComponent = ({
   accessibilityLabel,
   disabled,
   onBuy,
+  fill,
   testID,
 }: PriceButtonProps) => {
   const { t } = useTranslation();
@@ -48,28 +61,30 @@ const PriceButtonComponent = ({
     case 'loading':
       return (
         <View style={styles.status} accessible accessibilityLabel={t('shop.loading')}>
-          <ActivityIndicator color={ui.accent} />
+          <ActivityIndicator size="small" color={ui.accent} />
         </View>
       );
     case 'owned':
       return (
         <View
-          style={[styles.status, styles.owned, { borderColor: ui.accent }]}
+          style={[styles.owned, { backgroundColor: withAlpha(ui.accent, alphas.tint) }]}
           accessible
           accessibilityLabel={t('shop.ownedA11y', { name })}
         >
-          <Ionicons name="checkmark-circle" size={18} color={ui.accent} />
+          <Ionicons name="checkmark-circle" size={16} color={ui.accent} />
           <Text style={[styles.ownedText, { color: ui.text }]}>{t('shop.owned')}</Text>
         </View>
       );
     case 'unavailable':
       return (
         <Button
+          size="sm"
           label={t('shop.notOffered')}
           accessibilityLabel={t('shop.notOfferedA11y', { name })}
           onPress={onBuy}
           disabled
           ui={ui}
+          style={fill === true ? styles.fill : undefined}
           testID={testID}
         />
       );
@@ -77,6 +92,7 @@ const PriceButtonComponent = ({
       return (
         <Button
           variant="primary"
+          size="sm"
           label={label ?? price.product.priceString}
           accessibilityLabel={
             accessibilityLabel ?? t('shop.buyA11y', { name, price: price.product.priceString })
@@ -84,7 +100,7 @@ const PriceButtonComponent = ({
           onPress={onBuy}
           disabled={disabled}
           ui={ui}
-          style={styles.buy}
+          style={fill === true ? styles.fill : undefined}
           testID={testID}
         />
       );
@@ -95,23 +111,26 @@ export const PriceButton = memo(PriceButtonComponent);
 
 const styles = StyleSheet.create({
   status: {
-    minHeight: MIN_TOUCH_TARGET,
+    minHeight: COMPACT_CONTROL,
     minWidth: MIN_TOUCH_TARGET,
     alignItems: 'center',
     justifyContent: 'center',
   },
   owned: {
+    minHeight: COMPACT_CONTROL,
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
     gap: spacing.xs,
     paddingHorizontal: spacing.md,
     borderRadius: radii.pill,
-    borderWidth: 1,
   },
   ownedText: {
     fontSize: fontSizes.small,
     fontWeight: fontWeights.bold,
   },
-  buy: {
-    paddingHorizontal: spacing.lg,
+  fill: {
+    alignSelf: 'stretch',
+    paddingHorizontal: spacing.sm,
   },
 });

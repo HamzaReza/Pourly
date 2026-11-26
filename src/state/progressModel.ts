@@ -1,7 +1,7 @@
 import { ECONOMY } from '@/config/economy';
 import { localDateString } from '@/utils/date';
 
-export const PROGRESS_VERSION = 2;
+export const PROGRESS_VERSION = 3;
 
 export const DEFAULT_THEME_ID = 'classic';
 
@@ -65,6 +65,8 @@ export interface ProgressState extends Balances {
   /** Next level to play. */
   level: number;
   stars: Record<number, StarCount>;
+  /** Chapters opened with coins (P12.7); star unlocks are derived from `stars`. */
+  paidChapters: number[];
   streak: number;
   bestStreak: number;
   lastDailyDate: string | null;
@@ -101,6 +103,7 @@ export const createDefaultProgress = (now: number): ProgressState => ({
   firstSessionStartedAt: now,
   level: 1,
   stars: {},
+  paidChapters: [],
   coins: ECONOMY.startCoins,
   hints: ECONOMY.startHints,
   undos: 0,

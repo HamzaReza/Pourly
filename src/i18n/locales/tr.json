@@ -18,11 +18,12 @@
   "home": {
     "play": "Seviye {{n}}",
     "playA11y": "Oyna: seviye {{n}}",
-    "resume": "Devam: Seviye {{n}}",
+    "continue": "{{n}}. bölüme devam et",
     "resumeA11y": "Seviye {{n}}: kaldığın yerden devam et",
     "shop": "Mağaza",
     "themes": "Temalar",
     "settings": "Ayarlar",
+    "levels": "Bölümler",
     "playHardA11y": "Oyna: seviye {{n}}, zor seviye",
     "signInCard": {
       "title": "İlerlemeni kaydetmek için giriş yap",
@@ -89,7 +90,10 @@
     "costAd": "reklam izle",
     "costUsed": "zaten kullanıldı",
     "dailyTitle": "Günlük · {{date}}",
-    "dailyTitleA11y": "Günlük görev, {{date}}"
+    "dailyTitleA11y": "Günlük görev, {{date}}",
+    "costTubeLimit": "bu seviyede sınıra ulaşıldı",
+    "tubeAdUnavailable": "Şu anda reklam yok. Tüpü jetonla alabilirsin.",
+    "replayTitle": "Tekrar · {{n}}. bölüm"
   },
   "coins": {
     "badgeA11y_one": "{{count}} jeton. Mağazayı aç",
@@ -123,14 +127,25 @@
     "dailyTitle": "Günlük görev tamam!",
     "streak_one": "{{value}} günlük seri",
     "streak_other": "{{value}} günlük seri",
-    "dailyReplay": "Bugün zaten tamamlandı. Tekrar oynamak sadece eğlence için."
+    "dailyReplay": "Bugün zaten tamamlandı. Tekrar oynamak sadece eğlence için.",
+    "levels": "Bölümler",
+    "levelsA11y": "Bölüm listesine dön",
+    "newBest": "Yeni rekor!",
+    "replayNote": "Altın kazanmak için yıldız rekorunu geç.",
+    "perfectAgain": "Yine kusursuz! Tüm yıldızlar zaten sende."
   },
   "stuck": {
     "title": "Hamle kalmadı",
     "message": "Bir hamleyi geri al, tüp ekle, baştan başla ya da seviyeyi geç.",
     "messageNoSkip": "Bir hamleyi geri al, tüp ekle ya da baştan başla.",
     "undo": "Geri al",
-    "addTube": "+Tüp",
+    "tubeUse_one": "+Tüp kullan ({{count}} kaldı)",
+    "tubeUse_other": "+Tüp kullan ({{count}} kaldı)",
+    "tubeAd": "Reklam izle: +1 tüp",
+    "tubeAdA11y": "Boş bir tüp eklemek için reklam izle",
+    "tubeCoins_one": "+1 tüp · {{count}} jeton",
+    "tubeCoins_other": "+1 tüp · {{count}} jeton",
+    "tubeLimit": "Bu seviyede tüp sınırına ulaşıldı",
     "restart": "Baştan",
     "skip": "Seviyeyi geç",
     "skipA11y": "Reklam izleyerek bu seviyeyi geç",
@@ -138,7 +153,8 @@
   },
   "notEnough": {
     "title": "Yetersiz jeton",
-    "message": "{{item}}: {{cost}} jeton. Sende {{coins}} jeton var.",
+    "message_one": "{{item}} {{value}} altın. Sende {{balance}} var.",
+    "message_other": "{{item}} {{value}} altın. Sende {{balance}} var.",
     "watchAd": "Reklam izle",
     "watchAdA11y": "Reklam izleyerek kazan: {{item}}",
     "shop": "Mağaza"
@@ -148,6 +164,16 @@
     "message": "Bu denemede ücretli bir öğe kullandın. Baştan başlarsan onu kaybedersin.",
     "confirm": "Yine de baştan",
     "cancel": "Oynamaya devam"
+  },
+  "tubeConfirm": {
+    "useTitle": "1 +Tüp kullanılsın mı?",
+    "useMessage_one": "{{count}} +Tüpün var. Boş tüp, baştan başlasan bile bu seviyede kalır.",
+    "useMessage_other": "{{count}} +Tüpün var. Boş tüp, baştan başlasan bile bu seviyede kalır.",
+    "useConfirm": "Tüp ekle",
+    "buyTitle_one": "+1 tüp için {{count}} jeton harcansın mı?",
+    "buyTitle_other": "+1 tüp için {{count}} jeton harcansın mı?",
+    "buyMessage": "Boş tüp, baştan başlasan bile bu seviyede kalır.",
+    "buyConfirm": "Tüp satın al"
   },
   "reward": {
     "title": "Ödül",
@@ -232,6 +258,7 @@
     "freeCoins": {
       "title": "Bedava jeton",
       "button": "Bedava jeton",
+      "watch": "İzle",
       "a11y_one": "{{value}} bedava jeton için reklam izle",
       "a11y_other": "{{value}} bedava jeton için reklam izle",
       "reward_one": "Kısa bir reklama +{{value}} jeton",
@@ -288,7 +315,11 @@
     "thanksMessage": "Satın alımın eklendi.",
     "alreadyOwnedTitle": "Zaten satın alındı",
     "alreadyOwnedMessage": "Bu Google Play hesabı buna zaten sahip. Geri almak için satın alımlarını geri yükle.",
-    "restoreAction": "Satın alımları geri yükle"
+    "restoreAction": "Satın alımları geri yükle",
+    "tags": {
+      "popular": "Popüler",
+      "bestValue": "En avantajlı"
+    }
   },
   "themes": {
     "title": "Temalar",
@@ -469,5 +500,40 @@
     "comeback3Body": "Hemen geri dön: Seviye {{n}} hazır olduğunda seni bekliyor.",
     "comeback4Title": "Son bir dökme?",
     "comeback4Body": "Bu son hatırlatmamız. Seviye {{n}} kaydedildi ve hazır olduğunda seni bekliyor."
+  },
+  "levels": {
+    "title": "Bölümler",
+    "starsA11y": "Toplanan yıldız: {{value}} / {{max}}",
+    "cellA11y": "{{n}}. bölüm: 3 yıldızdan {{stars}}. Tekrar oyna",
+    "currentA11y": "{{n}}. bölüm: henüz tamamlanmadı. Oyna",
+    "hardA11y": "zor bölüm",
+    "lockedA11y": "{{n}}. bölüm, kilitli",
+    "chapter": "Bölüm {{from}}–{{to}}",
+    "chapterA11y": "{{from}}–{{to}}. bölümler: {{total}} bölümden {{done}} tamamlandı, {{maxStars}} yıldızdan {{stars}}",
+    "completed_one": "{{value}} bölüm tamamlandı",
+    "completed_other": "{{value}} bölüm tamamlandı"
+  },
+  "chapters": {
+    "gateTitle": "{{n}}. bölüm kilitli",
+    "gateMessage": "Açmak için {{prev}}. bölümde {{target}}★ topla.",
+    "progress": "{{stars}} / {{target}} ★",
+    "progressA11y": "{{prev}}. bölümde {{target}} yıldızdan {{stars}}",
+    "replay": "Bölümleri tekrar oyna",
+    "unlockCoins_one": "{{value}} altınla aç",
+    "unlockCoins_other": "{{value}} altınla aç",
+    "confirmTitle_one": "{{n}}. bölümü açmak için {{value}} altın harcansın mı?",
+    "confirmTitle_other": "{{n}}. bölümü açmak için {{value}} altın harcansın mı?",
+    "confirmMessage": "Yıldız toplayarak ücretsiz de açabilirsin.",
+    "confirm": "Aç",
+    "unlocked": "{{n}}. bölüm açıldı!",
+    "homeCta": "{{n}}. bölümü aç",
+    "homeCtaA11y": "{{n}}. bölüm kilitli. Nasıl açılacağını gör",
+    "headerLocked": "Açmak için {{prev}}. bölümde {{stars}} / {{target}} ★",
+    "headerLockedA11y": "{{n}}. bölüm kilitli: {{prev}}. bölümde {{target}} yıldızdan {{stars}}. Nasıl açılacağını gör",
+    "item": "{{n}}. bölümün kilidini açmak",
+    "locked": "Kilitli",
+    "headerToUnlock": "Açmak için {{stars}}/{{target}}★",
+    "balance_one": "{{value}} altının var",
+    "balance_other": "{{value}} altının var"
   }
 }

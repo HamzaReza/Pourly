@@ -11,6 +11,7 @@ import { localToday } from '@/state/gameFlow';
 import { watchFreeCoinsAd } from '@/state/metaFlow';
 import { useProgressStore } from '@/state/progressStore';
 import { Button } from '@/ui/Button';
+import { Card } from '@/ui/Card';
 import { showToast } from '@/ui/toastQueue';
 
 import { ProductRow } from './ProductRow';
@@ -86,29 +87,38 @@ const FreeCoinsCardComponent = ({ ui }: FreeCoinsCardProps) => {
   }
 
   return (
-    <ProductRow
-      ui={ui}
-      leading={<Ionicons name="play-circle" size={30} color={ui.accent} />}
-      title={t('shop.freeCoins.title')}
-      subtitle={subtitle}
-      trailing={
-        <Button
-          variant="primary"
-          label={t('shop.freeCoins.button')}
-          accessibilityLabel={t('shop.freeCoins.a11y', {
-            count: reward,
-            value: formatNumber(reward),
-          })}
-          accessibilityHint={subtitleA11y ?? subtitle}
-          icon="play"
-          onPress={onWatch}
-          disabled={busy || status.kind !== 'ready'}
-          ui={ui}
-          testID="free-coins-button"
-        />
-      }
-      testID="free-coins"
-    />
+    <Card ui={ui} tone="accent" padding="none">
+      <ProductRow
+        ui={ui}
+        leading={
+          <Ionicons
+            name={status.kind === 'cooldown' ? 'time-outline' : 'play'}
+            size={20}
+            color={ui.accent}
+          />
+        }
+        title={t('shop.freeCoins.title')}
+        subtitle={subtitle}
+        trailing={
+          <Button
+            variant="primary"
+            size="sm"
+            label={t('shop.freeCoins.watch')}
+            accessibilityLabel={t('shop.freeCoins.a11y', {
+              count: reward,
+              value: formatNumber(reward),
+            })}
+            accessibilityHint={subtitleA11y ?? subtitle}
+            icon="play"
+            onPress={onWatch}
+            disabled={busy || status.kind !== 'ready'}
+            ui={ui}
+            testID="free-coins-button"
+          />
+        }
+        testID="free-coins"
+      />
+    </Card>
   );
 };
 
