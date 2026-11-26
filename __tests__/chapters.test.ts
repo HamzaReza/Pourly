@@ -20,7 +20,7 @@ import { unlockChapterWithCoins } from '@/state/chapterFlow';
 import { commitPlayerPour, ensureLevelSession, onNextPressed } from '@/state/gameFlow';
 import { useGameStore } from '@/state/gameStore';
 import { migrateProgress, sanitizeChapters } from '@/state/migrations';
-import { createDefaultProgress, type StarCount } from '@/state/progressModel';
+import { createDefaultProgress, PROGRESS_VERSION, type StarCount } from '@/state/progressModel';
 import { applyUnlockChapter } from '@/state/progressReducers';
 import { useProgressStore } from '@/state/progressStore';
 
@@ -104,6 +104,8 @@ describe('chapter rules', () => {
       stars: 34,
       target: 40,
       price: 60,
+      fullPrice: 60,
+      vipDiscount: false,
     });
     expect(gateOf({ stars, paidChapters: [] }, 1)).toBeNull();
     expect(gateOf({ stars, paidChapters: [2] }, 2)).toBeNull();
@@ -119,9 +121,9 @@ describe('chapter rules', () => {
 });
 
 describe('persistence', () => {
-  it('v2 progress migrates to v3 with no paid chapters', () => {
+  it('v2 progress migrates to the current version with no paid chapters', () => {
     const migrated = migrateProgress({ level: 30, stars: { 1: 3 } }, 2, NOW);
-    expect(migrated.schemaVersion).toBe(3);
+    expect(migrated.schemaVersion).toBe(PROGRESS_VERSION);
     expect(migrated.paidChapters).toEqual([]);
     expect(createDefaultProgress(NOW).paidChapters).toEqual([]);
   });

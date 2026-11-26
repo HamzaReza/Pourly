@@ -202,7 +202,6 @@ const scheduleSignature = (state: ProgressState, language: string): string =>
   JSON.stringify([
     state.streak,
     state.lastDailyDate,
-    state.streakFreezeWeek,
     state.lastGiftDate,
     state.giftDayIndex,
     state.level,

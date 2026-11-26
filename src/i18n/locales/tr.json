@@ -93,7 +93,8 @@
     "dailyTitleA11y": "Günlük görev, {{date}}",
     "costTubeLimit": "bu seviyede sınıra ulaşıldı",
     "tubeAdUnavailable": "Şu anda reklam yok. Tüpü jetonla alabilirsin.",
-    "replayTitle": "Tekrar · {{n}}. bölüm"
+    "replayTitle": "Tekrar · {{n}}. bölüm",
+    "costVip": "VIP ile ücretsiz"
   },
   "coins": {
     "badgeA11y_one": "{{count}} jeton. Mağazayı aç",
@@ -149,7 +150,8 @@
     "restart": "Baştan",
     "skip": "Seviyeyi geç",
     "skipA11y": "Reklam izleyerek bu seviyeyi geç",
-    "keepLooking": "Aramaya devam"
+    "keepLooking": "Aramaya devam",
+    "tubeVip": "Ücretsiz +1 Tüp · VIP"
   },
   "notEnough": {
     "title": "Yetersiz jeton",
@@ -287,7 +289,8 @@
         "dailyBonus": "Her gün +{{coins}} jeton ve +{{hints}} ipucu",
         "gold": "Özel Altın teması",
         "badge": "VIP rozeti",
-        "freeze": "Her hafta bir seri dondurma"
+        "freeTube": "Her bölümde reklamsız ücretsiz bir +Tüp",
+        "chapterDiscount": "Bölümleri %25 daha ucuza aç"
       },
       "active": "Aktif",
       "activeA11y": "VIP aboneliğin aktif",
@@ -534,6 +537,7 @@
     "locked": "Kilitli",
     "headerToUnlock": "Açmak için {{stars}}/{{target}}★",
     "balance_one": "{{value}} altının var",
-    "balance_other": "{{value}} altının var"
+    "balance_other": "{{value}} altının var",
+    "vipDiscount": "VIP −%{{percent}}"
   }
 }

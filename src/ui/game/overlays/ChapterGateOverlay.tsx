@@ -7,7 +7,9 @@ import { formatNumber } from '@/i18n/format';
 import type { ThemeUi } from '@/render/themes';
 import { reportGateShown, unlockChapterWithCoins } from '@/state/chapterFlow';
 import { useProgressStore } from '@/state/progressStore';
+import { ECONOMY } from '@/config/economy';
 import { Button } from '@/ui/Button';
+import { Tag } from '@/ui/Tag';
 import { CoinGlyph } from '@/ui/CoinBadge';
 import { withGoldStars } from '@/ui/goldStars';
 import { NotEnoughCoinsOverlay } from '@/ui/game/overlays/NotEnoughCoinsOverlay';
@@ -51,7 +53,8 @@ const ChapterGateOverlayComponent = ({
   const coins = useProgressStore((state) => state.coins);
   const stars = useProgressStore((state) => state.stars);
   const paidChapters = useProgressStore((state) => state.paidChapters);
-  const gate = gateOf({ stars, paidChapters }, chapter);
+  const vip = useProgressStore((state) => state.entitlements.vip);
+  const gate = gateOf({ stars, paidChapters, entitlements: { vip } }, chapter);
   const reported = useRef(false);
 
   useEffect(() => {
@@ -185,6 +188,21 @@ const ChapterGateOverlayComponent = ({
         style={affordable ? undefined : styles.short}
         testID="chapter-gate-unlock"
       />
+      {gate.vipDiscount ? (
+        <View style={styles.discount} testID="chapter-gate-vip-discount">
+          <Tag
+            ui={ui}
+            tone="gold"
+            icon="diamond"
+            label={t('chapters.vipDiscount', {
+              percent: formatNumber(Math.round(ECONOMY.vipChapterUnlockDiscount * 100)),
+            })}
+          />
+          <Text style={[styles.fullPrice, { color: ui.textMuted }]}>
+            {formatNumber(gate.fullPrice)}
+          </Text>
+        </View>
+      ) : null}
       {affordable ? null : (
         <Text style={[styles.balance, { color: ui.textMuted }]} testID="chapter-gate-balance">
           {t('chapters.balance', { count: coins, value: formatNumber(coins) })}
@@ -207,6 +225,17 @@ const styles = StyleSheet.create({
     fontSize: fontSizes.body,
     fontWeight: fontWeights.bold,
     fontVariant: ['tabular-nums'],
+  },
+  discount: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: spacing.sm,
+    marginTop: -spacing.xxs,
+  },
+  fullPrice: {
+    fontSize: fontSizes.caption,
+    textDecorationLine: 'line-through',
   },
   short: {
     opacity: 0.6,

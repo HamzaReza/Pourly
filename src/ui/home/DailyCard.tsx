@@ -32,7 +32,7 @@ export interface DailyCardProps {
 /** Daily Challenge card: flame and current streak (opens the calendar), and Play or Done ✓. */
 const DailyCardComponent = ({ ui, today, onPlay, onOpen }: DailyCardProps) => {
   const { t } = useTranslation();
-  const streak = useProgressStore((state) => currentStreak(state, today, state.entitlements.vip));
+  const streak = useProgressStore((state) => currentStreak(state, today));
   const done = useProgressStore((state) => isDailyDone(state, today));
   const streakText =
     streak > 0

@@ -163,8 +163,9 @@ prices; adjust as you like):
       (`vip_weekly:weekly` → `vip_weekly`, DECISIONS P7.2). No free trial or introductory offer is
       assumed by the app's copy; if you add one, update the store listing.
 - [ ] Grace period and account hold: keep Play's defaults; RevenueCat handles them.
-- [ ] VIP benefits (in-app copy and listing must match): no interstitial ads, 2× daily gift, +100
-      coins and +3 hints once a day, the Gold theme, VIP badge, one streak freeze per week.
+- [ ] VIP benefits (in-app copy and listing must match): no interstitial ads, 2× daily gift, +50
+      coins and +2 hints once a day, a free +Tube on every level (no ad), chapter unlocks 25%
+      cheaper, the Gold theme, VIP badge (no streak freeze, P12.8).
 
 ### License testing
 

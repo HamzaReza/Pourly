@@ -27,15 +27,17 @@ import { Tag } from '@/ui/Tag';
 import { PriceButton, type PriceState } from './PriceButton';
 import { Text } from '@/ui/Text';
 
-type BenefitKey = 'noInterstitials' | 'giftX2' | 'dailyBonus' | 'gold' | 'badge' | 'freeze';
+type BenefitKey =
+  'noInterstitials' | 'giftX2' | 'dailyBonus' | 'freeTube' | 'chapterDiscount' | 'gold' | 'badge';
 
 const BENEFITS: readonly { icon: IconName; key: BenefitKey }[] = [
   { icon: 'ban', key: 'noInterstitials' },
   { icon: 'gift', key: 'giftX2' },
   { icon: 'sunny', key: 'dailyBonus' },
+  { icon: 'add-circle', key: 'freeTube' },
+  { icon: 'lock-open', key: 'chapterDiscount' },
   { icon: 'color-palette', key: 'gold' },
   { icon: 'diamond', key: 'badge' },
-  { icon: 'snow', key: 'freeze' },
 ];
 
 export interface VipCardProps {
@@ -77,12 +79,14 @@ const VipCardComponent = ({
           coins: formatNumber(ECONOMY.vipDailyCoins),
           hints: formatNumber(ECONOMY.vipDailyHints),
         });
+      case 'freeTube':
+        return t('shop.vip.benefits.freeTube');
+      case 'chapterDiscount':
+        return t('shop.vip.benefits.chapterDiscount');
       case 'gold':
         return t('shop.vip.benefits.gold');
       case 'badge':
         return t('shop.vip.benefits.badge');
-      case 'freeze':
-        return t('shop.vip.benefits.freeze');
     }
   };
 

@@ -19,6 +19,8 @@ export interface CountBadgeProps {
   ui?: ThemeUi;
   /** Color of the ring that separates the badge from what it sits on. */
   ringColor?: string;
+  /** Gold fill (VIP perks). */
+  gold?: boolean;
 }
 
 /**
@@ -26,9 +28,16 @@ export interface CountBadgeProps {
  * neutral pill with a coin for prices. Decorative: the button's accessibility label states the
  * same information.
  */
-const CountBadgeComponent = ({ count, icon, coin = false, ui, ringColor }: CountBadgeProps) => {
-  const accent = ui?.accent ?? colors.accent;
-  const onAccent = ui?.onAccent ?? colors.onAccent;
+const CountBadgeComponent = ({
+  count,
+  icon,
+  coin = false,
+  ui,
+  ringColor,
+  gold = false,
+}: CountBadgeProps) => {
+  const accent = gold ? colors.coin : (ui?.accent ?? colors.accent);
+  const onAccent = gold ? colors.onAccent : (ui?.onAccent ?? colors.onAccent);
   const surface = ui?.surface ?? colors.surface;
   const text = ui?.text ?? colors.text;
   return (

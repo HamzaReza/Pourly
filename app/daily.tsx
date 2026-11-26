@@ -177,7 +177,7 @@ export default function DailyScreen() {
   const [today, setToday] = useState(() => localToday());
   const [weekStart] = useState(deviceWeekStart);
   const installDate = useProgressStore((state) => state.installDate);
-  const streak = useProgressStore((state) => currentStreak(state, today, state.entitlements.vip));
+  const streak = useProgressStore((state) => currentStreak(state, today));
   const bestStreak = useProgressStore((state) => state.bestStreak);
   const done = useProgressStore((state) => isDailyDone(state, today));
   const giftDay = useProgressStore((state) => giftCycleIndex(state.giftDayIndex));

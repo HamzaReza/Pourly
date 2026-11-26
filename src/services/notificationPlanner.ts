@@ -4,7 +4,7 @@
  *
  * Kinds and slots (local wall-clock time):
  * - `streak_risk` 20:00 on a day whose daily is not done while the streak is ≥ 2 and still alive
- *   (`currentStreak`, VIP freeze included).
+ *   (`currentStreak`).
  * - `daily_ready` 10:30 on a day whose daily is not done.
  * - `gift_ready` 18:00 on a day whose gift is unclaimed.
  * - `comeback` series from `lastOpenAt`: +1, +3, +7 and +14 calendar days at the same local time,
@@ -65,7 +65,6 @@ export type PlannerState = Pick<
   | 'streak'
   | 'bestStreak'
   | 'lastDailyDate'
-  | 'streakFreezeWeek'
   | 'dailyHistory'
   | 'lastGiftDate'
   | 'giftDayIndex'
@@ -188,7 +187,7 @@ const recurringFor = (
   const { dailyEnabled, streakEnabled } = state.notifications;
   const dailyDone = isDailyDone(state, date);
   if (streakEnabled && !dailyDone) {
-    const streak = currentStreak(state, date, state.entitlements.vip);
+    const streak = currentStreak(state, date);
     if (streak >= 2) {
       out.push({
         id: `streak_risk-${date}`,

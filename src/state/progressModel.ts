@@ -1,7 +1,7 @@
 import { ECONOMY } from '@/config/economy';
 import { localDateString } from '@/utils/date';
 
-export const PROGRESS_VERSION = 3;
+export const PROGRESS_VERSION = 4;
 
 export const DEFAULT_THEME_ID = 'classic';
 
@@ -74,7 +74,6 @@ export interface ProgressState extends Balances {
   giftDayIndex: number;
   lastGiftDate: string | null;
   lastVipClaimDate: string | null;
-  streakFreezeWeek: string | null;
   ownedThemes: string[];
   activeTheme: string;
   entitlements: { noAds: boolean; vip: boolean };
@@ -115,7 +114,6 @@ export const createDefaultProgress = (now: number): ProgressState => ({
   giftDayIndex: 0,
   lastGiftDate: null,
   lastVipClaimDate: null,
-  streakFreezeWeek: null,
   ownedThemes: [DEFAULT_THEME_ID],
   activeTheme: DEFAULT_THEME_ID,
   entitlements: { noAds: false, vip: false },

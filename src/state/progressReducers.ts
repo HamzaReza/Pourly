@@ -232,7 +232,7 @@ export const applyDailyComplete = (
   if (Number.isNaN(age) || age < 0) return unchanged('clockRollback');
   if (age > 1) return unchanged('stale');
   const isVip = state.entitlements.vip;
-  const completion = applyDailyCompletion(state, { today: date, now, isVip });
+  const completion = applyDailyCompletion(state, { today: date, now });
   if (!completion.rewardGranted) return unchanged(completion.outcome);
   const coins = dailyChallengeReward({ streak: completion.state.streak, isVip });
   return {

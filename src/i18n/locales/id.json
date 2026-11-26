@@ -91,7 +91,8 @@
     "dailyTitleA11y": "Tantangan harian, {{date}}",
     "costTubeLimit": "batas tercapai di level ini",
     "tubeAdUnavailable": "Saat ini tidak ada iklan. Kamu bisa mendapatkan tabung dengan koin.",
-    "replayTitle": "Main lagi · Level {{n}}"
+    "replayTitle": "Main lagi · Level {{n}}",
+    "costVip": "gratis dengan VIP"
   },
   "coins": {
     "badgeA11y_other": "{{count}} koin. Buka toko",
@@ -141,7 +142,8 @@
     "restart": "Ulangi",
     "skip": "Lewati level",
     "skipA11y": "Lewati level ini dengan menonton iklan",
-    "keepLooking": "Cari lagi"
+    "keepLooking": "Cari lagi",
+    "tubeVip": "+1 Tabung gratis · VIP"
   },
   "notEnough": {
     "title": "Koin tidak cukup",
@@ -265,7 +267,8 @@
         "dailyBonus": "+{{coins}} koin dan +{{hints}} petunjuk setiap hari",
         "gold": "Tema Emas eksklusif",
         "badge": "Lencana VIP",
-        "freeze": "1 pelindung beruntun tiap minggu"
+        "freeTube": "+Tabung gratis di setiap level, tanpa iklan",
+        "chapterDiscount": "Buka bab 25% lebih murah"
       },
       "active": "Aktif",
       "activeA11y": "Langganan VIP-mu aktif",
@@ -504,6 +507,7 @@
     "item": "Membuka bab {{n}}",
     "locked": "Terkunci",
     "headerToUnlock": "{{stars}}/{{target}}★ untuk membuka",
-    "balance_other": "Kamu punya {{value}} koin"
+    "balance_other": "Kamu punya {{value}} koin",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

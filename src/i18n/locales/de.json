@@ -93,7 +93,8 @@
     "dailyTitleA11y": "Tagesrätsel, {{date}}",
     "costTubeLimit": "Limit für dieses Level erreicht",
     "tubeAdUnavailable": "Gerade ist keine Werbung verfügbar. Du kannst das Glas stattdessen mit Münzen holen.",
-    "replayTitle": "Wiederholen · Level {{n}}"
+    "replayTitle": "Wiederholen · Level {{n}}",
+    "costVip": "gratis mit VIP"
   },
   "coins": {
     "badgeA11y_one": "{{count}} Münzen. Shop öffnen",
@@ -149,7 +150,8 @@
     "restart": "Neustart",
     "skip": "Überspringen",
     "skipA11y": "Dieses Level mit einem Werbevideo überspringen",
-    "keepLooking": "Weitersuchen"
+    "keepLooking": "Weitersuchen",
+    "tubeVip": "+1 Röhre gratis · VIP"
   },
   "notEnough": {
     "title": "Nicht genug Münzen",
@@ -287,7 +289,8 @@
         "dailyBonus": "Jeden Tag +{{coins}} Münzen und +{{hints}} Tipps",
         "gold": "Exklusives Design Gold",
         "badge": "VIP-Abzeichen",
-        "freeze": "Ein Serienschutz pro Woche"
+        "freeTube": "Eine +Röhre gratis in jedem Level, ohne Werbung",
+        "chapterDiscount": "Kapitel 25 % günstiger freischalten"
       },
       "active": "Aktiv",
       "activeA11y": "Dein VIP-Abo ist aktiv",
@@ -534,6 +537,7 @@
     "locked": "Gesperrt",
     "headerToUnlock": "{{stars}}/{{target}}★ zum Freischalten",
     "balance_one": "Du hast {{value}} Münze",
-    "balance_other": "Du hast {{value}} Münzen"
+    "balance_other": "Du hast {{value}} Münzen",
+    "vipDiscount": "VIP −{{percent}} %"
   }
 }

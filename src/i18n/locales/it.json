@@ -95,7 +95,8 @@
     "dailyTitleA11y": "Sfida giornaliera, {{date}}",
     "costTubeLimit": "limite raggiunto in questo livello",
     "tubeAdUnavailable": "Al momento non ci sono video disponibili. Puoi prendere il tubo con le monete.",
-    "replayTitle": "Rigioca · Livello {{n}}"
+    "replayTitle": "Rigioca · Livello {{n}}",
+    "costVip": "gratis con VIP"
   },
   "coins": {
     "badgeA11y_many": "{{count}} monete. Apri il negozio",
@@ -157,7 +158,8 @@
     "restart": "Riavvia",
     "skip": "Salta livello",
     "skipA11y": "Salta il livello guardando un video",
-    "keepLooking": "Cerca ancora"
+    "keepLooking": "Cerca ancora",
+    "tubeVip": "+1 provetta gratis · VIP"
   },
   "notEnough": {
     "title": "Monete insufficienti",
@@ -309,7 +311,8 @@
         "dailyBonus": "+{{coins}} monete e +{{hints}} aiuti ogni giorno",
         "gold": "Tema Oro esclusivo",
         "badge": "Badge VIP",
-        "freeze": "Una protezione serie ogni settimana"
+        "freeTube": "Una +Provetta gratis in ogni livello, senza pubblicità",
+        "chapterDiscount": "Sblocca i capitoli al 25% in meno"
       },
       "active": "Attivo",
       "activeA11y": "Il tuo abbonamento VIP è attivo",
@@ -564,6 +567,7 @@
     "headerToUnlock": "{{stars}}/{{target}}★ per sbloccare",
     "balance_one": "Hai {{value}} moneta",
     "balance_many": "Hai {{value}} di monete",
-    "balance_other": "Hai {{value}} monete"
+    "balance_other": "Hai {{value}} monete",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

@@ -91,7 +91,8 @@
     "dailyTitleA11y": "デイリーチャレンジ、{{date}}",
     "costTubeLimit": "このレベルの上限に達しました",
     "tubeAdUnavailable": "今は広告を表示できません。代わりにコインでチューブを入手できます。",
-    "replayTitle": "リプレイ · レベル{{n}}"
+    "replayTitle": "リプレイ · レベル{{n}}",
+    "costVip": "VIPなら無料"
   },
   "coins": {
     "badgeA11y_other": "{{count}}コイン。ショップを開く",
@@ -141,7 +142,8 @@
     "restart": "やり直す",
     "skip": "スキップ",
     "skipA11y": "広告を見てこのレベルをスキップ",
-    "keepLooking": "まだ探す"
+    "keepLooking": "まだ探す",
+    "tubeVip": "無料で+1チューブ · VIP"
   },
   "notEnough": {
     "title": "コインが足りません",
@@ -265,7 +267,8 @@
         "dailyBonus": "毎日+{{coins}}コインと+{{hints}}ヒント",
         "gold": "限定ゴールドテーマ",
         "badge": "VIPバッジ",
-        "freeze": "毎週1回の連続記録フリーズ"
+        "freeTube": "毎レベル、広告なしで+チューブ1本無料",
+        "chapterDiscount": "チャプター解放が25%お得"
       },
       "active": "有効",
       "activeA11y": "VIPサブスクリプションは有効です",
@@ -504,6 +507,7 @@
     "item": "チャプター{{n}}の解放",
     "locked": "ロック中",
     "headerToUnlock": "解放まで {{stars}}/{{target}}★",
-    "balance_other": "所持コイン：{{value}}"
+    "balance_other": "所持コイン：{{value}}",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

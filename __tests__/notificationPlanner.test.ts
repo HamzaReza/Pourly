@@ -168,7 +168,7 @@ describe('planNotifications', () => {
     ]);
   });
 
-  it('a VIP with an unused freeze keeps streak_risk one more day', () => {
+  it('a VIP gets no extra streak_risk day (no streak freeze)', () => {
     const plan = planNotifications(
       state(WED_1400, {
         streak: 5,
@@ -180,7 +180,6 @@ describe('planNotifications', () => {
     );
     expect(plan.filter((item) => item.kind === 'streak_risk').map((item) => item.id)).toEqual([
       'streak_risk-2026-11-25',
-      'streak_risk-2026-11-26',
     ]);
   });
 

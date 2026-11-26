@@ -80,7 +80,7 @@ describe('Shop', () => {
       screen.getByLabelText('Subscribe to VIP Weekly: 2,29 € per week, renews automatically'),
     ).toBeTruthy();
     expect(screen.getByText('No ads between levels')).toBeTruthy();
-    expect(screen.getByText('+100 coins and +3 hints every day')).toBeTruthy();
+    expect(screen.getByText('+50 coins and +2 hints every day')).toBeTruthy();
     expect(screen.getByText(/renew automatically/)).toBeTruthy();
     expect(screen.queryByTestId('shop-starter-pack')).toBeNull();
     expect(screen.getByLabelText('Balance: 100 coins')).toBeTruthy();

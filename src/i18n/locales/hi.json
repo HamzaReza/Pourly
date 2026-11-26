@@ -93,7 +93,8 @@
     "dailyTitleA11y": "डेली चैलेंज, {{date}}",
     "costTubeLimit": "इस लेवल की सीमा पूरी हो गई",
     "tubeAdUnavailable": "अभी कोई विज्ञापन उपलब्ध नहीं है। आप ट्यूब सिक्कों से ले सकते हैं।",
-    "replayTitle": "फिर से · लेवल {{n}}"
+    "replayTitle": "फिर से · लेवल {{n}}",
+    "costVip": "VIP के साथ मुफ़्त"
   },
   "coins": {
     "badgeA11y_one": "{{count}} सिक्के। शॉप खोलें",
@@ -149,7 +150,8 @@
     "restart": "रीस्टार्ट",
     "skip": "लेवल स्किप",
     "skipA11y": "विज्ञापन देखकर यह लेवल स्किप करें",
-    "keepLooking": "और ढूँढें"
+    "keepLooking": "और ढूँढें",
+    "tubeVip": "मुफ़्त +1 ट्यूब · VIP"
   },
   "notEnough": {
     "title": "सिक्के कम हैं",
@@ -287,7 +289,8 @@
         "dailyBonus": "हर दिन +{{coins}} सिक्के और +{{hints}} हिंट",
         "gold": "खास गोल्ड थीम",
         "badge": "VIP बैज",
-        "freeze": "हर हफ़्ते एक स्ट्रीक फ़्रीज़"
+        "freeTube": "हर लेवल में बिना विज्ञापन एक मुफ़्त +ट्यूब",
+        "chapterDiscount": "चैप्टर 25% सस्ते में अनलॉक करें"
       },
       "active": "सक्रिय",
       "activeA11y": "आपका VIP सब्सक्रिप्शन सक्रिय है",
@@ -534,6 +537,7 @@
     "locked": "लॉक है",
     "headerToUnlock": "अनलॉक के लिए {{stars}}/{{target}}★",
     "balance_one": "आपके पास {{value}} सिक्का है",
-    "balance_other": "आपके पास {{value}} सिक्के हैं"
+    "balance_other": "आपके पास {{value}} सिक्के हैं",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

@@ -1,6 +1,6 @@
 import { CAPACITY } from '@/config/game';
 import type { ProgressState } from '@/state/progressModel';
-import { daysBetween, isoWeekKey } from '@/utils/date';
+import { daysBetween } from '@/utils/date';
 
 import { bandFor } from './difficulty';
 import { createGenerateTask, generateLevel } from './generator';
@@ -21,12 +21,6 @@ const assertLocalDate = (localDate: string): void => {
   if (Number.isNaN(daysBetween(localDate, localDate))) {
     throw new Error(`Expected a local date as YYYY-MM-DD, got "${localDate}"`);
   }
-};
-
-/** Monday-based ISO week key of a `YYYY-MM-DD` local date. */
-const weekOf = (localDate: string): string => {
-  const [year, month, day] = localDate.split('-').map(Number) as [number, number, number];
-  return isoWeekKey(new Date(year, month - 1, day));
 };
 
 /** Seed of the daily board: FNV-1a of the salt and the player's local date. */
@@ -76,10 +70,7 @@ export const generateDaily = (localDate: string): Level =>
 export const createDailyTask = (localDate: string): Task<Level> =>
   createGenerateTask(dailyConfig(localDate), dailySeed(localDate), { id: dailyLevelId(localDate) });
 
-export type StreakFields = Pick<
-  ProgressState,
-  'streak' | 'bestStreak' | 'lastDailyDate' | 'streakFreezeWeek'
->;
+export type StreakFields = Pick<ProgressState, 'streak' | 'bestStreak' | 'lastDailyDate'>;
 
 export type StreakState = StreakFields & Pick<ProgressState, 'lastSeenAt'>;
 
@@ -88,11 +79,10 @@ export interface DailyCompletionInput {
   readonly today: string;
   /** Current epoch ms. */
   readonly now: number;
-  readonly isVip: boolean;
 }
 
 export type DailyCompletionOutcome =
-  'first' | 'consecutive' | 'freeze' | 'reset' | 'sameDay' | 'clockRollback';
+  'first' | 'consecutive' | 'reset' | 'sameDay' | 'clockRollback';
 
 export interface DailyCompletionResult {
   readonly state: StreakFields;
@@ -106,22 +96,17 @@ const unchanged = (state: StreakState, outcome: DailyCompletionOutcome): DailyCo
     streak: state.streak,
     bestStreak: state.bestStreak,
     lastDailyDate: state.lastDailyDate,
-    streakFreezeWeek: state.streakFreezeWeek,
   },
   rewardGranted: false,
   outcome,
 });
 
-/** VIPs get one automatic freeze per ISO week, covering exactly one missed day. */
-const canUseFreeze = (state: StreakFields, today: string, isVip: boolean): boolean =>
-  isVip && state.streak > 0 && state.streakFreezeWeek !== weekOf(today);
-
 /**
  * Streak update when the daily challenge of `today` is completed.
  * - Same day again: no reward, nothing changes.
  * - Next day: streak + 1. First ever, or an unreadable last date: streak 1.
- * - Exactly one missed day, VIP, no freeze used in today's ISO week: freeze consumed, streak + 1.
- * - Otherwise: streak restarts at 1.
+ * - Otherwise (a day or more missed): streak restarts at 1. There is no streak freeze, for VIP
+ *   either (P12.8).
  * - Clock rollback (`now < lastSeenAt`, or `today` before `lastDailyDate`): nothing granted, state
  *   kept.
  */
@@ -138,24 +123,18 @@ export const applyDailyCompletion = (
   if (gap === 0) return unchanged(state, 'sameDay');
 
   let streak = 1;
-  let streakFreezeWeek = state.streakFreezeWeek;
   let outcome: DailyCompletionOutcome = 'reset';
   if (Number.isNaN(gap)) {
     outcome = 'first';
   } else if (gap === 1) {
     streak = state.streak + 1;
     outcome = 'consecutive';
-  } else if (gap === 2 && canUseFreeze(state, input.today, input.isVip)) {
-    streak = state.streak + 1;
-    streakFreezeWeek = weekOf(input.today);
-    outcome = 'freeze';
   }
   return {
     state: {
       streak,
       bestStreak: Math.max(state.bestStreak, streak),
       lastDailyDate: input.today,
-      streakFreezeWeek,
     },
     rewardGranted: true,
     outcome,
@@ -164,15 +143,13 @@ export const applyDailyCompletion = (
 
 /**
  * Streak to display on `today`: the stored streak while it is still alive (completed today or
- * yesterday, or, for a VIP with an unused freeze this week, the day before), otherwise 0. A clock
- * rollback (`today` before the last daily) keeps the stored value.
+ * yesterday), otherwise 0. A clock rollback (`today` before the last daily) keeps the stored value.
  */
-export const currentStreak = (state: StreakFields, today: string, isVip = false): number => {
+export const currentStreak = (state: StreakFields, today: string): number => {
   assertLocalDate(today);
   if (state.lastDailyDate === null) return 0;
   const gap = daysBetween(state.lastDailyDate, today);
   if (Number.isNaN(gap)) return 0;
   if (gap <= 1) return state.streak;
-  if (gap === 2 && canUseFreeze(state, today, isVip)) return state.streak;
   return 0;
 };

@@ -101,7 +101,8 @@
     "dailyTitleA11y": "التحدي اليومي، {{date}}",
     "costTubeLimit": "تم بلوغ الحد في هذا المستوى",
     "tubeAdUnavailable": "لا يتوفر إعلان الآن. يمكنك الحصول على الأنبوب بالعملات بدلًا من ذلك.",
-    "replayTitle": "إعادة · المستوى {{n}}"
+    "replayTitle": "إعادة · المستوى {{n}}",
+    "costVip": "مجاني مع VIP"
   },
   "coins": {
     "badgeA11y_few": "{{count}} عملة. افتح المتجر",
@@ -181,7 +182,8 @@
     "restart": "إعادة",
     "skip": "تخطَّ المستوى",
     "skipA11y": "تخطَّ هذا المستوى بمشاهدة إعلان",
-    "keepLooking": "واصل البحث"
+    "keepLooking": "واصل البحث",
+    "tubeVip": "+1 أنبوب مجانًا · VIP"
   },
   "notEnough": {
     "title": "العملات غير كافية",
@@ -375,7 +377,8 @@
         "dailyBonus": "+{{coins}} عملة و+{{hints}} تلميح كل يوم",
         "gold": "المظهر الذهبي الحصري",
         "badge": "شارة VIP",
-        "freeze": "تجميد سلسلة واحد كل أسبوع"
+        "freeTube": "أنبوب إضافي مجاني في كل مستوى بلا إعلان",
+        "chapterDiscount": "فتح الفصول أرخص بنسبة 25٪"
       },
       "active": "مفعّل",
       "activeA11y": "اشتراك VIP الخاص بك مفعّل",
@@ -654,6 +657,7 @@
     "balance_two": "لديك {{value}} عملتان",
     "balance_few": "لديك {{value}} عملات",
     "balance_many": "لديك {{value}} عملة",
-    "balance_other": "لديك {{value}} عملة"
+    "balance_other": "لديك {{value}} عملة",
+    "vipDiscount": "VIP −{{percent}}٪"
   }
 }

@@ -135,7 +135,7 @@ describe('Home', () => {
     setProgress({ entitlements: { noAds: false, vip: true } });
     await render(<HomeScreen />);
     await fireEvent.press(screen.getByLabelText('Claim your VIP daily bonus'));
-    expect(useProgressStore.getState()).toMatchObject({ coins: 200, hints: 6 });
+    expect(useProgressStore.getState()).toMatchObject({ coins: 150, hints: 5 });
     expect(screen.getByText('VIP daily bonus')).toBeTruthy();
     await fireEvent.press(screen.getByText('Continue'));
     expect(screen.queryByLabelText('Claim your VIP daily bonus')).toBeNull();

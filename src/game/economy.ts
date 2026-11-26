@@ -105,6 +105,8 @@ export type CostDecision =
   | { readonly kind: 'free'; readonly freeLeft: number }
   | { readonly kind: 'inventory'; readonly item: InventoryItem; readonly owned: number }
   | { readonly kind: 'ad' }
+  /** VIP: the level's one ad +Tube, granted without the ad (P12.8). */
+  | { readonly kind: 'vipTube' }
   | { readonly kind: 'coins'; readonly cost: number }
   | { readonly kind: 'adOrShop'; readonly cost: number }
   | { readonly kind: 'shop'; readonly cost: number }
@@ -157,6 +159,8 @@ export interface ExtraTubeCostInput {
   /** `progress.extraTubes`. */
   readonly inventory: number;
   readonly coins: number;
+  /** VIP gets the level's ad tube without the ad (P12.8). */
+  readonly isVip?: boolean;
 }
 
 /** Extra tubes still allowed on a level that already got `tubesAdded`. */
@@ -172,10 +176,11 @@ export const resolveExtraTubeCost = ({
   adTubeUsed,
   inventory,
   coins,
+  isVip = false,
 }: ExtraTubeCostInput): CostDecision => {
   if (extraTubesLeft(tubesAdded) <= 0) return { kind: 'unavailable' };
   if (inventory > 0) return { kind: 'inventory', item: 'extraTubes', owned: inventory };
-  if (!adTubeUsed) return { kind: 'ad' };
+  if (!adTubeUsed) return isVip ? { kind: 'vipTube' } : { kind: 'ad' };
   if (canAfford(coins, ECONOMY.extraTubeCost))
     return { kind: 'coins', cost: ECONOMY.extraTubeCost };
   return { kind: 'shop', cost: ECONOMY.extraTubeCost };

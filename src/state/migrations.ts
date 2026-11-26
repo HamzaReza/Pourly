@@ -40,11 +40,6 @@ const count = (value: unknown, fallback: number): number =>
 const str = (value: unknown, fallback: string): string =>
   typeof value === 'string' && value.length > 0 ? value : fallback;
 
-const strOrNull = (value: unknown, fallback: string | null): string | null => {
-  if (value === null) return null;
-  return typeof value === 'string' ? value : fallback;
-};
-
 const dateOrNull = (value: unknown, fallback: string | null): string | null => {
   if (value === null) return null;
   return typeof value === 'string' && DATE_KEY.test(value) ? value : fallback;
@@ -190,7 +185,6 @@ export const sanitizeProgress = (persisted: unknown, now: number): ProgressState
     giftDayIndex: count(v.giftDayIndex, d.giftDayIndex),
     lastGiftDate: dateOrNull(v.lastGiftDate, d.lastGiftDate),
     lastVipClaimDate: dateOrNull(v.lastVipClaimDate, d.lastVipClaimDate),
-    streakFreezeWeek: strOrNull(v.streakFreezeWeek, d.streakFreezeWeek),
     ownedThemes,
     activeTheme: themeAvailable ? activeTheme : DEFAULT_THEME_ID,
     entitlements: {
@@ -219,7 +213,8 @@ type MigrationStep = (state: UnknownRecord) => UnknownRecord;
  * version 1 share the same shape. Version 2 adds `firstSessionStartedAt` (the first session's
  * start, taken from the last open, which is exact while the player is still in session 1 and
  * irrelevant afterwards) and `pendingPurchases` (empty). Version 3 adds `paidChapters` (empty: no
- * chapter was bought before chapter gates existed, P12.7).
+ * chapter was bought before chapter gates existed, P12.7). Version 4 drops `streakFreezeWeek`: the
+ * VIP streak freeze was removed (P12.8), so streaks behave the same for everyone.
  */
 const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {
   1: (state) => ({
@@ -228,6 +223,7 @@ const PROGRESS_STEPS: Readonly<Record<number, MigrationStep>> = {
     pendingPurchases: state.pendingPurchases ?? [],
   }),
   2: (state) => ({ ...state, paidChapters: state.paidChapters ?? [] }),
+  3: ({ streakFreezeWeek: _dropped, ...state }) => state,
 };
 
 /**

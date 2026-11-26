@@ -159,7 +159,7 @@ describe('VIP daily bonus', () => {
       entitlements: { noAds: false, vip: true },
     };
     const { state: next } = applyClaimVipBonus(state, TODAY, NOW);
-    expect(next).toMatchObject({ coins: 200, hints: 6, lastVipClaimDate: TODAY });
+    expect(next).toMatchObject({ coins: 150, hints: 5, lastVipClaimDate: TODAY });
     expect(
       applyClaimVipBonus({ ...state, entitlements: { noAds: false, vip: false } }, TODAY, NOW).claim
         .kind,

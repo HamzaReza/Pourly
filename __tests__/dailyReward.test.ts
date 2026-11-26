@@ -68,7 +68,7 @@ describe('applyDailyComplete', () => {
     expect(result.state.bestStreak).toBe(5);
   });
 
-  it('VIP freeze saves one missed day and doubles the coins', () => {
+  it('a VIP who missed one day starts over (no freeze) but still gets double coins', () => {
     const result = complete(
       progress({
         streak: 4,
@@ -77,14 +77,14 @@ describe('applyDailyComplete', () => {
         entitlements: { noAds: false, vip: true },
       }),
     );
-    expect(result.outcome).toBe('freeze');
-    expect(result.streak).toBe(5);
-    expect(result.coins).toBe((40 + 10) * 2);
+    expect(result.outcome).toBe('reset');
+    expect(result.streak).toBe(1);
+    expect(result.coins).toBe((40 + 2) * 2);
     expect(result.state.bestStreak).toBe(9);
-    expect(result.state.streakFreezeWeek).toBe('2026-W48');
+    expect(result.state).not.toHaveProperty('streakFreezeWeek');
   });
 
-  it('a gap without freeze resets to 1', () => {
+  it('a gap resets to 1', () => {
     const result = complete(progress({ streak: 7, bestStreak: 7, lastDailyDate: '2026-11-20' }));
     expect(result.outcome).toBe('reset');
     expect(result.streak).toBe(1);

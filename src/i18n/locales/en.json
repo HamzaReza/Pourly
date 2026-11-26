@@ -93,7 +93,8 @@
     "dailyTitleA11y": "Daily challenge, {{date}}",
     "costTubeLimit": "limit reached for this level",
     "tubeAdUnavailable": "No ad available right now. You can get the tube with coins instead.",
-    "replayTitle": "Replay · Level {{n}}"
+    "replayTitle": "Replay · Level {{n}}",
+    "costVip": "free with VIP"
   },
   "coins": {
     "badgeA11y_one": "{{count}} coin. Open the shop",
@@ -149,7 +150,8 @@
     "restart": "Restart",
     "skip": "Skip level",
     "skipA11y": "Skip this level by watching an ad",
-    "keepLooking": "Keep looking"
+    "keepLooking": "Keep looking",
+    "tubeVip": "Free +1 Tube · VIP"
   },
   "notEnough": {
     "title": "Not enough coins",
@@ -287,7 +289,8 @@
         "dailyBonus": "+{{coins}} coins and +{{hints}} hints every day",
         "gold": "Exclusive Gold theme",
         "badge": "VIP badge",
-        "freeze": "One streak freeze every week"
+        "freeTube": "A free +Tube on every level, no ad",
+        "chapterDiscount": "Chapters unlock 25% cheaper"
       },
       "active": "Active",
       "activeA11y": "Your VIP subscription is active",
@@ -534,6 +537,7 @@
     "locked": "Locked",
     "headerToUnlock": "{{stars}}/{{target}}★ to unlock",
     "balance_one": "You have {{value}} coin",
-    "balance_other": "You have {{value}} coins"
+    "balance_other": "You have {{value}} coins",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

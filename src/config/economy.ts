@@ -25,8 +25,8 @@ export const ECONOMY = {
     { coins: 150, hints: 3, extraTubes: 3 }, // day 7 chest
   ],
   vipMultiplier: 2,
-  vipDailyCoins: 100,
-  vipDailyHints: 3,
+  vipDailyCoins: 50,
+  vipDailyHints: 2,
   freeCoinsAdReward: 50,
   freeCoinsAdCooldownSec: 300,
   freeCoinsAdDailyMax: 5,
@@ -40,6 +40,8 @@ export const ECONOMY = {
   chapterUnlockCoinsPerStar: 10,
   chapterUnlockMin: 50,
   chapterUnlockMax: 300,
+  /** VIP pays this much less for a chapter unlock (P12.8): price × 0.75, rounded. */
+  vipChapterUnlockDiscount: 0.25,
 } as const;
 
 export type Economy = typeof ECONOMY;

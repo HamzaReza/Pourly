@@ -130,7 +130,7 @@ Install from the internal track as a **license tester**. Check RevenueCat → Cu
       Aurora unlocked; banner and Shop card disappear; a second purchase is impossible or grants
       nothing
 - [ ] **Subscription** `vip_weekly` then `vip_monthly` (upgrade/downgrade): VIP badge, Gold theme,
-      2× gift, daily +100 coins/+3 hints chip, no interstitials; Manage subscription opens Play
+      2× gift, daily +50 coins/+2 hints chip, no interstitials; Manage subscription opens Play
 - [ ] Subscription **expiry / cancel** (test renewals are minutes long): VIP features go away, Gold
       falls back to Classic
 - [ ] **Restore** on a reinstall (same Google account): Remove Ads, VIP, Aurora and the Starter Pack

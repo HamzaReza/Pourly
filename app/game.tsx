@@ -315,6 +315,7 @@ export default function GameScreen() {
   const adTubeUsed = useGameStore((state) => state.session?.adTubeUsed ?? false);
   const tubeAdUnavailable = useGameStore(selectTubeAdUnavailable);
   const coins = useProgressStore((state) => state.coins);
+  const isVip = useProgressStore((state) => state.entitlements.vip);
   const extraTubes = useProgressStore((state) => state.extraTubes);
   const tubeCost = useMemo(
     () =>
@@ -323,8 +324,9 @@ export default function GameScreen() {
         adTubeUsed: adTubeUsed || tubeAdUnavailable,
         inventory: extraTubes,
         coins,
+        isVip,
       }),
-    [tubesAdded, adTubeUsed, tubeAdUnavailable, extraTubes, coins],
+    [tubesAdded, adTubeUsed, tubeAdUnavailable, extraTubes, coins, isVip],
   );
   const tutorialDone = useProgressStore((state) => state.tutorialDone);
 

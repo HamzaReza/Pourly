@@ -9,7 +9,8 @@ import { logger } from '@/utils/logger';
 export type GameModeParam = 'level' | 'daily' | 'replay';
 
 /** How a power-up was paid for. */
-export type PaymentSource = 'free' | 'inventory' | 'coins' | 'ad';
+/** `vip`: the VIP's free ad +Tube (P12.8). */
+export type PaymentSource = 'free' | 'inventory' | 'coins' | 'ad' | 'vip';
 
 /** Why a sign-in did not complete (`sign_in_failed`). */
 export type SignInFailureReason =

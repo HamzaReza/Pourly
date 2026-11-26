@@ -188,7 +188,7 @@ const finishDaily = (
     moves: session.moves,
   });
   track('daily_completed', { date, stars, moves: session.moves });
-  if (result.outcome === 'consecutive' || result.outcome === 'freeze') {
+  if (result.outcome === 'consecutive') {
     track('streak_extended', { streak: result.streak });
   }
   return { coins: result.coins, daily: { streak: result.streak, rewarded: result.coins > 0 } };
@@ -298,6 +298,7 @@ export const costOf = (powerUp: PowerUp): CostDecision => {
         adTubeUsed: (session?.adTubeUsed ?? false) || selectTubeAdUnavailable(game()),
         inventory: owner.extraTubes,
         coins: owner.coins,
+        isVip: owner.entitlements.vip,
       });
   }
 };
@@ -334,6 +335,8 @@ const pay = (decision: CostDecision, now: number): PaymentSource | null => {
       return progress().consume(decision.item, now) ? 'inventory' : null;
     case 'coins':
       return progress().spendCoins(decision.cost, now) ? 'coins' : null;
+    case 'vipTube':
+      return 'vip';
     case 'ad':
     case 'adOrShop':
     case 'shop':
@@ -350,7 +353,8 @@ const apply = (powerUp: PowerUp, source: PaymentSource, move: Move | null): bool
       track('undo_used', { level, source });
       return true;
     case 'extraTube':
-      if (!game().addTube(source === 'ad')) return false;
+      // The VIP tube is the level's ad tube, granted without the ad: it is counted as such.
+      if (!game().addTube(source === 'ad' || source === 'vip')) return false;
       track('extra_tube_used', { level, source });
       return true;
     case 'hint':

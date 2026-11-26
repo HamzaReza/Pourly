@@ -37,7 +37,8 @@ interface ActionButtonProps {
 }
 
 /**
- * The badge for a cost decision: free/owned count, coin price, or the rewarded-ad icon. A +Tube
+ * The badge for a cost decision: free/owned count, coin price, the rewarded-ad icon, or a gold
+ * VIP diamond (the VIP's free +Tube). A +Tube
  * the player cannot afford (`shop`) still shows its coin price.
  */
 const CostBadge = ({ decision, ui }: { decision: CostDecision | null; ui: ThemeUi }) => {
@@ -53,6 +54,8 @@ const CostBadge = ({ decision, ui }: { decision: CostDecision | null; ui: ThemeU
     case 'ad':
     case 'adOrShop':
       return <CountBadge ui={ui} icon="play" />;
+    case 'vipTube':
+      return <CountBadge ui={ui} icon="diamond" gold />;
     case 'unavailable':
       return null;
   }
@@ -112,6 +115,7 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
   const tubeAdUnavailable = useGameStore(selectTubeAdUnavailable);
   const hintShown = useGameStore((state) => state.hint !== null);
   const coins = useProgressStore((state) => state.coins);
+  const isVip = useProgressStore((state) => state.entitlements.vip);
   const undos = useProgressStore((state) => state.undos);
   const hints = useProgressStore((state) => state.hints);
   const extraTubes = useProgressStore((state) => state.extraTubes);
@@ -123,6 +127,7 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
     adTubeUsed: adTubeUsed || tubeAdUnavailable,
     inventory: extraTubes,
     coins,
+    isVip,
   });
 
   const describe = (decision: CostDecision): string => {
@@ -137,6 +142,8 @@ const ActionBarComponent = ({ ui, onUndo, onHint, onRestart, onAddTube }: Action
       case 'ad':
       case 'adOrShop':
         return t('game.costAd');
+      case 'vipTube':
+        return t('game.costVip');
       case 'unavailable':
         return t('game.costUsed');
     }

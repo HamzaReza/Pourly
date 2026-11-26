@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { memo } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useTranslation } from 'react-i18next';
@@ -6,7 +7,7 @@ import type { CostDecision } from '@/game/economy';
 import type { ThemeUi } from '@/render/themes';
 import { Button } from '@/ui/Button';
 import { Overlay } from '@/ui/Overlay';
-import { spacing } from '@/ui/tokens';
+import { colors, spacing } from '@/ui/tokens';
 
 export interface StuckOverlayProps {
   ui: ThemeUi;
@@ -57,6 +58,17 @@ const TubeButton = ({ ui, decision, busy, onPress }: TubeButtonProps) => {
           onPress={onPress}
           disabled={busy}
           icon="play"
+          ui={ui}
+          testID="stuck-add-tube"
+        />
+      );
+    case 'vipTube':
+      return (
+        <Button
+          variant="primary"
+          label={t('stuck.tubeVip')}
+          leading={<Ionicons name="diamond" size={16} color={colors.coin} />}
+          onPress={onPress}
           ui={ui}
           testID="stuck-add-tube"
         />

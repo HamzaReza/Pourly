@@ -91,7 +91,8 @@
     "dailyTitleA11y": "일일 챌린지, {{date}}",
     "costTubeLimit": "이 레벨의 한도에 도달함",
     "tubeAdUnavailable": "지금은 볼 수 있는 광고가 없어요. 대신 코인으로 튜브를 받을 수 있어요.",
-    "replayTitle": "다시 하기 · 레벨 {{n}}"
+    "replayTitle": "다시 하기 · 레벨 {{n}}",
+    "costVip": "VIP는 무료"
   },
   "coins": {
     "badgeA11y_other": "{{count}}코인. 상점 열기",
@@ -141,7 +142,8 @@
     "restart": "재시작",
     "skip": "레벨 건너뛰기",
     "skipA11y": "광고를 보고 이 레벨 건너뛰기",
-    "keepLooking": "더 찾아보기"
+    "keepLooking": "더 찾아보기",
+    "tubeVip": "무료 +1 튜브 · VIP"
   },
   "notEnough": {
     "title": "코인이 부족해요",
@@ -265,7 +267,8 @@
         "dailyBonus": "매일 +{{coins}}코인, 힌트 +{{hints}}개",
         "gold": "전용 골드 테마",
         "badge": "VIP 배지",
-        "freeze": "매주 연속 기록 보호 1회"
+        "freeTube": "매 레벨 광고 없이 +튜브 1개 무료",
+        "chapterDiscount": "챕터 열기 25% 할인"
       },
       "active": "활성",
       "activeA11y": "VIP 구독이 활성화되어 있어요",
@@ -504,6 +507,7 @@
     "item": "챕터 {{n}} 열기",
     "locked": "잠김",
     "headerToUnlock": "열기까지 {{stars}}/{{target}}★",
-    "balance_other": "보유 코인: {{value}}개"
+    "balance_other": "보유 코인: {{value}}개",
+    "vipDiscount": "VIP −{{percent}}%"
   }
 }

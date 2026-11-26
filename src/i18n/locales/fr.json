@@ -95,7 +95,8 @@
     "dailyTitleA11y": "Défi du jour, {{date}}",
     "costTubeLimit": "limite atteinte pour ce niveau",
     "tubeAdUnavailable": "Aucune pub disponible pour l'instant. Tu peux obtenir le tube avec des pièces.",
-    "replayTitle": "Rejouer · Niveau {{n}}"
+    "replayTitle": "Rejouer · Niveau {{n}}",
+    "costVip": "gratuit avec VIP"
   },
   "coins": {
     "badgeA11y_many": "{{count}} pièces. Ouvrir la boutique",
@@ -157,7 +158,8 @@
     "restart": "Rejouer",
     "skip": "Passer",
     "skipA11y": "Passer ce niveau en regardant une pub",
-    "keepLooking": "Chercher encore"
+    "keepLooking": "Chercher encore",
+    "tubeVip": "+1 tube gratuit · VIP"
   },
   "notEnough": {
     "title": "Pas assez de pièces",
@@ -309,7 +311,8 @@
         "dailyBonus": "+{{coins}} pièces et +{{hints}} indices chaque jour",
         "gold": "Thème Or exclusif",
         "badge": "Badge VIP",
-        "freeze": "Un gel de série chaque semaine"
+        "freeTube": "Un +Tube gratuit à chaque niveau, sans pub",
+        "chapterDiscount": "Chapitres déverrouillés 25 % moins cher"
       },
       "active": "Actif",
       "activeA11y": "Ton abonnement VIP est actif",
@@ -564,6 +567,7 @@
     "headerToUnlock": "{{stars}}/{{target}}★ pour déverrouiller",
     "balance_one": "Vous avez {{value}} pièce",
     "balance_many": "Vous avez {{value}} de pièces",
-    "balance_other": "Vous avez {{value}} pièces"
+    "balance_other": "Vous avez {{value}} pièces",
+    "vipDiscount": "VIP −{{percent}} %"
   }
 }

@@ -316,6 +316,7 @@ export default function LevelsScreen() {
   const current = useProgressStore((state) => state.level);
   const stars = useProgressStore((state) => state.stars);
   const paidChapters = useProgressStore((state) => state.paidChapters);
+  const vip = useProgressStore((state) => state.entitlements.vip);
   const params = useLocalSearchParams<{ chapter?: string }>();
   /** Chapter to open on (the gate's "Replay levels"); the current level's chapter otherwise. */
   const [focusChapter] = useState(() => {
@@ -357,7 +358,7 @@ export default function LevelsScreen() {
           to,
           done,
           stars: chapterStars,
-          gate: gateOf({ stars, paidChapters }, chapterOf(from)),
+          gate: gateOf({ stars, paidChapters, entitlements: { vip } }, chapterOf(from)),
           behindGate: !isChapterUnlocked({ stars, paidChapters }, chapterOf(from) - 1),
         },
       });
@@ -370,7 +371,7 @@ export default function LevelsScreen() {
       }
     }
     return { items: out, collected: totalStars, completed: Math.max(0, current - 1) };
-  }, [count, current, stars, paidChapters]);
+  }, [count, current, stars, paidChapters, vip]);
 
   const heightOf = useCallback(
     (item: Item | undefined): number =>

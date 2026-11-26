@@ -6,8 +6,8 @@ import { applyTouchOpen } from '@/state/progressStore';
 const NOW = new Date(2026, 10, 24, 12, 0, 0).getTime();
 
 describe('progress v2', () => {
-  it('is version 3 (v2 fields defaulted)', () => {
-    expect(PROGRESS_VERSION).toBe(3);
+  it('is version 4 (v2 fields defaulted)', () => {
+    expect(PROGRESS_VERSION).toBe(4);
     const fresh = createDefaultProgress(NOW);
     expect(fresh.firstSessionStartedAt).toBe(NOW);
     expect(fresh.pendingPurchases).toEqual([]);
