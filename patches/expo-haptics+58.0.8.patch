@@ -1,0 +1,36 @@
+diff --git a/node_modules/expo-haptics/android/src/main/java/expo/modules/haptics/HapticsModule.kt b/node_modules/expo-haptics/android/src/main/java/expo/modules/haptics/HapticsModule.kt
+index d70ddd2..11056fc 100644
+--- a/node_modules/expo-haptics/android/src/main/java/expo/modules/haptics/HapticsModule.kt
++++ b/node_modules/expo-haptics/android/src/main/java/expo/modules/haptics/HapticsModule.kt
+@@ -1,7 +1,9 @@
+ package expo.modules.haptics
+ 
+ import android.content.Context
++import android.media.AudioAttributes
+ import android.os.Build
++import android.os.VibrationAttributes
+ import android.os.VibrationEffect
+ import android.os.Vibrator
+ import android.os.VibratorManager
+@@ -46,8 +48,19 @@ class HapticsModule : Module() {
+   }
+ 
+   private suspend fun vibrate(type: VibrationType): Unit = withContext(Dispatchers.IO) {
+-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+-      vibrator.vibrate(VibrationEffect.createWaveform(type.timings, type.amplitudes, -1))
++    // Pourly: tag haptics as media/game usage so the system "touch feedback" switch does not
++    // silence them; the game's own Vibration toggle decides (DECISIONS P12.5).
++    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
++      vibrator.vibrate(
++        VibrationEffect.createWaveform(type.timings, type.amplitudes, -1),
++        VibrationAttributes.createForUsage(VibrationAttributes.USAGE_MEDIA),
++      )
++    } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
++      @Suppress("DEPRECATION")
++      vibrator.vibrate(
++        VibrationEffect.createWaveform(type.timings, type.amplitudes, -1),
++        AudioAttributes.Builder().setUsage(AudioAttributes.USAGE_GAME).build(),
++      )
+     } else {
+       @Suppress("DEPRECATION")
+       vibrator.vibrate(type.oldSDKPattern, -1)

@@ -2,7 +2,8 @@
  * Sound effects (spec §15) through `expo-audio`. A pool of two preloaded players per effect is
  * created at startup and reused round-robin, so `play` never allocates (it is called during
  * pours). Players are released when the app goes to the background and recreated when it comes
- * back. The audio session mixes with other apps and stays silent in silent/vibrate mode.
+ * back. The audio session mixes with other apps. Effects ignore the phone's ring/vibrate switch:
+ * they follow media volume and the in-game Sound toggle only (DECISIONS P12.5).
  */
 import { createAudioPlayer, setAudioModeAsync, type AudioPlayer } from 'expo-audio';
 import { AppState, type NativeEventSubscription } from 'react-native';
@@ -102,7 +103,7 @@ export const initAudio = async (): Promise<void> => {
   });
   try {
     await setAudioModeAsync({
-      playsInSilentMode: false,
+      playsInSilentMode: true,
       interruptionMode: 'mixWithOthers',
       shouldPlayInBackground: false,
       allowsRecording: false,

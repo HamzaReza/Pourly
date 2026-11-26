@@ -1,6 +1,8 @@
 /**
- * Haptic feedback (spec §15) through `expo-haptics`, all behind the Settings toggle. Every call is
- * fire-and-forget; a device without a vibrator simply does nothing.
+ * Haptic feedback (spec §15) through `expo-haptics`, all behind the in-game Settings toggle. Every
+ * call is fire-and-forget; a device without a vibrator simply does nothing. On Android,
+ * `patches/expo-haptics+*.patch` tags the vibrations as media/game usage, so the phone's system
+ * "touch feedback" switch does not silence them: only the game's toggle does (DECISIONS P12.5).
  */
 import * as Haptics from 'expo-haptics';
 

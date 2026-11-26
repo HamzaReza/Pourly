@@ -238,7 +238,9 @@ Needs Firebase configured and the SHA-1/SHA-256 of the signing key in Firebase.
       game state is kept
 - [ ] Gesture navigation and 3-button navigation: hardware back closes overlays in order (modal →
       pause → stuck → win)
-- [ ] Sound respects silent mode and mixes with music apps; haptics toggle works
+- [ ] Sound plays with the phone on vibrate/silent when media volume is up, follows the volume keys,
+      and mixes with music apps; vibration works with the system touch-feedback switch off; the
+      in-game Sound and Vibration toggles turn each off
 
 ## 8. Soak
 
