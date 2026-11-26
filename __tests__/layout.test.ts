@@ -1,5 +1,6 @@
 import {
   computeBoardLayout,
+  HIT_SLOP_Y,
   hitTest,
   MAX_TUBE_ASPECT,
   MAX_TUBE_WIDTH,
@@ -151,5 +152,38 @@ describe('layout', () => {
         expect(inside(lifted(tube.drawn), tube.hit)).toBe(true);
       }
     }
+  });
+
+  it('ignores taps in the empty board space above and below the tubes', () => {
+    for (const { width, height, tubeCount } of CASES) {
+      const { area, layout } = layoutFor(width, height, tubeCount);
+      for (const tube of layout.tubes) {
+        const { drawn, hit } = tube;
+        const centerX = drawn.x + drawn.width / 2;
+        // The hit rect hugs the tube: lift headroom above, shadow below, plus a small slop.
+        expect(drawn.y - hit.y).toBeLessThanOrEqual(SELECTION_LIFT + 10 + HIT_SLOP_Y + EPS);
+        expect(hit.y + hit.height - (drawn.y + drawn.height)).toBeLessThanOrEqual(
+          8 + HIT_SLOP_Y + EPS,
+        );
+        // Just above the lifted lip still selects the tube.
+        expect(hitTest(layout.tubes, centerX, drawn.y - SELECTION_LIFT - 4)).not.toBe(-1);
+      }
+      const top = Math.min(...layout.tubes.map((tube) => tube.hit.y));
+      const bottom = Math.max(...layout.tubes.map((tube) => tube.hit.y + tube.hit.height));
+      const midX = area.x + area.width / 2;
+      if (top - area.y > 2) expect(hitTest(layout.tubes, midX, area.y + 1)).toBe(-1);
+      if (area.y + area.height - bottom > 2) {
+        expect(hitTest(layout.tubes, midX, area.y + area.height - 1)).toBe(-1);
+      }
+    }
+  });
+
+  it('leaves a tall board mostly untappable for a single row of five tubes', () => {
+    const { area, layout } = layoutFor(360, 800, 5);
+    const first = layout.tubes[0];
+    if (first === undefined) throw new Error('missing tube');
+    expect(hitTest(layout.tubes, first.drawn.x + 2, area.y + 4)).toBe(-1);
+    expect(hitTest(layout.tubes, first.drawn.x + 2, first.hit.y - 1)).toBe(-1);
+    expect(hitTest(layout.tubes, first.drawn.x + 2, first.drawn.y + 4)).toBe(0);
   });
 });

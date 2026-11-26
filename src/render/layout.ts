@@ -13,7 +13,11 @@ export interface Rect {
 export interface TubeRect {
   /** Where the tube is drawn (resting position, before any selection lift). */
   readonly drawn: Rect;
-  /** Touch target: at least `MIN_HIT_WIDTH` wide, includes the gaps, never overlaps another. */
+  /**
+   * Touch target: at least `MIN_HIT_WIDTH` wide, includes the gaps beside the tube, never overlaps
+   * another. Vertically it covers the tube (with its lift headroom and shadow) plus `HIT_SLOP_Y`,
+   * so taps in the empty board space above or below the tubes select nothing.
+   */
   readonly hit: Rect;
   readonly row: number;
   readonly col: number;
@@ -44,6 +48,8 @@ export const SELECTION_LIFT = 14;
 export const ROW_HEADROOM = SELECTION_LIFT + 10;
 /** Space kept free below every row for the soft shadow. */
 export const ROW_FOOTROOM = 8;
+/** Extra touch margin above and below a row of tubes (clamped to half the gap between rows). */
+export const HIT_SLOP_Y = 12;
 /** Minimum hit-rect width (spec §10, §16). */
 export const MIN_HIT_WIDTH = 44;
 export const MAX_TUBE_WIDTH = 72;
@@ -116,8 +122,10 @@ export const computeBoardLayout = ({ area, tubeCount, capacity }: LayoutInput): 
     if (inRow <= 0) break;
     const rowTop = top + row * (rowBlock + rowGap);
     const startX = area.x + (area.width - inRow * pitch) / 2;
-    const hitTop = row === 0 ? area.y : rowTop - rowGap / 2;
-    const hitBottom = row === rows - 1 ? areaBottom : rowTop + rowBlock + rowGap / 2;
+    const slopTop = row === 0 ? HIT_SLOP_Y : Math.min(HIT_SLOP_Y, rowGap / 2);
+    const slopBottom = row === rows - 1 ? HIT_SLOP_Y : Math.min(HIT_SLOP_Y, rowGap / 2);
+    const hitTop = Math.max(area.y, rowTop - slopTop);
+    const hitBottom = Math.min(areaBottom, rowTop + rowBlock + slopBottom);
     for (let col = 0; col < inRow; col += 1) {
       const cellX = startX + col * pitch;
       tubes.push({
