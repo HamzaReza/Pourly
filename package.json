@@ -74,8 +74,8 @@
     "export:android": "expo export --platform android",
     "prebuild:android": "expo prebuild --no-install --platform android --clean",
     "postinstall": "patch-package",
-    "build": "eas build -p android --profile production --local --output dist/pourly.aab",
-    "preview": "eas build -p android --profile preview --local --output dist/pourly-preview.apk",
+    "build": "EAS_LOCAL_BUILD_WORKINGDIR=$HOME/.eas-build-local eas build -p android --profile production --local --output dist/pourly.aab",
+    "preview": "EAS_LOCAL_BUILD_WORKINGDIR=$HOME/.eas-build-local eas build -p android --profile preview --local --output dist/pourly-preview.apk",
     "submit": "eas submit -p android --profile production --path dist/pourly.aab",
     "release": "yarn build && yarn submit"
   },
