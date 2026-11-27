@@ -44,6 +44,13 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
         android: {
           enableMinifyInReleaseBuilds: true,
           enableShrinkResourcesInReleaseBuilds: true,
+          // R8 stripped WorkManager's Room-generated WorkDatabase_Impl (Room loads it by
+          // reflection), crashing release builds at startup. Keep Room databases intact.
+          extraProguardRules: [
+            '-keep class * extends androidx.room.RoomDatabase { <init>(); }',
+            '-keep class androidx.work.impl.WorkDatabase_Impl { *; }',
+            '-keep class androidx.work.impl.** { *; }',
+          ].join('\n'),
         },
       },
     ],
