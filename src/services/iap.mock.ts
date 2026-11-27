@@ -33,10 +33,10 @@ const MOCK_PRICES: Readonly<Record<ProductId, number>> = {
   coins_500: 0.99,
   coins_1500: 2.99,
   coins_4000: 6.99,
-  remove_ads: 3.99,
-  starter_pack: 1.99,
-  vip_weekly: 1.99,
-  vip_monthly: 5.99,
+  remove_ads: 9.99,
+  starter_pack: 2.49,
+  vip_weekly: 2.99,
+  vip_monthly: 7.99,
 };
 
 const MOCK_PERIODS: Readonly<Partial<Record<ProductId, BillingPeriod>>> = {

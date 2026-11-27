@@ -208,7 +208,7 @@ describe('mock store', () => {
     });
     const purchase = mockIapProvider.purchase('remove_ads');
     await flushPromises();
-    expect(getMockPurchase()).toMatchObject({ productId: 'remove_ads', priceString: '$3.99' });
+    expect(getMockPurchase()).toMatchObject({ productId: 'remove_ads', priceString: '$9.99' });
     resolveMockPurchase('succeed');
     await expect(purchase).resolves.toMatchObject({ kind: 'success' });
     await expect(mockIapProvider.purchase('remove_ads')).resolves.toEqual({ kind: 'alreadyOwned' });
